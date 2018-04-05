@@ -16,6 +16,7 @@
 		DD609B772076BDF1007AF1D5 /* Puzzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B742076BDF0007AF1D5 /* Puzzle.swift */; };
 		DD609B782076BDF1007AF1D5 /* PuzzleParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */; };
 		DD609B792076BDF1007AF1D5 /* PuzzleLex.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */; };
+		DD609B7B2076D5F6007AF1D5 /* cellImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		DD609B742076BDF0007AF1D5 /* Puzzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Puzzle.swift; sourceTree = "<group>"; };
 		DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzleParser.swift; sourceTree = "<group>"; };
 		DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzleLex.swift; sourceTree = "<group>"; };
+		DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = cellImageGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				DD609B602075CD6F007AF1D5 /* AppDelegate.swift */,
+				DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */,
 				DD609B642075CD6F007AF1D5 /* Document.swift */,
 				DD609B722075CEE9007AF1D5 /* DocumentWindowController.swift */,
 				DD609B742076BDF0007AF1D5 /* Puzzle.swift */,
@@ -153,6 +156,7 @@
 				DD609B732075CEE9007AF1D5 /* DocumentWindowController.swift in Sources */,
 				DD609B792076BDF1007AF1D5 /* PuzzleLex.swift in Sources */,
 				DD609B632075CD6F007AF1D5 /* ViewController.swift in Sources */,
+				DD609B7B2076D5F6007AF1D5 /* cellImageGenerator.swift in Sources */,
 				DD609B612075CD6F007AF1D5 /* AppDelegate.swift in Sources */,
 				DD609B652075CD6F007AF1D5 /* Document.swift in Sources */,
 			);
