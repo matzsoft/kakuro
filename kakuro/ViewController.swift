@@ -9,7 +9,8 @@
 import Cocoa
 
 class ViewController: NSViewController {
-
+    @IBOutlet var textView: NSTextView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
