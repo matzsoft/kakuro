@@ -13,6 +13,9 @@
 		DD609B672075CD70007AF1D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD609B662075CD70007AF1D5 /* Assets.xcassets */; };
 		DD609B6A2075CD70007AF1D5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD609B682075CD70007AF1D5 /* Main.storyboard */; };
 		DD609B732075CEE9007AF1D5 /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B722075CEE9007AF1D5 /* DocumentWindowController.swift */; };
+		DD609B772076BDF1007AF1D5 /* Puzzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B742076BDF0007AF1D5 /* Puzzle.swift */; };
+		DD609B782076BDF1007AF1D5 /* PuzzleParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */; };
+		DD609B792076BDF1007AF1D5 /* PuzzleLex.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +28,9 @@
 		DD609B6B2075CD70007AF1D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD609B6C2075CD70007AF1D5 /* kakuro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = kakuro.entitlements; sourceTree = "<group>"; };
 		DD609B722075CEE9007AF1D5 /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentWindowController.swift; sourceTree = "<group>"; };
+		DD609B742076BDF0007AF1D5 /* Puzzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Puzzle.swift; sourceTree = "<group>"; };
+		DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzleParser.swift; sourceTree = "<group>"; };
+		DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuzzleLex.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +66,9 @@
 				DD609B602075CD6F007AF1D5 /* AppDelegate.swift */,
 				DD609B642075CD6F007AF1D5 /* Document.swift */,
 				DD609B722075CEE9007AF1D5 /* DocumentWindowController.swift */,
+				DD609B742076BDF0007AF1D5 /* Puzzle.swift */,
+				DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */,
+				DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */,
 				DD609B622075CD6F007AF1D5 /* ViewController.swift */,
 				DD609B662075CD70007AF1D5 /* Assets.xcassets */,
 				DD609B682075CD70007AF1D5 /* Main.storyboard */,
@@ -139,7 +148,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD609B782076BDF1007AF1D5 /* PuzzleParser.swift in Sources */,
+				DD609B772076BDF1007AF1D5 /* Puzzle.swift in Sources */,
 				DD609B732075CEE9007AF1D5 /* DocumentWindowController.swift in Sources */,
+				DD609B792076BDF1007AF1D5 /* PuzzleLex.swift in Sources */,
 				DD609B632075CD6F007AF1D5 /* ViewController.swift in Sources */,
 				DD609B612075CD6F007AF1D5 /* AppDelegate.swift in Sources */,
 				DD609B652075CD6F007AF1D5 /* Document.swift in Sources */,
