@@ -66,6 +66,16 @@ class Puzzle {
     var cells: [ [ Cell ] ] = []
     var rowComplete = true
     
+    convenience init?( text: String ) {
+        self.init()
+        
+        let parser = PuzzleParser( text: text )
+        if !parser.parse( self ) {
+            return nil
+        }
+    }
+    
+    
     convenience init?( fromFile: String ) {
         self.init()
         
@@ -145,7 +155,7 @@ class Puzzle {
         let borderWidth = CGFloat(6)
         let cellWidth   = CGFloat(82)
         let nrows       = cells.count
-        let ncols       = cells[0].count
+        let ncols       = nrows > 0 ? cells[0].count : 0
         
         let lineGap        = cellWidth + 3
         let interiorWidth  = CGFloat( ncols + 2 ) * lineGap - 1
