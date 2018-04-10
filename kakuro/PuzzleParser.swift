@@ -104,19 +104,6 @@ class PuzzleParser {
     
     
     
-    convenience init? ( file: String ) {
-        do {
-            let text = try String(contentsOfFile: file, encoding: String.Encoding.utf8)
-            
-            self.init( text: text )
-            
-        } catch {
-            return nil
-        }
-    }
-    
-    
-    
     func parse( _ puzzle: Puzzle ) -> Bool {
         parseLoop: while true {
             let symbol = lex.getNext()

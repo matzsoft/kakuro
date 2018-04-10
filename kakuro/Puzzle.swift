@@ -65,6 +65,8 @@ enum Cell {
 class Puzzle {
     var cells: [ [ Cell ] ] = []
     var rowComplete = true
+    var row = 0             // row and col must ALWAYS point to a valid cell,
+    var col = 0             // except when the puzzle is empty.
     
     convenience init?( text: String ) {
         self.init()
@@ -73,29 +75,32 @@ class Puzzle {
         if !parser.parse( self ) {
             return nil
         }
+        row = 0
+        col = 0
     }
     
     
-    convenience init?( fromFile: String ) {
-        self.init()
-        
-        if let parser = PuzzleParser(file: fromFile) {
-            if !parser.parse( self ) {
-                return nil
-            }
+    convenience init? ( file: String ) {
+        do {
+            let text = try String(contentsOfFile: file, encoding: String.Encoding.utf8)
+            
+            self.init( text: text )
+            
+        } catch {
+            return nil
         }
     }
     
     
     func append( _ cell: Cell ) {
         if ( rowComplete ) {
-            cells.append( [] )
             rowComplete = false
+            cells.append( [] )
         }
         
-        let lastRow = cells.count - 1
-        
-        cells[lastRow].append(cell)
+        row = cells.count - 1
+        cells[row].append(cell)
+        col = cells[row].count - 1
     }
     
     
