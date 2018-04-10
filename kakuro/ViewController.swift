@@ -22,7 +22,25 @@ class ViewController: NSViewController {
         // Update the view, if already loaded.
         }
     }
-
-
+    
+    override func insertText(_ insertString: Any) {
+        Swift.print("Insert string = '\(insertString)'")
+    }
+    
+    override func moveLeft(_ sender: Any?) {
+        Swift.print("Got move left")
+    }
+    
+    override func moveRight(_ sender: Any?) {
+        Swift.print("Got move right")
+    }
+    
+    override func moveUp(_ sender: Any?) {
+        Swift.print("Got move up")
+    }
+    
+    override func moveDown(_ sender: Any?) {
+        Swift.print("Got move down")
+    }
 }
 
