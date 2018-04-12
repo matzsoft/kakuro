@@ -20,21 +20,7 @@ enum Cell {
     }
     
     
-    fileprivate static func drawLabel( _ context: CGContext, text: String, rect: CGRect, textRange: CGRect, attributes: [String:AnyObject] ) {
-        let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, attributes as CFDictionary )
-        let line       = CTLineCreateWithAttributedString( attrString! )
-        let textSize   = CTLineGetImageBounds( line, context )
-        let x          = rect.minX - textRange.minX + ( rect.width - textSize.width ) / 2
-        let y          = rect.minY - textRange.minY + ( rect.height - textSize.height ) / 2
-        
-        context.textPosition = CGPoint( x: x, y: y)
-        context.saveGState()
-        CTLineDraw( line, context )
-        context.restoreGState()
-    }
-    
-    
-    func draw( _ context: CGContext, cellRect: CGRect, generator: cellImageGenerator, textRange: CGRect, attributes: [String:AnyObject] ) {
+    func draw( _ context: CGContext, cellRect: CGRect, generator: cellImageGenerator ) {
         switch self {
         case .unused:
             context.draw(generator.getNormalUnused()!, in: cellRect)
@@ -46,15 +32,11 @@ enum Cell {
             context.draw(generator.getNormalHeader()!, in: cellRect)
             
             if let vert = vertical {
-                let rect = generator.getVerticalRect( textRange ).offsetBy(dx: cellRect.minX, dy: cellRect.minY )
-                
-                Cell.drawLabel( context, text: String( vert ), rect: rect, textRange: textRange, attributes: attributes )
+                generator.labelVertical(context, text: String(vert), cellRect: cellRect)
             }
             
             if let horz = horizontal {
-                let rect = generator.getHorizontalRect( textRange ).offsetBy(dx: cellRect.minX, dy: cellRect.minY )
-                
-                Cell.drawLabel( context, text: String( horz ), rect: rect, textRange: textRange, attributes: attributes )
+                generator.labelHorizontal(context, text: String(horz), cellRect: cellRect)
             }
         }
     }
@@ -117,45 +99,6 @@ class Puzzle {
     }
     
     
-    fileprivate func trialFont( _ context: CGContext, generator: cellImageGenerator, scaleFactor: CGFloat ) -> ( [ String: AnyObject ], CGRect ) {
-        let fontAttributes = [
-            String( kCTFontFamilyNameAttribute ): "Arial",
-            String( kCTFontStyleNameAttribute ):  "Regular",
-            String( kCTFontSizeAttribute ):       20.0 * scaleFactor
-        ] as [String : Any]
-        let fontDescriptor = CTFontDescriptorCreateWithAttributes( fontAttributes as CFDictionary )
-        let font           = CTFontCreateWithFontDescriptor( fontDescriptor, 0.0, nil )
-        
-        let attributes: [ String: AnyObject ] = [
-            String( kCTFontAttributeName ):            font,
-            String( kCTForegroundColorAttributeName ): generator.borderSolid
-        ]
-        var textRange = CGRect( x: 0, y: 0, width: 0, height: 0 )
-        
-        context.textPosition = CGPoint( x: 0, y: 0)
-        for label in 3 ... 45 {
-            let text     = CFAttributedStringCreate( kCFAllocatorDefault, String( label ) as CFString, attributes as CFDictionary )
-            let line     = CTLineCreateWithAttributedString( text! )
-            let textRect = CTLineGetImageBounds( line, context )
-            
-            textRange = textRange.union(textRect )
-        }
-        
-        return ( attributes, textRange )
-    }
-    
-    
-    fileprivate func setupFont( _ context: CGContext, generator: cellImageGenerator ) -> ( [ String: AnyObject ], CGRect ) {
-        var ( attributes, textRange ) = trialFont( context, generator: generator, scaleFactor: 1 )
-        let vertRect = generator.getVerticalRect( textRange )
-        let scaleFactor = vertRect.height / textRange.height
-        
-        ( attributes, textRange ) = trialFont( context, generator: generator, scaleFactor: scaleFactor )
-        
-        return ( attributes, textRange )
-    }
-    
-    
     func makeImage() -> CGImage? {
         let borderWidth = CGFloat(6)
         let cellWidth   = CGFloat(82)
@@ -169,11 +112,8 @@ class Puzzle {
         let exteriorRect   = CGRect( x: 0, y: 0, width: interiorRect.width + 2 * borderWidth, height: interiorRect.height + 2 * borderWidth )
         
         let colorSpace = CGColorSpace( name: CGColorSpace.sRGB )
-        let context    = CGContext( data: nil, width: Int(exteriorRect.width), height: Int(exteriorRect.height), bitsPerComponent: 8, bytesPerRow: Int(exteriorRect.width*4), space: colorSpace!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue )
-        
         let generator  = cellImageGenerator( imageWidth: Int( cellWidth ), colorSpace: colorSpace! )
-        
-        let ( attributes, textRange ) = setupFont( context!, generator: generator )
+        let context    = CGContext( data: nil, width: Int(exteriorRect.width), height: Int(exteriorRect.height), bitsPerComponent: 8, bytesPerRow: Int(exteriorRect.width*4), space: colorSpace!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue )
         
         func rectFromRow( _ row: Int, andCol col: Int ) -> CGRect {
             let x = interiorRect.minX + 1 + CGFloat( col ) * lineGap
@@ -202,7 +142,7 @@ class Puzzle {
                 let cell     = cells[row][col]
                 let cellRect = rectFromRow( row + 1, andCol: col + 1 )
                 
-                cell.draw( context!, cellRect: cellRect, generator: generator, textRange: textRange, attributes: attributes )
+                cell.draw( context!, cellRect: cellRect, generator: generator )
             }
             drawBorderCol( ncols + 1, andRow: row + 1 )
         }
