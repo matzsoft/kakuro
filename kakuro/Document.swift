@@ -30,9 +30,8 @@ class Document: NSDocument {
         let image = puzzle.makeImage()
         let size = NSSize(width: (image?.width)!, height: (image?.height)!)
         
-        
         windowController.window?.setContentSize(size)
-        controller.imageView.image = NSImage(cgImage: image!, size: size)
+        controller.representedObject = puzzle
     }
 
     override func data(ofType typeName: String) throws -> Data {

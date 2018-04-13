@@ -19,7 +19,13 @@ class ViewController: NSViewController {
 
     override var representedObject: Any? {
         didSet {
-        // Update the view, if already loaded.
+            // Update the view, if already loaded.
+            if let puzzle = representedObject as! Puzzle? {
+                let image = puzzle.makeImage()
+                let size = NSSize(width: (image?.width)!, height: (image?.height)!)
+                
+                imageView.image = NSImage(cgImage: image!, size: size)
+            }
         }
     }
     
