@@ -27,8 +27,7 @@ class Document: NSDocument {
         self.addWindowController(windowController)
         
         let controller = windowController.contentViewController as! ViewController
-        let image = puzzle.makeImage()
-        let size = NSSize(width: (image?.width)!, height: (image?.height)!)
+        let size = NSSize(width: puzzle.exteriorWidth, height: puzzle.exteriorHeight)
         
         windowController.window?.setContentSize(size)
         controller.representedObject = puzzle

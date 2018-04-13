@@ -52,10 +52,28 @@ enum Cell {
 
 class Puzzle {
     var cells: [ [ Cell ] ] = []
+    var nrows: Int { get { return cells.count } }
+    var ncols: Int { get { return nrows > 0 ? cells[0].count : 0 } }
     var rowComplete = true
     var row = 0             // row and col must ALWAYS point to a valid cell,
     var col = 0             // except when the puzzle is empty.
     
+    // Constants for puzzle drawing
+    let borderWidth = CGFloat(6)
+    let cellWidth   = CGFloat(82)
+    let colorSpace  = CGColorSpace( name: CGColorSpace.sRGB )
+
+    // Computed variables for puzzle drawing
+    var lineGap:        CGFloat { return cellWidth + 3 }
+    var interiorWidth:  CGFloat { return CGFloat( ncols + 2 ) * lineGap - 1 }
+    var interiorHeight: CGFloat { return CGFloat( nrows + 2 ) * lineGap - 1 }
+    var exteriorWidth:  CGFloat { return interiorWidth + 2 * borderWidth }
+    var exteriorHeight: CGFloat { return interiorHeight + 2 * borderWidth }
+    
+    lazy var generator: cellImageGenerator = {
+        return cellImageGenerator(imageWidth: Int( cellWidth ), colorSpace: colorSpace!)
+    }()
+
     convenience init?( text: String ) {
         self.init()
         
@@ -106,20 +124,10 @@ class Puzzle {
     
     
     func makeImage() -> CGImage? {
-        let borderWidth = CGFloat(6)
-        let cellWidth   = CGFloat(82)
-        let nrows       = cells.count
-        let ncols       = nrows > 0 ? cells[0].count : 0
+        let interiorRect = CGRect( x: borderWidth, y: borderWidth, width: interiorWidth, height: interiorHeight )
+        let exteriorRect = CGRect( x: 0, y: 0, width: exteriorWidth, height: exteriorHeight )
         
-        let lineGap        = cellWidth + 3
-        let interiorWidth  = CGFloat( ncols + 2 ) * lineGap - 1
-        let interiorHeight = CGFloat( nrows + 2 ) * lineGap - 1
-        let interiorRect   = CGRect( x: borderWidth, y: borderWidth, width: interiorWidth, height: interiorHeight )
-        let exteriorRect   = CGRect( x: 0, y: 0, width: interiorRect.width + 2 * borderWidth, height: interiorRect.height + 2 * borderWidth )
-        
-        let colorSpace = CGColorSpace( name: CGColorSpace.sRGB )
-        let generator  = cellImageGenerator( imageWidth: Int( cellWidth ), colorSpace: colorSpace! )
-        let context    = CGContext( data: nil, width: Int(exteriorRect.width), height: Int(exteriorRect.height), bitsPerComponent: 8, bytesPerRow: Int(exteriorRect.width*4), space: colorSpace!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue )
+        let context   = CGContext( data: nil, width: Int(exteriorWidth), height: Int(exteriorHeight), bitsPerComponent: 8, bytesPerRow: Int(exteriorWidth*4), space: colorSpace!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue )
         
         func rectFromRow( _ row: Int, andCol col: Int ) -> CGRect {
             let x = interiorRect.minX + 1 + CGFloat( col ) * lineGap
