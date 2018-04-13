@@ -15,12 +15,15 @@ class ViewController: NSViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        if let puzzleView: PuzzleView = view as? PuzzleView {            
+            puzzleView.viewController = self
+        }
     }
 
     override var representedObject: Any? {
         didSet {
             // Update the view, if already loaded.
-            displayPuzzle()
+            view.needsDisplay = true
         }
     }
     
@@ -40,7 +43,7 @@ class ViewController: NSViewController {
     override func moveLeft(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveLeft() {
-                displayPuzzle()
+                view.needsDisplay = true
             }
         }
     }
@@ -48,7 +51,7 @@ class ViewController: NSViewController {
     override func moveRight(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveRight() {
-                displayPuzzle()
+                view.needsDisplay = true
             }
         }
     }
@@ -56,7 +59,7 @@ class ViewController: NSViewController {
     override func moveUp(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveUp() {
-                displayPuzzle()
+                view.needsDisplay = true
             }
         }
     }
@@ -64,7 +67,7 @@ class ViewController: NSViewController {
     override func moveDown(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveDown() {
-                displayPuzzle()
+                view.needsDisplay = true
             }
         }
     }

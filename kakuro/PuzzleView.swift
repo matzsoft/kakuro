@@ -9,11 +9,15 @@
 import Cocoa
 
 class PuzzleView: NSView {
-
+    var viewController: ViewController? = nil
+    
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
 
         // Drawing code here.
+        if let controller = viewController {
+            controller.displayPuzzle()
+        }
     }
     
     override var acceptsFirstResponder: Bool { get { return true } }
