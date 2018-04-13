@@ -20,17 +20,23 @@ enum Cell {
     }
     
     
-    func draw( _ context: CGContext, cellRect: CGRect, generator: cellImageGenerator ) {
+    func draw( _ context: CGContext, cellRect: CGRect, generator: cellImageGenerator, selected: Bool ) {
         switch self {
         case .unused:
-            context.draw(generator.getNormalUnused()!, in: cellRect)
+            let image = selected ? generator.getSelectUnused() : generator.getNormalUnused()
+            
+            context.draw(image!, in: cellRect)
             
         case .empty:
-            context.draw(generator.getNormalEmpty()!, in: cellRect)
+            let image = selected ? generator.getSelectEmpty() : generator.getNormalEmpty()
             
+            context.draw(image!, in: cellRect)
+
         case .header( let vertical, let horizontal ):
-            context.draw(generator.getNormalHeader()!, in: cellRect)
+            let image = selected ? generator.getSelectVertical() : generator.getNormalHeader()
             
+            context.draw(image!, in: cellRect)
+
             if let vert = vertical {
                 generator.labelVertical(context, text: String(vert), cellRect: cellRect)
             }
@@ -141,8 +147,9 @@ class Puzzle {
             for col in 0 ..< ncols {
                 let cell     = cells[row][col]
                 let cellRect = rectFromRow( row + 1, andCol: col + 1 )
+                let selected = row == self.row && col == self.col
                 
-                cell.draw( context!, cellRect: cellRect, generator: generator )
+                cell.draw(context!, cellRect: cellRect, generator: generator, selected: selected)
             }
             drawBorderCol( ncols + 1, andRow: row + 1 )
         }
