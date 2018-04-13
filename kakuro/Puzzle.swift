@@ -123,6 +123,46 @@ class Puzzle {
     }
     
     
+    func moveLeft() -> Bool {
+        if col > 0 {
+            col -= 1
+            return true
+        }
+        
+        return false
+    }
+    
+    
+    func moveRight() -> Bool {
+        if col < ncols - 1 {
+            col += 1
+            return true
+        }
+        
+        return false
+    }
+    
+    
+    func moveUp() -> Bool {
+        if row > 0 {
+            row -= 1
+            return true
+        }
+        
+        return false
+    }
+    
+    
+    func moveDown() -> Bool {
+        if row < nrows - 1 {
+            row += 1
+            return true
+        }
+        
+        return false
+    }
+    
+    
     func makeImage() -> CGImage? {
         let interiorRect = CGRect( x: borderWidth, y: borderWidth, width: interiorWidth, height: interiorHeight )
         let exteriorRect = CGRect( x: 0, y: 0, width: exteriorWidth, height: exteriorHeight )

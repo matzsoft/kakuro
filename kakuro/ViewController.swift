@@ -20,33 +20,53 @@ class ViewController: NSViewController {
     override var representedObject: Any? {
         didSet {
             // Update the view, if already loaded.
-            if let puzzle = representedObject as! Puzzle? {
-                let image = puzzle.makeImage()
-                let size = NSSize(width: (image?.width)!, height: (image?.height)!)
-                
-                imageView.image = NSImage(cgImage: image!, size: size)
-            }
+            displayPuzzle()
         }
     }
     
+    func displayPuzzle() {
+        if let puzzle = representedObject as! Puzzle? {
+            let image = puzzle.makeImage()
+            let size = NSSize(width: (image?.width)!, height: (image?.height)!)
+            
+            imageView.image = NSImage(cgImage: image!, size: size)
+        }
+
+    }
     override func insertText(_ insertString: Any) {
         Swift.print("Insert string = '\(insertString)'")
     }
     
     override func moveLeft(_ sender: Any?) {
-        Swift.print("Got move left")
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.moveLeft() {
+                displayPuzzle()
+            }
+        }
     }
     
     override func moveRight(_ sender: Any?) {
-        Swift.print("Got move right")
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.moveRight() {
+                displayPuzzle()
+            }
+        }
     }
     
     override func moveUp(_ sender: Any?) {
-        Swift.print("Got move up")
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.moveUp() {
+                displayPuzzle()
+            }
+        }
     }
     
     override func moveDown(_ sender: Any?) {
-        Swift.print("Got move down")
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.moveDown() {
+                displayPuzzle()
+            }
+        }
     }
 }
 
