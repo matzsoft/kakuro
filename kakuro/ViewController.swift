@@ -37,8 +37,14 @@ class ViewController: NSViewController {
         }
 
     }
+    
     override func insertText(_ insertString: Any) {
         Swift.print("Insert string = '\(insertString)'")
+    }
+    
+    override func doCommand(by selector: Selector) {
+        Swift.print("Got command = '\(selector)'")
+        super.doCommand(by: selector)
     }
     
     override func moveLeft(_ sender: Any?) {
@@ -77,6 +83,50 @@ class ViewController: NSViewController {
     override func moveDown(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveDown() {
+                view.needsDisplay = true
+                return
+            }
+        }
+        
+        NSSound.beep()
+    }
+    
+    override func moveToBeginningOfLine(_ sender: Any?) {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.moveToBeginningOfLine() {
+                view.needsDisplay = true
+                return
+            }
+        }
+        
+        NSSound.beep()
+    }
+    
+    override func moveToEndOfLine(_ sender: Any?) {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.moveToEndOfLine() {
+                view.needsDisplay = true
+                return
+            }
+        }
+        
+        NSSound.beep()
+    }
+    
+    override func moveToBeginningOfDocument(_ sender: Any?) {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.moveToBeginningOfDocument() {
+                view.needsDisplay = true
+                return
+            }
+        }
+        
+        NSSound.beep()
+    }
+    
+    override func moveToEndOfDocument(_ sender: Any?) {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.moveToEndOfDocument() {
                 view.needsDisplay = true
                 return
             }

@@ -128,7 +128,7 @@ class Puzzle {
             return false
         }
         
-        if col < 0 || col >= ncols {
+        if col < 0 || col >= cells[row].count {
             return false
         }
         
@@ -178,6 +178,10 @@ class Puzzle {
             return moveTo(row: row + 1, col: 0)
         }
         
+        if cells[row].count < ncols {
+            let _ = newCells(ncols - cells[row].count)
+        }
+        
         endRow()
         append( Cell.header( vertical: nil, horizontal: nil ) )
         return true
@@ -201,6 +205,32 @@ class Puzzle {
     
     func moveDown() -> Bool {
         return moveTo(row: row + 1, col: col)
+    }
+    
+    
+    func moveToBeginningOfLine() -> Bool {
+        return moveTo(row: row, col: 0)
+    }
+    
+    
+    func moveToEndOfLine() -> Bool {
+        guard nrows > 0 else { return false }
+        
+        return moveTo(row: row, col: cells[row].count - 1)
+    }
+    
+    
+    func moveToBeginningOfDocument() -> Bool {
+        return moveTo(row: 0, col: 0)
+    }
+    
+    
+    func moveToEndOfDocument() -> Bool {
+        let lastRow = nrows - 1
+        
+        guard lastRow >= 0 else { return false }
+
+        return moveTo(row: lastRow, col: cells[lastRow].count - 1)
     }
     
     
