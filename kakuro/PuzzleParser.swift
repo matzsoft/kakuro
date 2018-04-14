@@ -148,7 +148,7 @@ class PuzzleParser {
     
     
     func addDot( _ puzzle: Puzzle ) {
-        puzzle.append( Cell.empty( eligible: Set<Int>( [ 1,2,3,4,5,6,7,8,9 ] ) ) )
+        puzzle.append( Cell.empty( eligible: Set<Int>( 1 ... 9 ) ) )
     }
     
     

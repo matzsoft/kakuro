@@ -123,43 +123,84 @@ class Puzzle {
     }
     
     
-    func moveLeft() -> Bool {
-        if col > 0 {
-            col -= 1
-            return true
+    func moveTo(row: Int, col: Int) -> Bool {
+        if row < 0 || row >= nrows {
+            return false
         }
         
-        return false
+        if col < 0 || col >= ncols {
+            return false
+        }
+        
+        self.row = row
+        self.col = col
+        return true
+    }
+    
+    
+    func newCells(_ count: Int) -> Bool {
+        var modified = false
+        
+        for _ in 1...count {
+            if col == ncols - 1 && row > 0 {
+                break
+            }
+            
+            if col < cells[row].count - 1 {
+                modified = moveTo(row: row, col: col + 1) || modified
+            } else {
+                let cell = cells[row][col]
+                
+                switch cell {
+                case .unused:
+                    append( Cell.unused )
+                    
+                case .empty:
+                    append( Cell.empty( eligible: Set<Int>( 1 ... 9 ) ) )
+                    
+                case .header( _, let horizontal ):
+                    if horizontal != nil {
+                        append( Cell.empty( eligible: Set<Int>( 1 ... 9 ) ) )
+                    } else {
+                        append( Cell.header( vertical: nil, horizontal: nil ) )
+                    }
+                }
+                modified = true
+            }
+        }
+        
+        return modified
+    }
+    
+    
+    func newLine() -> Bool {
+        if row < nrows - 1 {
+            return moveTo(row: row + 1, col: 0)
+        }
+        
+        endRow()
+        append( Cell.header( vertical: nil, horizontal: nil ) )
+        return true
+    }
+    
+    
+    func moveLeft() -> Bool {
+        return moveTo(row: row, col: col - 1)
     }
     
     
     func moveRight() -> Bool {
-        if col < ncols - 1 {
-            col += 1
-            return true
-        }
-        
-        return false
+        return moveTo(row: row, col: col + 1)
     }
     
     
     func moveUp() -> Bool {
-        if row > 0 {
-            row -= 1
-            return true
-        }
-        
-        return false
+        return moveTo(row: row - 1, col: col)
     }
     
     
     func moveDown() -> Bool {
-        if row < nrows - 1 {
-            row += 1
-            return true
-        }
-        
-        return false
+        return moveTo(row: row + 1, col: col)
     }
     
     
@@ -192,7 +233,7 @@ class Puzzle {
         drawBorderRow( 0 )
         for row in 0 ..< nrows {
             drawBorderCol( 0, andRow: row + 1 )
-            for col in 0 ..< ncols {
+            for col in 0 ..< cells[row].count {
                 let cell     = cells[row][col]
                 let cellRect = rectFromRow( row + 1, andCol: col + 1 )
                 let selected = row == self.row && col == self.col

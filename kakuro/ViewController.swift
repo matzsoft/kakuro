@@ -32,6 +32,7 @@ class ViewController: NSViewController {
             let image = puzzle.makeImage()
             let size = NSSize(width: (image?.width)!, height: (image?.height)!)
             
+            view.window?.setContentSize(size)
             imageView.image = NSImage(cgImage: image!, size: size)
         }
 
@@ -67,6 +68,22 @@ class ViewController: NSViewController {
     override func moveDown(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveDown() {
+                view.needsDisplay = true
+            }
+        }
+    }
+    
+    override func insertTab(_ sender: Any?) {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.newCells(1) {
+                view.needsDisplay = true
+            }
+        }
+    }
+    
+    override func insertNewline(_ sender: Any?) {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.newLine() {
                 view.needsDisplay = true
             }
         }
