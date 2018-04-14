@@ -173,6 +173,24 @@ class Puzzle {
     }
     
     
+    func changeToUnused() -> Bool {
+        guard nrows > 0 else { return false }
+        if case .unused = cells[row][col] { return false }
+        
+        cells[row][col] = Cell.unused
+        return true
+    }
+    
+    
+    func changeToEmpty() -> Bool {
+        guard nrows > 0 else { return false }
+        if case .empty = cells[row][col] { return false }
+        
+        cells[row][col] = Cell.empty( eligible: Set<Int>( 1 ... 9 ) )
+        return true
+    }
+    
+    
     func newLine() -> Bool {
         if row < nrows - 1 {
             return moveTo(row: row + 1, col: 0)

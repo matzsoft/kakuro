@@ -40,6 +40,38 @@ class ViewController: NSViewController {
     
     override func insertText(_ insertString: Any) {
         Swift.print("Insert string = '\(insertString)'")
+        switch (insertString as! String).lowercased() {
+        case "u":
+            changeToUnused()
+        case "e":
+            changeToEmpty()
+        case ".":
+            changeToEmpty()
+        default:
+            NSSound.beep()
+        }
+    }
+    
+    func changeToUnused() {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.changeToUnused() {
+                view.needsDisplay = true
+                return
+            }
+        }
+        
+        NSSound.beep()
+    }
+    
+    func changeToEmpty() {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.changeToEmpty() {
+                view.needsDisplay = true
+                return
+            }
+        }
+        
+        NSSound.beep()
     }
     
     override func doCommand(by selector: Selector) {
