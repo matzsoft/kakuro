@@ -45,48 +45,66 @@ class ViewController: NSViewController {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveLeft() {
                 view.needsDisplay = true
+                return
             }
         }
+        
+        NSSound.beep()
     }
     
     override func moveRight(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveRight() {
                 view.needsDisplay = true
+                return
             }
         }
+        
+        NSSound.beep()
     }
     
     override func moveUp(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveUp() {
                 view.needsDisplay = true
+                return
             }
         }
+        
+        NSSound.beep()
     }
     
     override func moveDown(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.moveDown() {
                 view.needsDisplay = true
+                return
             }
         }
+        
+        NSSound.beep()
     }
     
     override func insertTab(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.newCells(1) {
                 view.needsDisplay = true
+                return
             }
         }
+        
+        NSSound.beep()
     }
     
     override func insertNewline(_ sender: Any?) {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.newLine() {
                 view.needsDisplay = true
+                return
             }
         }
+        
+        NSSound.beep()
     }
 }
 
