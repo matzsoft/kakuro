@@ -14,8 +14,8 @@ class Document: NSDocument {
     override init() {
         super.init()
         // Add your subclass-specific initialization here.
-        puzzle.append( Cell.unused )
-        puzzle.append( Cell.header( vertical: nil, horizontal: nil ) )
+        puzzle.append( UnusedCell() )
+        puzzle.append( HeaderCell(vertical: nil, horizontal: nil) )
     }
 
     override class var autosavesInPlace: Bool {

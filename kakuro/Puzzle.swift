@@ -76,8 +76,9 @@ class Puzzle {
     func setHorizontal( _ horizontal: Int ) {
         let lastRow = cells.count - 1
         let lastCol = cells[lastRow].count - 1
+        let header  = cells[lastRow][lastCol] as! HeaderCell
         
-        cells[lastRow][lastCol].setHorizontal( horizontal )
+        header.setHorizontal( horizontal )
     }
     
     
@@ -110,18 +111,23 @@ class Puzzle {
                 let cell = cells[row][col]
                 
                 switch cell {
-                case .unused:
-                    append( Cell.unused )
+                case is UnusedCell:
+                    append( UnusedCell() )
                     
-                case .empty:
-                    append( Cell.empty( eligible: Set<Int>( 1 ... 9 ) ) )
+                case is EmptyCell:
+                    append( EmptyCell() )
                     
-                case .header( _, let horizontal ):
-                    if horizontal != nil {
-                        append( Cell.empty( eligible: Set<Int>( 1 ... 9 ) ) )
+                case is HeaderCell:
+                    let header = cell as! HeaderCell
+                    
+                    if header.horizontal != nil {
+                        append( EmptyCell() )
                     } else {
-                        append( Cell.header( vertical: nil, horizontal: nil ) )
+                        append( HeaderCell(vertical: nil, horizontal: nil) )
                     }
+                    
+                default:
+                    fatalError("Unknown Cell Type")
                 }
                 modified = true
             }
@@ -133,18 +139,18 @@ class Puzzle {
     
     func changeToUnused() -> Bool {
         guard nrows > 0 else { return false }
-        if case .unused = cells[row][col] { return false }
+        if cells[row][col] is UnusedCell { return false }
         
-        cells[row][col] = Cell.unused
+        cells[row][col] = UnusedCell()
         return true
     }
     
     
     func changeToEmpty() -> Bool {
         guard nrows > 0 else { return false }
-        if case .empty = cells[row][col] { return false }
+        if cells[row][col] is EmptyCell { return false }
         
-        cells[row][col] = Cell.empty( eligible: Set<Int>( 1 ... 9 ) )
+        cells[row][col] = EmptyCell()
         return true
     }
     
@@ -159,7 +165,7 @@ class Puzzle {
         }
         
         endRow()
-        append( Cell.header( vertical: nil, horizontal: nil ) )
+        append( HeaderCell(vertical: nil, horizontal: nil) )
         return true
     }
     

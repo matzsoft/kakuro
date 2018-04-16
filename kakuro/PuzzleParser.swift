@@ -142,13 +142,13 @@ class PuzzleParser {
     
     
     func addDash( _ puzzle: Puzzle ) {
-        puzzle.append( Cell.unused )
+        puzzle.append( UnusedCell() )
     }
     
     
     
     func addDot( _ puzzle: Puzzle ) {
-        puzzle.append( Cell.empty( eligible: Set<Int>( 1 ... 9 ) ) )
+        puzzle.append( EmptyCell() )
     }
     
     
@@ -166,12 +166,12 @@ class PuzzleParser {
     
     
     func noVertical( _ puzzle: Puzzle ) {
-        puzzle.append( Cell.header( vertical: nil, horizontal: nil ) )
+        puzzle.append( HeaderCell( vertical: nil, horizontal: nil ) )
     }
     
     
     
     func vertical( _ puzzle: Puzzle ) {
-        puzzle.append( Cell.header( vertical: lex.getValue(), horizontal: nil ) )
+        puzzle.append( HeaderCell( vertical: lex.getValue(), horizontal: nil ) )
     }
 }
