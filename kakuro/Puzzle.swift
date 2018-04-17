@@ -56,6 +56,19 @@ class Puzzle {
     }
     
     
+    var selectedCell: Cell? {
+        get {
+            guard nrows > 0 else { return nil }
+            return cells[row][col]
+        }
+        set {
+            if nrows > 0 {
+                cells[row][col] = newValue!
+            }
+        }
+    }
+    
+    
     func append( _ cell: Cell ) {
         if ( rowComplete ) {
             rowComplete = false
@@ -108,7 +121,7 @@ class Puzzle {
             if col < cells[row].count - 1 {
                 modified = moveTo(row: row, col: col + 1) || modified
             } else {
-                let cell = cells[row][col]
+                let cell = selectedCell
                 
                 switch cell {
                 case is UnusedCell:
@@ -139,18 +152,29 @@ class Puzzle {
     
     func changeToUnused() -> Bool {
         guard nrows > 0 else { return false }
-        if cells[row][col] is UnusedCell { return false }
+        if selectedCell is UnusedCell { return false }
         
-        cells[row][col] = UnusedCell()
+        selectedCell = UnusedCell()
         return true
     }
     
     
     func changeToEmpty() -> Bool {
         guard nrows > 0 else { return false }
-        if cells[row][col] is EmptyCell { return false }
+        if selectedCell is EmptyCell { return false }
         
-        cells[row][col] = EmptyCell()
+        selectedCell = EmptyCell()
+        return true
+    }
+    
+    
+    func changeToHeader() -> Bool {
+        guard nrows > 0 else { return false }
+        
+        if !( selectedCell is HeaderCell ) {
+            selectedCell = HeaderCell(vertical: nil, horizontal: nil)
+        }
+        
         return true
     }
     
@@ -213,6 +237,16 @@ class Puzzle {
         guard lastRow >= 0 else { return false }
 
         return moveTo(row: lastRow, col: cells[lastRow].count - 1)
+    }
+    
+    
+    func deleteBackward() -> Bool {
+        return false
+    }
+    
+    
+    func deleteForward() -> Bool {
+        return false
     }
     
     
