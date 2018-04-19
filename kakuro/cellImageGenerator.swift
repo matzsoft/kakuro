@@ -57,6 +57,45 @@ class cellImageGenerator {
     var borderBG:       CGColor
     var borderFG:       CGColor
     
+    init( imageWidth: Int, colorSpace: CGColorSpace ) {
+        self.imageWidth  = imageWidth
+        self.colorSpace  = colorSpace
+        
+        unusedNrmDark  = CGColor(red: 147.0/255.0, green: 120.0/255.0, blue:  86.0/255.0, alpha: 1 )
+        unusedNrmLight = CGColor(red: 155.0/255.0, green: 129.0/255.0, blue:  99.0/255.0, alpha: 1 )
+        emptyNrmDark   = CGColor(red: 185.0/255.0, green: 147.0/255.0, blue: 104.0/255.0, alpha: 1 )
+        emptyNrmLight  = CGColor(red: 187.0/255.0, green: 152.0/255.0, blue: 111.0/255.0, alpha: 1 )
+        emptySelDark   = CGColor(red: 188.0/255.0, green: 119.0/255.0, blue:  84.0/255.0, alpha: 1 )
+        emptySelLight  = CGColor(red: 190.0/255.0, green: 123.0/255.0, blue:  89.0/255.0, alpha: 1 )
+        unusedSelDark  = CGColor(red: 160.0/255.0, green:  94.0/255.0, blue:  67.0/255.0, alpha: 1 )
+        unusedSelLight = CGColor(red: 166.0/255.0, green: 102.0/255.0, blue:  78.0/255.0, alpha: 1 )
+        borderSolid    = CGColor(red:  72.0/255.0, green:  39.0/255.0, blue:  32.0/255.0, alpha: 1 )
+        borderBG       = CGColor(red: 176.0/255.0, green: 156.0/255.0, blue: 132.0/255.0, alpha: 1 )
+        borderFG       = CGColor(red:  91.0/255.0, green:  66.0/255.0, blue:  55.0/255.0, alpha: 1 )
+        
+        let lessWhite = CGColor(red: 1, green: 1, blue: 1, alpha: 0.05 )
+        let moreWhite = CGColor(red: 1, green: 1, blue: 1, alpha: 0.30 )
+        let lessBlack = CGColor(red: 0, green: 0, blue: 0, alpha: 0.05 )
+        let moreBlack = CGColor(red: 0, green: 0, blue: 0, alpha: 0.30 )
+        
+        let lightColors   = [ lessWhite, moreWhite ]
+        let darkColors    = [ lessBlack, moreBlack ]
+        
+        lightGradient = CGGradient( colorsSpace: colorSpace, colors: lightColors as CFArray, locations: nil )!
+        darkGradient  = CGGradient( colorsSpace: colorSpace, colors: darkColors as CFArray, locations: nil )!
+        
+        context = cellImageGenerator.setupContext( imageWidth, colorSpace: colorSpace, lineColor: borderSolid )
+        
+        let attributes = cellImageGenerator.setupFontAttributes(context, borderColor: borderSolid, scaleFactor: 1)
+        let textRange = cellImageGenerator.setupTextRange(context: context, attributes: attributes)
+        let vertRect = cellImageGenerator.getVerticalRect( context, textRange: textRange )
+        let scaleFactor = vertRect.height / textRange.height
+        
+        self.attributes = cellImageGenerator.setupFontAttributes(context, borderColor: borderSolid, scaleFactor: scaleFactor)
+        self.textRange = cellImageGenerator.setupTextRange(context: context, attributes: self.attributes)
+    }
+    
+    
     fileprivate static func setupContext( _ imageWidth: Int, colorSpace: CGColorSpace, lineColor: CGColor ) -> CGContext {
         let context = CGContext(data: nil, width: imageWidth, height: imageWidth, bitsPerComponent: 8, bytesPerRow: imageWidth*4, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
         let flip    = CGAffineTransform( a: 1, b: 0, c: 0, d: -1, tx: 0, ty: CGFloat(imageWidth) )
@@ -131,45 +170,6 @@ class cellImageGenerator {
         let yoffset = c[2] - textMargin - rect.maxY - 10
         
         return context.convertToDeviceSpace(rect.offsetBy(dx: xoffset, dy: yoffset ) )
-    }
-    
-    
-    init( imageWidth: Int, colorSpace: CGColorSpace ) {
-        self.imageWidth  = imageWidth
-        self.colorSpace  = colorSpace
-
-        unusedNrmDark  = CGColor(red: 147.0/255.0, green: 120.0/255.0, blue:  86.0/255.0, alpha: 1 )
-        unusedNrmLight = CGColor(red: 155.0/255.0, green: 129.0/255.0, blue:  99.0/255.0, alpha: 1 )
-        emptyNrmDark   = CGColor(red: 185.0/255.0, green: 147.0/255.0, blue: 104.0/255.0, alpha: 1 )
-        emptyNrmLight  = CGColor(red: 187.0/255.0, green: 152.0/255.0, blue: 111.0/255.0, alpha: 1 )
-        emptySelDark   = CGColor(red: 188.0/255.0, green: 119.0/255.0, blue:  84.0/255.0, alpha: 1 )
-        emptySelLight  = CGColor(red: 190.0/255.0, green: 123.0/255.0, blue:  89.0/255.0, alpha: 1 )
-        unusedSelDark  = CGColor(red: 160.0/255.0, green:  94.0/255.0, blue:  67.0/255.0, alpha: 1 )
-        unusedSelLight = CGColor(red: 166.0/255.0, green: 102.0/255.0, blue:  78.0/255.0, alpha: 1 )
-        borderSolid    = CGColor(red:  72.0/255.0, green:  39.0/255.0, blue:  32.0/255.0, alpha: 1 )
-        borderBG       = CGColor(red: 176.0/255.0, green: 156.0/255.0, blue: 132.0/255.0, alpha: 1 )
-        borderFG       = CGColor(red:  91.0/255.0, green:  66.0/255.0, blue:  55.0/255.0, alpha: 1 )
-        
-        let lessWhite = CGColor(red: 1, green: 1, blue: 1, alpha: 0.05 )
-        let moreWhite = CGColor(red: 1, green: 1, blue: 1, alpha: 0.30 )
-        let lessBlack = CGColor(red: 0, green: 0, blue: 0, alpha: 0.05 )
-        let moreBlack = CGColor(red: 0, green: 0, blue: 0, alpha: 0.30 )
-        
-        let lightColors   = [ lessWhite, moreWhite ]
-        let darkColors    = [ lessBlack, moreBlack ]
-        
-        lightGradient = CGGradient( colorsSpace: colorSpace, colors: lightColors as CFArray, locations: nil )!
-        darkGradient  = CGGradient( colorsSpace: colorSpace, colors: darkColors as CFArray, locations: nil )!
-        
-        context = cellImageGenerator.setupContext( imageWidth, colorSpace: colorSpace, lineColor: borderSolid )
-        
-        let attributes = cellImageGenerator.setupFontAttributes(context, borderColor: borderSolid, scaleFactor: 1)
-        let textRange = cellImageGenerator.setupTextRange(context: context, attributes: attributes)
-        let vertRect = cellImageGenerator.getVerticalRect( context, textRange: textRange )
-        let scaleFactor = vertRect.height / textRange.height
-        
-        self.attributes = cellImageGenerator.setupFontAttributes(context, borderColor: borderSolid, scaleFactor: scaleFactor)
-        self.textRange = cellImageGenerator.setupTextRange(context: context, attributes: self.attributes)
     }
     
     
