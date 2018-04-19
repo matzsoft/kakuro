@@ -9,15 +9,13 @@
 import Foundation
 
 protocol Cell {
-    func draw( _ context: CGContext, cellRect: CGRect, generator: cellImageGenerator, selected: Bool )
+    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage?
 }
 
 
 class UnusedCell: Cell {
-    func draw( _ context: CGContext, cellRect: CGRect, generator: cellImageGenerator, selected: Bool ) {
-        let image = selected ? generator.getSelectUnused() : generator.getNormalUnused()
-        
-        context.draw(image!, in: cellRect)
+    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage? {
+        return selected ? generator.getSelectUnused() : generator.getNormalUnused()
     }
 }
 
@@ -25,10 +23,8 @@ class UnusedCell: Cell {
 class EmptyCell: Cell {
     var eligible = Set<Int>( 1 ... 9 )
     
-    func draw( _ context: CGContext, cellRect: CGRect, generator: cellImageGenerator, selected: Bool ) {
-        let image = selected ? generator.getSelectEmpty() : generator.getNormalEmpty()
-        
-        context.draw(image!, in: cellRect)
+    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage? {
+        return selected ? generator.getSelectEmpty() : generator.getNormalEmpty()
     }
 }
 
@@ -46,17 +42,17 @@ class HeaderCell: Cell {
         self.horizontal = horizontal
     }
     
-    func draw( _ context: CGContext, cellRect: CGRect, generator: cellImageGenerator, selected: Bool ) {
-        let image = selected ? generator.getSelectVertical() : generator.getNormalHeader()
-        
-        context.draw(image!, in: cellRect)
+    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage? {
+        var image = selected ? generator.getSelectVertical() : generator.getNormalHeader()
         
         if let vert = vertical {
-            generator.labelVertical(context, text: String(vert), cellRect: cellRect)
+            image = generator.labelVertical(text: String(vert))
         }
         
         if let horz = horizontal {
-            generator.labelHorizontal(context, text: String(horz), cellRect: cellRect)
+            image = generator.labelHorizontal(text: String(horz))
         }
+        
+        return image
     }
 }

@@ -147,29 +147,28 @@ class cellImageGenerator {
     
     
     fileprivate static func getHeaderLabelRect( _ textRange: CGRect ) -> CGRect {
-        let m1 = ( textRange.maxY - textRange.minY ) / ( textRange.maxX - textRange.minX )
-        let m2 = CGFloat( -1 )
-        let c1 = c[1] + textMargin
-        let c3 = c[3]
-        let f  = sqrt( 2 ) * ( textMargin + diagWidth / 2 )
-        let x  = ( c3 - f - c1 + m1 * c1 ) / ( m1 - m2 )
-        let y  = m2 * x + c3 - f
+        let m1 = -textRange.height / textRange.width
+        let m2 = CGFloat( 1 )
+        let x1 = c[1] + textMargin
+        let y1 = c[2] - textMargin
+        let x2 = ( y1 - m1 * x1 - ( textMargin + diagWidth ) / 2 ) / ( m2 - m1 )
+        let y2 = x2 + ( textMargin + diagWidth ) / 2
         
-        return CGRect( x: c1, y: c1, width: x - c1 + 1, height: y - c1 + 1 )
+        return CGRect(x: x1, y: y2, width: x2 - x1 + 1, height: y1 - y2 + 1 )
     }
     
     
     fileprivate static func getVerticalRect( _ context: CGContext, textRange: CGRect ) -> CGRect {
-        return context.convertToDeviceSpace(getHeaderLabelRect( textRange ) )
+        return getHeaderLabelRect( textRange )
     }
     
     
     fileprivate static func getHorizontalRect( _ context: CGContext, textRange: CGRect ) -> CGRect {
         let rect = getHeaderLabelRect( textRange )
-        let xoffset = c[2] - textMargin - rect.maxX - 10
-        let yoffset = c[2] - textMargin - rect.maxY - 10
+        let xoffset = c[2] - textMargin - rect.width - rect.minX
+        let yoffset = c[1] + textMargin - rect.minY
         
-        return context.convertToDeviceSpace(rect.offsetBy(dx: xoffset, dy: yoffset ) )
+        return rect.offsetBy(dx: xoffset, dy: yoffset )
     }
     
     
@@ -397,7 +396,7 @@ class cellImageGenerator {
     }
     
     
-    fileprivate func drawLabel( _ context: CGContext, text: String, rect: CGRect ) {
+    fileprivate func drawLabel( text: String, rect: CGRect ) -> CGImage? {
         let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, attributes as CFDictionary )
         let line       = CTLineCreateWithAttributedString( attrString! )
         let textSize   = CTLineGetImageBounds( line, context )
@@ -408,21 +407,21 @@ class cellImageGenerator {
         context.saveGState()
         CTLineDraw( line, context )
         context.restoreGState()
-    }
-    
-    
-    func labelVertical(_ context: CGContext, text: String, cellRect: CGRect) {
-        let baseRect = cellImageGenerator.getVerticalRect( self.context, textRange: textRange )
-        let realRect = baseRect.offsetBy(dx: cellRect.minX, dy: cellRect.minY )
-
-        drawLabel( context, text: String( text ), rect: realRect )
-    }
-    
-    
-    func labelHorizontal(_ context: CGContext, text: String, cellRect: CGRect) {
-        let baseRect = cellImageGenerator.getHorizontalRect( self.context, textRange: textRange )
-        let realRect = baseRect.offsetBy(dx: cellRect.minX, dy: cellRect.minY )
         
-        drawLabel( context, text: String( text ), rect: realRect )
+        return context.makeImage()
+    }
+    
+    
+    func labelVertical(text: String) -> CGImage? {
+        let baseRect = cellImageGenerator.getVerticalRect( self.context, textRange: textRange )
+
+        return drawLabel( text: String( text ), rect: baseRect )
+    }
+    
+    
+    func labelHorizontal(text: String) -> CGImage? {
+        let baseRect = cellImageGenerator.getHorizontalRect( self.context, textRange: textRange )
+        
+        return drawLabel( text: String( text ), rect: baseRect )
     }
 }

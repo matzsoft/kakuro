@@ -283,8 +283,9 @@ class Puzzle {
                 let cell     = cells[row][col]
                 let cellRect = rectFromRow( row + 1, andCol: col + 1 )
                 let selected = row == self.row && col == self.col
+                let image = cell.draw(generator: generator, selected: selected)
                 
-                cell.draw(context!, cellRect: cellRect, generator: generator, selected: selected)
+                context?.draw(image!, in: cellRect)
             }
             drawBorderCol( ncols + 1, andRow: row + 1 )
         }
