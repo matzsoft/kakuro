@@ -19,6 +19,7 @@
 		DD609B7B2076D5F6007AF1D5 /* cellImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */; };
 		DD609B7F207C121C007AF1D5 /* PuzzleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B7E207C121C007AF1D5 /* PuzzleView.swift */; };
 		DD609B812083C95C007AF1D5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B802083C95C007AF1D5 /* Cell.swift */; };
+		DDA73D7D208A8062002D00A2 /* Todo.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DDA73D7C208A8062002D00A2 /* Todo.rtf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = cellImageGenerator.swift; sourceTree = "<group>"; };
 		DD609B7E207C121C007AF1D5 /* PuzzleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleView.swift; sourceTree = "<group>"; };
 		DD609B802083C95C007AF1D5 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		DDA73D7C208A8062002D00A2 /* Todo.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Todo.rtf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				DD609B682075CD70007AF1D5 /* Main.storyboard */,
 				DD609B6B2075CD70007AF1D5 /* Info.plist */,
 				DD609B6C2075CD70007AF1D5 /* kakuro.entitlements */,
+				DDA73D7C208A8062002D00A2 /* Todo.rtf */,
 			);
 			path = kakuro;
 			sourceTree = "<group>";
@@ -147,6 +150,7 @@
 			files = (
 				DD609B672075CD70007AF1D5 /* Assets.xcassets in Resources */,
 				DD609B6A2075CD70007AF1D5 /* Main.storyboard in Resources */,
+				DDA73D7D208A8062002D00A2 /* Todo.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
