@@ -98,11 +98,9 @@ class cellImageGenerator {
     
     fileprivate static func setupContext( _ imageWidth: Int, colorSpace: CGColorSpace, lineColor: CGColor ) -> CGContext {
         let context = CGContext(data: nil, width: imageWidth, height: imageWidth, bitsPerComponent: 8, bytesPerRow: imageWidth*4, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-        let flip    = CGAffineTransform( a: 1, b: 0, c: 0, d: -1, tx: 0, ty: CGFloat(imageWidth) )
         
         context.interpolationQuality = .high
         context.setAllowsAntialiasing(true )
-        context.concatenate(flip );
         context.scaleBy(x: CGFloat(imageWidth)/userWidth, y: CGFloat(imageWidth)/userWidth )
 
         context.setStrokeColor(lineColor )
@@ -147,14 +145,14 @@ class cellImageGenerator {
     
     
     fileprivate static func getHeaderLabelRect( _ textRange: CGRect ) -> CGRect {
-        let m1 = -textRange.height / textRange.width
-        let m2 = CGFloat( 1 )
+        let m1 = textRange.height / textRange.width
+        let m2 = CGFloat( -1 )
         let x1 = c[1] + textMargin
-        let y1 = c[2] - textMargin
-        let x2 = ( y1 - m1 * x1 - ( textMargin + diagWidth ) / 2 ) / ( m2 - m1 )
-        let y2 = x2 + ( textMargin + diagWidth ) / 2
+        let y1 = c[1] + textMargin
+        let x2 = ( c[3] - ( textMargin + diagWidth ) / 2 - y1 + m1 * x1 ) / ( m1 - m2 )
+        let y2 = m1 * x2 + y1 - m1 * x1
         
-        return CGRect(x: x1, y: y2, width: x2 - x1 + 1, height: y1 - y2 + 1 )
+        return CGRect(x: x1, y: y1, width: x2 - x1 + 1, height: y2 - y1 + 1 )
     }
     
     
@@ -166,7 +164,7 @@ class cellImageGenerator {
     fileprivate static func getHorizontalRect( _ context: CGContext, textRange: CGRect ) -> CGRect {
         let rect = getHeaderLabelRect( textRange )
         let xoffset = c[2] - textMargin - rect.width - rect.minX
-        let yoffset = c[1] + textMargin - rect.minY
+        let yoffset = c[2] - textMargin - rect.height - rect.minY
         
         return rect.offsetBy(dx: xoffset, dy: yoffset )
     }
@@ -180,9 +178,9 @@ class cellImageGenerator {
     
     fileprivate func halfFill( _ bgColor: CGColor, midPoint: CGPoint ) {
         context.beginPath()
-        context.move(to: CGPoint(x: cellImageGenerator.p[0][0].x, y: cellImageGenerator.p[0][0].y));
-        context.addLine(to: CGPoint(x: midPoint.x, y: midPoint.y));
-        context.addLine(to: CGPoint(x: cellImageGenerator.p[3][3].x, y: cellImageGenerator.p[3][3].y));
+        context.move(to: cellImageGenerator.p[0][3])
+        context.addLine(to: midPoint);
+        context.addLine(to: cellImageGenerator.p[3][0]);
         context.closePath();
         
         context.setFillColor(bgColor)
@@ -203,48 +201,48 @@ class cellImageGenerator {
     fileprivate func drawShades( _ ulGradient: CGGradient, lrGradient: CGGradient ) {
         // Top Shade
         drawShade( ulGradient,
-            cellImageGenerator.p[0][0],
-            cellImageGenerator.p[3][0],
-            cellImageGenerator.p[2][1],
-            cellImageGenerator.p[1][1],
-            cellImageGenerator.p[0][1]
+                   cellImageGenerator.p[0][3],
+                   cellImageGenerator.p[3][3],
+                   cellImageGenerator.p[2][2],
+                   cellImageGenerator.p[1][2],
+                   cellImageGenerator.p[0][2]
         )
         
         // Left Shade
         drawShade( ulGradient,
-            cellImageGenerator.p[0][0],
-            cellImageGenerator.p[1][1],
-            cellImageGenerator.p[1][2],
-            cellImageGenerator.p[0][3],
-            cellImageGenerator.p[1][0]
+                   cellImageGenerator.p[0][3],
+                   cellImageGenerator.p[1][2],
+                   cellImageGenerator.p[1][1],
+                   cellImageGenerator.p[0][0],
+                   cellImageGenerator.p[1][3]
         )
-        
+
         // Right Shade
         drawShade( lrGradient,
-            cellImageGenerator.p[3][0],
-            cellImageGenerator.p[3][3],
-            cellImageGenerator.p[2][2],
-            cellImageGenerator.p[2][1],
-            cellImageGenerator.p[2][0]
+                   cellImageGenerator.p[3][3],
+                   cellImageGenerator.p[3][0],
+                   cellImageGenerator.p[2][1],
+                   cellImageGenerator.p[2][2],
+                   cellImageGenerator.p[2][3]
         )
-        
+
         // Bottom Shade
         drawShade( lrGradient,
-            cellImageGenerator.p[0][3],
-            cellImageGenerator.p[1][2],
-            cellImageGenerator.p[2][2],
-            cellImageGenerator.p[3][3],
-            cellImageGenerator.p[0][2]
+                   cellImageGenerator.p[0][0],
+                   cellImageGenerator.p[1][1],
+                   cellImageGenerator.p[2][1],
+                   cellImageGenerator.p[3][0],
+                   cellImageGenerator.p[0][1]
         )
     }
 
     
     fileprivate func drawShade( _ gradient: CGGradient, _ p0: CGPoint, _ p1: CGPoint, _ p2: CGPoint, _ p3: CGPoint, _ p4: CGPoint ) {
         context.beginPath()
-        context.move(to: CGPoint(x: p0.x, y: p0.y));
-        context.addLine(to: CGPoint(x: p1.x, y: p1.y));
-        context.addLine(to: CGPoint(x: p2.x, y: p2.y));
-        context.addLine(to: CGPoint(x: p3.x, y: p3.y));
+        context.move(to: p0);
+        context.addLine(to: p1);
+        context.addLine(to: p2);
+        context.addLine(to: p3);
         context.closePath();
         
         context.saveGState()
@@ -301,7 +299,7 @@ class cellImageGenerator {
     func getNormalHeader() -> CGImage? {
         fullFill( unusedNrmLight )
         makeOutdent()
-        context.strokeLineSegments(between: [ cellImageGenerator.p[0][0], cellImageGenerator.p[3][3] ])
+        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
 
         return context.makeImage()
     }
@@ -309,9 +307,9 @@ class cellImageGenerator {
     
     func getSelectVertical() -> CGImage? {
         fullFill( unusedNrmLight )
-        halfFill( unusedSelDark, midPoint: cellImageGenerator.p[0][3] )
+        halfFill( unusedSelDark, midPoint: cellImageGenerator.p[0][0] )
         makeOutdent()
-        context.strokeLineSegments(between: [ cellImageGenerator.p[0][0], cellImageGenerator.p[3][3] ])
+        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
         
         return context.makeImage()
     }
@@ -319,9 +317,9 @@ class cellImageGenerator {
     
     func getSelectHorizontal() -> CGImage? {
         fullFill( unusedNrmLight )
-        halfFill( unusedSelDark, midPoint: cellImageGenerator.p[3][0] )
+        halfFill( unusedSelDark, midPoint: cellImageGenerator.p[3][3] )
         makeOutdent()
-        context.strokeLineSegments(between: [ cellImageGenerator.p[0][0], cellImageGenerator.p[3][3] ])
+        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
         
         return context.makeImage()
     }
