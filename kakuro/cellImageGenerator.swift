@@ -9,12 +9,12 @@
 //
 //   +---------+          This crude ASCII art shows the geometry of the cells
 //   |\       /|          created by this class.  The 8 obvious points are at
-//   | \     / |          the corners of the inner and outer rectangles.  They
+//   | \     / |          the corners of the inner and outer squares.  They
 //   |  +---+  |          are marked here by the + character.  Their coordinate
 //   |  |   |  |          values are given in the "c" array.  The "p" array
 //   |  |   |  |          expands this to 16 points by extending the edges of
-//   |  |   |  |          the inner rectangle to meet the edges of the outer
-//   |  +---+  |          one.  The outer rectangle is filled with the desired
+//   |  |   |  |          the inner square to meet the edges of the outer
+//   |  +---+  |          one.  The outer square is filled with the desired
 //   | /     \ |          color and then the 4 outer regions are overlayed with
 //   |/       \|          a gradient to give the appearance of an indented or
 //   +---------+          outdented button.
@@ -88,7 +88,7 @@ class cellImageGenerator {
         
         let attributes = cellImageGenerator.setupFontAttributes(context, borderColor: borderSolid, scaleFactor: 1)
         let textRange = cellImageGenerator.setupTextRange(context: context, attributes: attributes)
-        let vertRect = cellImageGenerator.getVerticalRect( context, textRange: textRange )
+        let vertRect = cellImageGenerator.getVerticalRect( textRange: textRange )
         let scaleFactor = vertRect.height / textRange.height
         
         self.attributes = cellImageGenerator.setupFontAttributes(context, borderColor: borderSolid, scaleFactor: scaleFactor)
@@ -144,7 +144,19 @@ class cellImageGenerator {
     }
     
     
-    fileprivate static func getHeaderLabelRect( _ textRange: CGRect ) -> CGRect {
+//   +---------+          This crude ASCII art is a closeup of the inner square
+//   |\        |          in the diagram at the top of this file.  The following
+//   | \       |          function computes the VerticalRect, where the text of
+//   |  \      |          the vertical total of a header cell is drawn.  The
+//   |   \     |          lower left corner of that Rect is known at (x1,y1).
+//   |    \    |          We must compute the upper corner at (x2,y2).  We do
+//   | +-+ \   |          that by intersecting the diagonal of the VerticalRect
+//   | | |  \  |          with the diagonal of the full cell (offset by half of
+//   | +-+   \ |          the TextMargin plus the width of the drawn diagonal).
+//   |        \|          The slope of the VerticalRect is m1 and the slope of
+//   +---------+          the cell diagonal is m2.
+
+    fileprivate static func getVerticalRect( textRange: CGRect ) -> CGRect {
         let m1 = textRange.height / textRange.width
         let m2 = CGFloat( -1 )
         let x1 = c[1] + textMargin
@@ -156,13 +168,8 @@ class cellImageGenerator {
     }
     
     
-    fileprivate static func getVerticalRect( _ context: CGContext, textRange: CGRect ) -> CGRect {
-        return getHeaderLabelRect( textRange )
-    }
-    
-    
-    fileprivate static func getHorizontalRect( _ context: CGContext, textRange: CGRect ) -> CGRect {
-        let rect = getHeaderLabelRect( textRange )
+    fileprivate static func getHorizontalRect( textRange: CGRect ) -> CGRect {
+        let rect = getVerticalRect( textRange: textRange )
         let xoffset = c[2] - textMargin - rect.width - rect.minX
         let yoffset = c[2] - textMargin - rect.height - rect.minY
         
@@ -411,14 +418,14 @@ class cellImageGenerator {
     
     
     func labelVertical(text: String) -> CGImage? {
-        let baseRect = cellImageGenerator.getVerticalRect( self.context, textRange: textRange )
+        let baseRect = cellImageGenerator.getVerticalRect( textRange: textRange )
 
         return drawLabel( text: String( text ), rect: baseRect )
     }
     
     
     func labelHorizontal(text: String) -> CGImage? {
-        let baseRect = cellImageGenerator.getHorizontalRect( self.context, textRange: textRange )
+        let baseRect = cellImageGenerator.getHorizontalRect( textRange: textRange )
         
         return drawLabel( text: String( text ), rect: baseRect )
     }
