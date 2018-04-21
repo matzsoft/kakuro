@@ -332,6 +332,15 @@ class cellImageGenerator {
     }
     
     
+    func getSelectBoth() -> CGImage? {
+        fullFill(unusedSelDark)
+        makeOutdent()
+        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
+        
+        return context.makeImage()
+    }
+    
+    
     func getBorderCell() -> CGImage? {
         context.setFillColor(borderBG )
         context.fill(CGRect( x: 0, y: 0, width: cellImageGenerator.userWidth, height: cellImageGenerator.userWidth ) )

@@ -30,6 +30,13 @@ class EmptyCell: Cell {
 
 
 class HeaderCell: Cell {
+    enum SelectType {
+        case none
+        case vertical
+        case horizontal
+        case both
+    }
+    
     var vertical: Int?
     var horizontal: Int?
     
@@ -43,7 +50,22 @@ class HeaderCell: Cell {
     }
     
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage? {
-        var image = selected ? generator.getSelectVertical() : generator.getNormalHeader()
+        return selected ? draw( generator: generator, selectType: .both ) : draw( generator: generator, selectType: .none )
+    }
+    
+    func draw( generator: cellImageGenerator, selectType type: SelectType ) -> CGImage? {
+        var image: CGImage?
+        
+        switch type {
+        case .none:
+            image = generator.getNormalHeader()
+        case .vertical:
+            image = generator.getSelectVertical()
+        case .horizontal:
+            image = generator.getSelectHorizontal()
+        case .both:
+            image = generator.getSelectBoth()
+        }
         
         if let vert = vertical {
             image = generator.labelVertical(text: String(vert))
