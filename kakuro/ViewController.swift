@@ -34,7 +34,7 @@ class ViewController: NSViewController {
     
     func displayPuzzle() {
         if let puzzle = representedObject as! Puzzle? {
-            let image = puzzle.makeImage()
+            let image = puzzle.makeImage(editSelected: !editingPuzzle, editHorizontal: editingHorizontal)
             let size = NSSize(width: (image?.width)!, height: (image?.height)!)
             
             view.window?.setContentSize(size)

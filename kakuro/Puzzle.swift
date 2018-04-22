@@ -250,7 +250,7 @@ class Puzzle {
     }
     
     
-    func makeImage() -> CGImage? {
+    func makeImage( editSelected: Bool, editHorizontal: Bool ) -> CGImage? {
         let interiorRect = CGRect( x: borderWidth, y: borderWidth, width: interiorWidth, height: interiorHeight )
         let exteriorRect = CGRect( x: 0, y: 0, width: exteriorWidth, height: exteriorHeight )
         
@@ -283,7 +283,19 @@ class Puzzle {
                 let cell     = cells[row][col]
                 let cellRect = rectFromRow( row + 1, andCol: col + 1 )
                 let selected = row == self.row && col == self.col
-                let image = cell.draw(generator: generator, selected: selected)
+                var image: CGImage?
+                
+                if !selected || !editSelected {
+                    image = cell.draw(generator: generator, selected: selected)
+                } else {
+                    let header = cell as! HeaderCell
+                    
+                    if editHorizontal {
+                        image = header.draw(generator: generator, selectType: .horizontal)
+                    } else {
+                        image = header.draw(generator: generator, selectType: .vertical)
+                    }
+                }
                 
                 context?.draw(image!, in: cellRect)
             }
