@@ -20,6 +20,7 @@
 		DD609B7F207C121C007AF1D5 /* PuzzleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B7E207C121C007AF1D5 /* PuzzleView.swift */; };
 		DD609B812083C95C007AF1D5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B802083C95C007AF1D5 /* Cell.swift */; };
 		DDA73D7D208A8062002D00A2 /* Todo.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DDA73D7C208A8062002D00A2 /* Todo.rtf */; };
+		DDB1DDF1208ED57B0060EFEF /* TotalFieldEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		DD609B7E207C121C007AF1D5 /* PuzzleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleView.swift; sourceTree = "<group>"; };
 		DD609B802083C95C007AF1D5 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		DDA73D7C208A8062002D00A2 /* Todo.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Todo.rtf; sourceTree = "<group>"; };
+		DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalFieldEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */,
 				DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */,
 				DD609B7E207C121C007AF1D5 /* PuzzleView.swift */,
+				DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */,
 				DD609B622075CD6F007AF1D5 /* ViewController.swift */,
 				DD609B662075CD70007AF1D5 /* Assets.xcassets */,
 				DD609B682075CD70007AF1D5 /* Main.storyboard */,
@@ -161,6 +164,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDB1DDF1208ED57B0060EFEF /* TotalFieldEditor.swift in Sources */,
 				DD609B782076BDF1007AF1D5 /* PuzzleParser.swift in Sources */,
 				DD609B772076BDF1007AF1D5 /* Puzzle.swift in Sources */,
 				DD609B7F207C121C007AF1D5 /* PuzzleView.swift in Sources */,

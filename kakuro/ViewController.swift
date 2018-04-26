@@ -8,19 +8,27 @@
 
 import Cocoa
 
-class ViewController: NSViewController {
+class ViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var imageView: NSImageView!
     
     var editingPuzzle = true
     var editingHorizontal = false
-    var editedValue = ""
-    var cursorPos = "".endIndex
+    var textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 10, height: 10))
+    
+    lazy var fieldEditor: TotalFieldEditor = {
+        let editor = TotalFieldEditor(frame: NSRect(x: 0, y: 0, width: 10, height: 10))
+        
+        editor.viewController = self
+        return editor
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        if let puzzleView: PuzzleView = view as? PuzzleView {            
+        textField.isBordered = true
+        
+        if let puzzleView: PuzzleView = view as? PuzzleView {
             puzzleView.viewController = self
         }
     }
@@ -30,6 +38,10 @@ class ViewController: NSViewController {
             // Update the view, if already loaded.
             view.needsDisplay = true
         }
+    }
+    
+    func windowWillReturnFieldEditor(_ sender: NSWindow, to client: Any?) -> Any? {
+        return editingPuzzle ? nil : fieldEditor
     }
     
     func displayPuzzle() {
@@ -96,23 +108,35 @@ class ViewController: NSViewController {
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.changeToHeader() {
                 let header = puzzle.selectedCell as! HeaderCell
+                let cellRect = puzzle.selectedRect()
+
+                var editedValue = ""
+                var textRect: CGRect
                 
                 view.needsDisplay = true
                 editingPuzzle = false
                 editingHorizontal = horizontal
-                editedValue = ""
                 
                 if horizontal {
+                    textRect = puzzle.generator.getHorizontalRect()
+                    
                     if let horz = header.horizontal {
                         editedValue = "\(horz)"
                     }
                 } else {
+                    textRect = puzzle.generator.getVerticalRect()
+                    
                     if let vert = header.vertical {
                         editedValue = "\(vert)"
                     }
                 }
                 
-                cursorPos = editedValue.endIndex
+                textRect = textRect.offsetBy(dx: cellRect.minX, dy: cellRect.minY)
+                textField.frame = textRect
+                textField.stringValue = editedValue
+                textField.currentEditor()?.moveToEndOfLine(nil)
+                view.addSubview(textField)
+                textField.becomeFirstResponder()
                 return true
             }
         }
@@ -150,16 +174,6 @@ class ViewController: NSViewController {
                     }
                 }
             }
-        } else if editedValue.count < 2 {
-            let digitChar = Character("\(digit)")
-            var newValue = editedValue
-            
-            newValue.insert(digitChar, at: cursorPos)
-            if newValue[newValue.startIndex] != "0" {
-                editedValue = newValue
-                cursorPos = editedValue.index(cursorPos, offsetBy: 1)
-                return
-            }
         }
         
         NSSound.beep()
@@ -179,6 +193,7 @@ class ViewController: NSViewController {
     func finishTotalEdit() {
         if let puzzle = representedObject as! Puzzle? {
             if let header = puzzle.selectedCell as? HeaderCell {
+                let editedValue = textField.stringValue
                 let value = editedValue == "" ? nil : Int(editedValue)
                 
                 if let numeric = value {
@@ -196,7 +211,11 @@ class ViewController: NSViewController {
                 } else {
                     header.vertical = value
                 }
+                
                 editingPuzzle = true
+                textField.removeFromSuperview()
+                view.becomeFirstResponder()
+                view.window?.selectNextKeyView(view)
                 view.needsDisplay = true
                 return
             }
@@ -218,11 +237,6 @@ class ViewController: NSViewController {
                     return
                 }
             }
-        } else {
-            if cursorPos > editedValue.startIndex {
-                cursorPos = editedValue.index(cursorPos, offsetBy: -1)
-                return
-            }
         }
         
         NSSound.beep()
@@ -235,11 +249,6 @@ class ViewController: NSViewController {
                     view.needsDisplay = true
                     return
                 }
-            }
-        } else {
-            if cursorPos < editedValue.endIndex {
-                cursorPos = editedValue.index(cursorPos, offsetBy: 1)
-                return
             }
         }
         
@@ -332,12 +341,6 @@ class ViewController: NSViewController {
                     return
                 }
             }
-        } else {
-            if cursorPos > editedValue.startIndex {
-                cursorPos = editedValue.index(cursorPos, offsetBy: -1)
-                editedValue.remove(at: cursorPos)
-                return
-            }
         }
         
         NSSound.beep()
@@ -350,11 +353,6 @@ class ViewController: NSViewController {
                     view.needsDisplay = true
                     return
                 }
-            }
-        } else {
-            if cursorPos < editedValue.endIndex {
-                editedValue.remove(at: cursorPos)
-                return
             }
         }
         
@@ -401,6 +399,9 @@ class ViewController: NSViewController {
         if !editingPuzzle {
             editingPuzzle = true
             view.needsDisplay = true
+            textField.removeFromSuperview()
+            view.becomeFirstResponder()
+            view.window?.selectNextKeyView(view)
             return
         }
         

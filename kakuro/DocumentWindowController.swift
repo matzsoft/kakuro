@@ -26,6 +26,7 @@ class DocumentWindowController: NSWindowController {
             let newOriginY = screenRect.maxY - window.frame.height - offsetFromTopOfScreen
 
             window.setFrameOrigin(NSPoint(x: offsetFromLeftOfScreen, y: newOriginY))
+            window.delegate = self.contentViewController as? NSWindowDelegate
         }
     }
 }

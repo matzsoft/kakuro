@@ -125,24 +125,25 @@ class Puzzle {
                 
                 switch cell {
                 case is UnusedCell:
-                    append( UnusedCell() )
+                    cells[row].append( UnusedCell() )
                     
                 case is EmptyCell:
-                    append( EmptyCell() )
+                    cells[row].append( EmptyCell() )
                     
                 case is HeaderCell:
                     let header = cell as! HeaderCell
                     
                     if header.horizontal != nil {
-                        append( EmptyCell() )
+                        cells[row].append( EmptyCell() )
                     } else {
-                        append( HeaderCell(vertical: nil, horizontal: nil) )
+                        cells[row].append( HeaderCell(vertical: nil, horizontal: nil) )
                     }
                     
                 default:
                     fatalError("Unknown Cell Type")
                 }
                 modified = true
+                col += 1
             }
         }
         
@@ -250,18 +251,27 @@ class Puzzle {
     }
     
     
-    func makeImage( editSelected: Bool, editHorizontal: Bool ) -> CGImage? {
+    // MARK: - Puzzle drawing methods and utilities
+    
+    // NOTE: row and col here include the border cells around the puzzle
+    func rectFromRow( _ row: Int, andCol col: Int ) -> CGRect {
         let interiorRect = CGRect( x: borderWidth, y: borderWidth, width: interiorWidth, height: interiorHeight )
+        let x = interiorRect.minX + 1 + CGFloat( col ) * lineGap
+        let y = interiorRect.maxY - cellWidth - CGFloat( row ) * lineGap - 1
+        
+        return CGRect( x: x, y: y, width: cellWidth, height: cellWidth )
+    }
+    
+    
+    func selectedRect() -> CGRect {
+        return rectFromRow(row + 1, andCol: col + 1)
+    }
+    
+
+    func makeImage( editSelected: Bool, editHorizontal: Bool ) -> CGImage? {
         let exteriorRect = CGRect( x: 0, y: 0, width: exteriorWidth, height: exteriorHeight )
         
         let context   = CGContext( data: nil, width: Int(exteriorWidth), height: Int(exteriorHeight), bitsPerComponent: 8, bytesPerRow: Int(exteriorWidth*4), space: colorSpace!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue )
-        
-        func rectFromRow( _ row: Int, andCol col: Int ) -> CGRect {
-            let x = interiorRect.minX + 1 + CGFloat( col ) * lineGap
-            let y = interiorRect.maxY - cellWidth - CGFloat( row ) * lineGap - 1
-            
-            return CGRect( x: x, y: y, width: cellWidth, height: cellWidth )
-        }
         
         func drawBorderRow( _ row: Int ) {
             for col in 0 ..< ncols + 2 {

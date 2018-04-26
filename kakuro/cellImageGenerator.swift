@@ -156,6 +156,19 @@ class cellImageGenerator {
 //   |        \|          The slope of the VerticalRect is m1 and the slope of
 //   +---------+          the cell diagonal is m2.
 
+    fileprivate func convertToPuzzleSpace( rect: CGRect ) -> CGRect {
+        let flip = CGAffineTransform( a: 1, b: 0, c: 0, d: -1, tx: 0, ty: cellImageGenerator.userWidth )
+        
+        context.saveGState()
+        context.concatenate(flip )
+        
+        let newRect = context.convertToDeviceSpace(rect)
+        context.restoreGState()
+        
+        return newRect
+    }
+    
+    
     fileprivate static func getVerticalRect( textRange: CGRect ) -> CGRect {
         let m1 = textRange.height / textRange.width
         let m2 = CGFloat( -1 )
@@ -168,12 +181,26 @@ class cellImageGenerator {
     }
     
     
+    func getVerticalRect() -> CGRect {
+        let userRect = cellImageGenerator.getVerticalRect(textRange: textRange)
+        
+        return convertToPuzzleSpace(rect: userRect)
+    }
+    
+    
     fileprivate static func getHorizontalRect( textRange: CGRect ) -> CGRect {
         let rect = getVerticalRect( textRange: textRange )
         let xoffset = c[2] - textMargin - rect.width - rect.minX
         let yoffset = c[2] - textMargin - rect.height - rect.minY
         
         return rect.offsetBy(dx: xoffset, dy: yoffset )
+    }
+    
+    
+    func getHorizontalRect() -> CGRect {
+        let userRect = cellImageGenerator.getHorizontalRect(textRange: textRange)
+        
+        return convertToPuzzleSpace(rect: userRect)
     }
     
     
