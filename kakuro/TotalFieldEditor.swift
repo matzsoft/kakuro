@@ -20,25 +20,25 @@ class TotalFieldEditor: NSTextView {
     override var acceptsFirstResponder: Bool { get { return true } }
     
     override func keyDown(with event: NSEvent) {
-        Swift.print(event.keyCode, "=", event.characters as Any, " (TextField)")
+        Swift.print(event.keyCode, "=", event.characters as Any, " (FieldEditor)")
         interpretKeyEvents([event])
     }
     
     override func insertText(_ insertString: Any) {
-        Swift.print("Insert string = '\(insertString)'")
+        Swift.print("Insert string = '\(insertString)' (FieldEditor)")
         
         let string = (insertString as! String).lowercased()
         
         switch string {
         case "0" ... "9":
-            super.insertText(insertString)
+            super.insertText(insertString, replacementRange: selectedRange())
         default:
             viewController?.insertText(insertString)
         }
     }
     
     override func doCommand(by selector: Selector) {
-        Swift.print("Got command = '\(selector)' (TextField)")
+        Swift.print("Got command = '\(selector)' (FieldEditor)")
         super.doCommand(by: selector)
     }
     
