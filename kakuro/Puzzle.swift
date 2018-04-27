@@ -274,13 +274,17 @@ class Puzzle {
         let context   = CGContext( data: nil, width: Int(exteriorWidth), height: Int(exteriorHeight), bitsPerComponent: 8, bytesPerRow: Int(exteriorWidth*4), space: colorSpace!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue )
         
         func drawBorderRow( _ row: Int ) {
-            for col in 0 ..< ncols + 2 {
-                context?.draw(generator.getBorderCell()!, in: rectFromRow( row, andCol: col ))
+            if let cell = generator.getBorderCell() {
+                for col in 0 ..< ncols + 2 {
+                    context?.draw(cell, in: rectFromRow( row, andCol: col ))
+                }
             }
         }
         
         func drawBorderCol( _ col: Int, andRow row: Int ) {
-            context?.draw(generator.getBorderCell()!, in: rectFromRow( row, andCol: col ))
+            if let cell = generator.getBorderCell() {
+                context?.draw(cell, in: rectFromRow( row, andCol: col ))
+            }
         }
         
         context?.setFillColor(generator.borderSolid )
