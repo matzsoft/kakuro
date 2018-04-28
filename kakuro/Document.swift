@@ -42,7 +42,7 @@ class Document: NSDocument {
 //        else {
 //            return Data()
 //        }
-        return Data()
+        return puzzle.string.data(using: .utf8) ?? Data()
     }
 
     override func read(from data: Data, ofType typeName: String) throws {

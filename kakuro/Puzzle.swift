@@ -319,4 +319,20 @@ class Puzzle {
         
         return context?.makeImage()
     }
+    
+    // MARK: - Methods for converting a puzzle to a string
+    
+    var string: String {
+        guard nrows > 0 else { return "" }
+        var result = ""
+        
+        for row in 0 ..< nrows {
+            for col in 0 ..< ncols {
+                result.append(cells[row][col].string)
+            }
+            result.append("\n")
+        }
+        
+        return result
+    }
 }
