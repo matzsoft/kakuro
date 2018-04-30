@@ -58,6 +58,10 @@ class HeaderCell: Cell {
         self.horizontal = horizontal
     }
     
+    func hasNoTotal() -> Bool {
+        return vertical == nil && horizontal == nil
+    }
+    
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage? {
         return selected ? draw( generator: generator, selectType: .both ) : draw( generator: generator, selectType: .none )
     }
@@ -96,7 +100,7 @@ class HeaderCell: Cell {
         }
         
         if let horz = horizontal {
-            back = String(format: "%2d", arguments: [horz])
+            back = String(format: "%-2d", arguments: [horz])
         }
 
         return "\(front)\\\(back)"

@@ -10,6 +10,7 @@ import Cocoa
 
 class Document: NSDocument {
     var puzzle = Puzzle()
+    var viewController: ViewController? = nil
 
     override init() {
         super.init()
@@ -31,6 +32,7 @@ class Document: NSDocument {
         let controller = windowController.contentViewController as! ViewController
 
         controller.representedObject = puzzle
+        viewController = controller
     }
 
     override func data(ofType typeName: String) throws -> Data {
@@ -42,7 +44,20 @@ class Document: NSDocument {
 //        else {
 //            return Data()
 //        }
-        return puzzle.string.data(using: .utf8) ?? Data()
+        let validator = PuzzleValidator(with: puzzle)
+        
+        if !validator.isValid {
+            let errors = validator.errors.joined(separator: "\n")
+            
+            viewController?.errorDialog(major: "Puzzle has errors", minor: errors)
+            throw NSError(domain: NSCocoaErrorDomain, code: NSFormattingError, userInfo: nil)
+        }
+        
+        if let theData = puzzle.string.data(using: .utf8) {
+            return theData
+        }
+        
+        throw NSError(domain: NSCocoaErrorDomain, code: NSFormattingError, userInfo: nil)
     }
 
     override func read(from data: Data, ofType typeName: String) throws {
