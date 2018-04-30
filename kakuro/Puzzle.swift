@@ -10,8 +10,8 @@ import Foundation
 
 class Puzzle {
     var cells: [ [ Cell ] ] = []
-    var nrows: Int { get { return cells.count } }
-    var ncols: Int { get { return nrows > 0 ? cells[0].count : 0 } }
+    var nrows: Int { return cells.count }
+    var ncols: Int { return nrows == 0 ? 0 : cells.map({ $0.count}).max()! }
     var rowComplete = true
     var row = 0             // row and col must ALWAYS point to a valid cell,
     var col = 0             // except when the puzzle is empty.
@@ -114,25 +114,21 @@ class Puzzle {
         var modified = false
         
         for _ in 1...count {
-            if col == ncols - 1 && row > 0 {
-                break
-            }
-            
-            if col < cells[row].count - 1 {
+            if nrows == 0 {
+                endRow()
+                append(UnusedCell())
+                return true
+            } else if col < cells[row].count - 1 {
                 modified = moveTo(row: row, col: col + 1) || modified
             } else {
-                let cell = selectedCell
-                
-                switch cell {
+                switch selectedCell {
                 case is UnusedCell:
                     cells[row].append( UnusedCell() )
                     
                 case is EmptyCell:
                     cells[row].append( EmptyCell() )
                     
-                case is HeaderCell:
-                    let header = cell as! HeaderCell
-                    
+                case let header as HeaderCell:
                     if header.horizontal != nil {
                         cells[row].append( EmptyCell() )
                     } else {
@@ -181,12 +177,12 @@ class Puzzle {
     
     
     func newLine() -> Bool {
-        if row < nrows - 1 {
-            return moveTo(row: row + 1, col: 0)
-        }
-        
         if cells[row].count < ncols {
             let _ = newCells(ncols - cells[row].count)
+        }
+        
+        if row < nrows - 1 {
+            return moveTo(row: row + 1, col: 0)
         }
         
         endRow()
@@ -242,12 +238,27 @@ class Puzzle {
     
     
     func deleteBackward() -> Bool {
-        return false
+        guard col > 0 else { return false }
+        
+        col -= 1
+        return deleteForward()
     }
     
     
     func deleteForward() -> Bool {
-        return false
+        cells[row].remove(at: col)
+        if cells[row].count == 0 {
+            cells.remove(at: row)
+            if row > 0 && row == nrows {
+                row -= 1
+            }
+            return true
+        }
+        
+        if col == cells[row].count {
+            col -= 1
+        }
+        return true
     }
     
     
@@ -327,7 +338,7 @@ class Puzzle {
         var result = ""
         
         for row in 0 ..< nrows {
-            for col in 0 ..< ncols {
+            for col in 0 ..< cells[row].count {
                 result.append(cells[row][col].string)
             }
             result.append("\n")

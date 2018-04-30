@@ -48,11 +48,10 @@ class PuzzleValidator: Puzzle {
                 errors.append("Row \(row + 1) has incorrect length")
             }
         }
-        
         guard errors.count == 0 else { return false }
         
         for row in 0 ..< nrows {
-            for col in 0 ..< ncols {
+            for col in 0 ..< cells[row].count {
                 switch cells[row][col] {
                 case is UnusedCell:
                     break
@@ -124,7 +123,7 @@ class PuzzleValidator: Puzzle {
                 if let _ = header.vertical {
                     cellError(row: row, col: col, error: "should not have vertical total")
                 }
-            case ncols - 1:
+            case cells[row].count - 1:
                 if let _ = header.horizontal {
                     cellError(row: row, col: col, error: "should not have horizontal total")
                 }
@@ -139,7 +138,7 @@ class PuzzleValidator: Puzzle {
     private func validateHorizontalTotal(_ total: Int, row: Int, col: Int) {
         var count = 0
         
-        for newCol in col + 1 ..< ncols {
+        for newCol in col + 1 ..< cells[row].count {
             if !( cells[row][newCol] is EmptyCell ) {
                 break
             }
