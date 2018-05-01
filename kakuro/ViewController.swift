@@ -167,12 +167,10 @@ class ViewController: NSViewController, NSWindowDelegate {
     
     func handleDigit(_ digit: Int) {
         if editingPuzzle {
-            if digit > 1 {
-                if let puzzle = representedObject as! Puzzle? {
-                    if puzzle.newCells(digit - 1) {
-                        view.needsDisplay = true
-                        return
-                    }
+            if let puzzle = representedObject as! Puzzle? {
+                if puzzle.appendCount( digit ) {
+                    view.needsDisplay = true
+                    return
                 }
             }
         }
@@ -360,6 +358,24 @@ class ViewController: NSViewController, NSWindowDelegate {
         NSSound.beep()
     }
     
+    override func insertBacktab(_ sender: Any?) {
+        if !editingPuzzle {
+            finishTotalEdit()
+            if !editingPuzzle {
+                return
+            }
+        }
+        
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.insertBefore() {
+                view.needsDisplay = true
+                return
+            }
+        }
+        
+        NSSound.beep()
+    }
+    
     override func insertTab(_ sender: Any?) {
         if !editingPuzzle {
             finishTotalEdit()
@@ -369,7 +385,7 @@ class ViewController: NSViewController, NSWindowDelegate {
         }
         
         if let puzzle = representedObject as! Puzzle? {
-            if puzzle.newCells(1) {
+            if puzzle.advanceOrAppend() {
                 view.needsDisplay = true
                 return
             }

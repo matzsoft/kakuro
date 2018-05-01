@@ -70,7 +70,7 @@ class Puzzle {
     
     
     func append( _ cell: Cell ) {
-        if ( rowComplete ) {
+        if ( nrows == 0 || rowComplete ) {
             rowComplete = false
             cells.append( [] )
         }
@@ -110,40 +110,33 @@ class Puzzle {
     }
     
     
-    func newCells(_ count: Int) -> Bool {
-        var modified = false
-        
-        for _ in 1...count {
-            if nrows == 0 {
-                endRow()
-                append(UnusedCell())
-                return true
-            } else if col < cells[row].count - 1 {
-                modified = moveTo(row: row, col: col + 1) || modified
-            } else {
-                switch selectedCell {
-                case is UnusedCell:
-                    cells[row].append( UnusedCell() )
-                    
-                case is EmptyCell:
-                    cells[row].append( EmptyCell() )
-                    
-                case let header as HeaderCell:
-                    if header.horizontal != nil {
-                        cells[row].append( EmptyCell() )
-                    } else {
-                        cells[row].append( HeaderCell(vertical: nil, horizontal: nil) )
-                    }
-                    
-                default:
-                    fatalError("Unknown Cell Type")
-                }
-                modified = true
-                col += 1
-            }
+    func appendCell() -> Bool {
+        if nrows == 0 {
+            append(UnusedCell())
+            return true
         }
         
-        return modified
+        switch selectedCell {
+        case is UnusedCell:
+            cells[row].insert( UnusedCell(), at: col + 1 )
+            
+        case is EmptyCell:
+            cells[row].insert( EmptyCell(), at: col + 1 )
+            
+        case let header as HeaderCell:
+            if header.horizontal != nil {
+                cells[row].insert( EmptyCell(), at: col + 1 )
+            } else {
+                cells[row].insert( HeaderCell(vertical: nil, horizontal: nil), at: col + 1 )
+                cells[row].append( HeaderCell(vertical: nil, horizontal: nil) )
+            }
+            
+        default:
+            fatalError("Unknown Cell Type")
+        }
+
+        col += 1
+        return true
     }
     
     
@@ -177,8 +170,19 @@ class Puzzle {
     
     
     func newLine() -> Bool {
-        if cells[row].count < ncols {
-            let _ = newCells(ncols - cells[row].count)
+        if nrows == 0 {
+            append( UnusedCell() )
+            return true
+        }
+        
+        if !moveToEndOfLine() {
+            return false
+        }
+        
+        while cells[row].count < ncols {
+            if !appendCell() {
+                return false
+            }
         }
         
         if row < nrows - 1 {
@@ -234,6 +238,52 @@ class Puzzle {
         guard lastRow >= 0 else { return false }
 
         return moveTo(row: lastRow, col: cells[lastRow].count - 1)
+    }
+    
+    
+    func insertBefore() -> Bool {
+        if nrows == 0 {
+            append(UnusedCell())
+            return true
+        }
+        
+        if col == 0 {
+            cells[row].insert( UnusedCell(), at: col )
+            return true
+        }
+        
+        col -= 1
+        return appendCell()
+    }
+    
+    
+    func advanceOrAppend() -> Bool {
+        if nrows > 0 && col < cells[row].count - 1 {
+            return moveTo(row: row, col: col + 1)
+        }
+        
+        return appendCell()
+    }
+    
+    
+    func appendCount(_ count: Int) -> Bool {
+        if nrows == 0 {
+            for _ in 1 ... count { append( UnusedCell() ) }
+            append( HeaderCell(vertical: nil, horizontal: nil) )
+            return  true
+        }
+        
+        if count < 2 || col < cells[row].count - 1 {
+            return false
+        }
+        
+        for _ in 2 ... count {
+            if !appendCell() {
+                return false
+            }
+        }
+        
+        return true
     }
     
     
