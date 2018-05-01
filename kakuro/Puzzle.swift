@@ -10,11 +10,11 @@ import Foundation
 
 class Puzzle {
     var cells: [ [ Cell ] ] = []
+    var row = 0             // row and col must ALWAYS point to a valid cell,
+    var col = 0             // except when the puzzle is empty.
     var nrows: Int { return cells.count }
     var ncols: Int { return nrows == 0 ? 0 : cells.map({ $0.count}).max()! }
     var rowComplete = true
-    var row = 0             // row and col must ALWAYS point to a valid cell,
-    var col = 0             // except when the puzzle is empty.
     
     // Constants for puzzle drawing
     let borderWidth = CGFloat(6)
@@ -32,6 +32,21 @@ class Puzzle {
         return cellImageGenerator(imageWidth: Int( cellWidth ), colorSpace: colorSpace!)
     }()
 
+    var selectedCell: Cell? {
+        get {
+            guard nrows > 0 else { return nil }
+            return cells[row][col]
+        }
+        set {
+            if nrows > 0 {
+                cells[row][col] = newValue!
+            }
+        }
+    }
+    
+
+    // MARK: - Initializers
+    
     convenience init?( text: String ) {
         self.init()
         
@@ -56,35 +71,14 @@ class Puzzle {
     }
     
     
-    var selectedCell: Cell? {
-        get {
-            guard nrows > 0 else { return nil }
-            return cells[row][col]
-        }
-        set {
-            if nrows > 0 {
-                cells[row][col] = newValue!
-            }
-        }
-    }
-    
-    
-    func append( _ cell: Cell ) {
-        if ( nrows == 0 || rowComplete ) {
-            rowComplete = false
-            cells.append( [] )
-        }
-        
-        row = cells.count - 1
-        cells[row].append(cell)
-        col = cells[row].count - 1
-    }
-    
+    // MARK: - Deprecated, remove when last caller is gone.
     
     func endRow() {
         rowComplete = true
     }
     
+    
+    // MARK: - Convenience methods for PuzzleParser
     
     func setHorizontal( _ horizontal: Int ) {
         let lastRow = cells.count - 1
@@ -94,6 +88,8 @@ class Puzzle {
         header.setHorizontal( horizontal )
     }
     
+    
+    // MARK: - Movement methods (i.e. change which cell is selected)
     
     func moveTo(row: Int, col: Int) -> Bool {
         if row < 0 || row >= nrows {
@@ -106,91 +102,6 @@ class Puzzle {
         
         self.row = row
         self.col = col
-        return true
-    }
-    
-    
-    func appendCell() -> Bool {
-        if nrows == 0 {
-            append(UnusedCell())
-            return true
-        }
-        
-        switch selectedCell {
-        case is UnusedCell:
-            cells[row].insert( UnusedCell(), at: col + 1 )
-            
-        case is EmptyCell:
-            cells[row].insert( EmptyCell(), at: col + 1 )
-            
-        case let header as HeaderCell:
-            if header.horizontal != nil {
-                cells[row].insert( EmptyCell(), at: col + 1 )
-            } else {
-                cells[row].insert( HeaderCell(vertical: nil, horizontal: nil), at: col + 1 )
-                cells[row].append( HeaderCell(vertical: nil, horizontal: nil) )
-            }
-            
-        default:
-            fatalError("Unknown Cell Type")
-        }
-
-        col += 1
-        return true
-    }
-    
-    
-    func changeToUnused() -> Bool {
-        guard nrows > 0 else { return false }
-        if selectedCell is UnusedCell { return false }
-        
-        selectedCell = UnusedCell()
-        return true
-    }
-    
-    
-    func changeToEmpty() -> Bool {
-        guard nrows > 0 else { return false }
-        if selectedCell is EmptyCell { return false }
-        
-        selectedCell = EmptyCell()
-        return true
-    }
-    
-    
-    func changeToHeader() -> Bool {
-        guard nrows > 0 else { return false }
-        
-        if !( selectedCell is HeaderCell ) {
-            selectedCell = HeaderCell(vertical: nil, horizontal: nil)
-        }
-        
-        return true
-    }
-    
-    
-    func newLine() -> Bool {
-        if nrows == 0 {
-            append( UnusedCell() )
-            return true
-        }
-        
-        if !moveToEndOfLine() {
-            return false
-        }
-        
-        while cells[row].count < ncols {
-            if !appendCell() {
-                return false
-            }
-        }
-        
-        if row < nrows - 1 {
-            return moveTo(row: row + 1, col: 0)
-        }
-        
-        endRow()
-        append( HeaderCell(vertical: nil, horizontal: nil) )
         return true
     }
     
@@ -236,8 +147,81 @@ class Puzzle {
         let lastRow = nrows - 1
         
         guard lastRow >= 0 else { return false }
-
+        
         return moveTo(row: lastRow, col: cells[lastRow].count - 1)
+    }
+    
+    // MARK: - Change the type of the selected cell
+    
+    func changeToUnused() -> Bool {
+        guard nrows > 0 else { return false }
+        if selectedCell is UnusedCell { return false }
+        
+        selectedCell = UnusedCell()
+        return true
+    }
+    
+    
+    func changeToEmpty() -> Bool {
+        guard nrows > 0 else { return false }
+        if selectedCell is EmptyCell { return false }
+        
+        selectedCell = EmptyCell()
+        return true
+    }
+    
+    
+    func changeToHeader() -> Bool {
+        guard nrows > 0 else { return false }
+        
+        if !( selectedCell is HeaderCell ) {
+            selectedCell = HeaderCell(vertical: nil, horizontal: nil)
+        }
+        
+        return true
+    }
+    
+    // MARK: - Add a cell (or cells) to the puzzle
+    
+    func append( _ cell: Cell ) {
+        if ( nrows == 0 || rowComplete ) {
+            rowComplete = false
+            cells.append( [] )
+        }
+        
+        row = cells.count - 1
+        cells[row].append(cell)
+        col = cells[row].count - 1
+    }
+    
+    
+    func appendCell() -> Bool {
+        if nrows == 0 {
+            append(UnusedCell())
+            return true
+        }
+        
+        switch selectedCell {
+        case is UnusedCell:
+            cells[row].insert( UnusedCell(), at: col + 1 )
+            
+        case is EmptyCell:
+            cells[row].insert( EmptyCell(), at: col + 1 )
+            
+        case let header as HeaderCell:
+            if header.horizontal != nil {
+                cells[row].insert( EmptyCell(), at: col + 1 )
+            } else {
+                cells[row].insert( HeaderCell(vertical: nil, horizontal: nil), at: col + 1 )
+                cells[row].append( HeaderCell(vertical: nil, horizontal: nil) )
+            }
+            
+        default:
+            fatalError("Unknown Cell Type")
+        }
+
+        col += 1
+        return true
     }
     
     
@@ -253,15 +237,6 @@ class Puzzle {
         }
         
         col -= 1
-        return appendCell()
-    }
-    
-    
-    func advanceOrAppend() -> Bool {
-        if nrows > 0 && col < cells[row].count - 1 {
-            return moveTo(row: row, col: col + 1)
-        }
-        
         return appendCell()
     }
     
@@ -286,6 +261,45 @@ class Puzzle {
         return true
     }
     
+
+    // MARK: - Hybred methods, either change the selection or add a cell depending
+    
+    func newLine() -> Bool {
+        if nrows == 0 {
+            append( UnusedCell() )
+            return true
+        }
+        
+        if !moveToEndOfLine() {
+            return false
+        }
+        
+        while cells[row].count < ncols {
+            if !appendCell() {
+                return false
+            }
+        }
+        
+        if row < nrows - 1 {
+            return moveTo(row: row + 1, col: 0)
+        }
+        
+        endRow()
+        append( HeaderCell(vertical: nil, horizontal: nil) )
+        return true
+    }
+    
+    
+    func advanceOrAppend() -> Bool {
+        if nrows > 0 && col < cells[row].count - 1 {
+            return moveTo(row: row, col: col + 1)
+        }
+        
+        return appendCell()
+    }
+    
+    
+    // MARK: - Delete a cell (and the row if it's the last cell in the row)
     
     func deleteBackward() -> Bool {
         guard col > 0 else { return false }
