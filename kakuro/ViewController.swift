@@ -412,6 +412,25 @@ class ViewController: NSViewController, NSWindowDelegate {
         NSSound.beep()
     }
     
+    override func insertLineBreak(_ sender: Any?) {
+        if !editingPuzzle {
+            finishTotalEdit()
+            if !editingPuzzle {
+                return
+            }
+        }
+        
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.lineBreak() {
+                view.needsDisplay = true
+                return
+            }
+        }
+        
+        NSSound.beep()
+
+    }
+    
     override func cancelOperation(_ sender: Any?) {
         if !editingPuzzle {
             editingPuzzle = true

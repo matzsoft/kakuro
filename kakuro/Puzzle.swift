@@ -213,7 +213,6 @@ class Puzzle {
                 cells[row].insert( EmptyCell(), at: col + 1 )
             } else {
                 cells[row].insert( HeaderCell(vertical: nil, horizontal: nil), at: col + 1 )
-                cells[row].append( HeaderCell(vertical: nil, horizontal: nil) )
             }
             
         default:
@@ -261,6 +260,39 @@ class Puzzle {
         return true
     }
     
+    
+    func appendNewRow() -> Bool {
+        if nrows == 0 {
+            append( UnusedCell() )
+            return true
+        }
+        
+        cells.insert( [ HeaderCell(vertical: nil, horizontal: nil) ], at: row + 1 )
+        row += 1
+        col = 0
+        return true
+    }
+    
+    
+    func lineBreak() -> Bool {
+        if nrows == 0 {
+            append( UnusedCell() )
+            return true
+        }
+        
+        if !moveToEndOfLine() {
+            return false
+        }
+        
+        while cells[row].count < ncols {
+            if !appendCell() {
+                return false
+            }
+        }
+        
+        return appendNewRow()
+    }
+    
 
     // MARK: - Hybred methods, either change the selection or add a cell depending
     
@@ -284,9 +316,7 @@ class Puzzle {
             return moveTo(row: row + 1, col: 0)
         }
         
-        endRow()
-        append( HeaderCell(vertical: nil, horizontal: nil) )
-        return true
+        return appendNewRow()
     }
     
     
