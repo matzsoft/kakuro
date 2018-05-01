@@ -14,7 +14,6 @@ class Puzzle {
     var col = 0             // except when the puzzle is empty.
     var nrows: Int { return cells.count }
     var ncols: Int { return nrows == 0 ? 0 : cells.map({ $0.count}).max()! }
-    var rowComplete = true
     
     // Constants for puzzle drawing
     let borderWidth = CGFloat(6)
@@ -68,13 +67,6 @@ class Puzzle {
         } catch {
             return nil
         }
-    }
-    
-    
-    // MARK: - Deprecated, remove when last caller is gone.
-    
-    func endRow() {
-        rowComplete = true
     }
     
     
@@ -184,8 +176,7 @@ class Puzzle {
     // MARK: - Add a cell (or cells) to the puzzle
     
     func append( _ cell: Cell ) {
-        if ( nrows == 0 || rowComplete ) {
-            rowComplete = false
+        if ( nrows == 0 ) {
             cells.append( [] )
         }
         
@@ -261,16 +252,15 @@ class Puzzle {
     }
     
     
-    func appendNewRow() -> Bool {
+    func appendNewRow( cell: Cell ) {
         if nrows == 0 {
             append( UnusedCell() )
-            return true
+            return
         }
         
-        cells.insert( [ HeaderCell(vertical: nil, horizontal: nil) ], at: row + 1 )
+        cells.insert( [ cell ], at: row + 1 )
         row += 1
         col = 0
-        return true
     }
     
     
@@ -290,7 +280,8 @@ class Puzzle {
             }
         }
         
-        return appendNewRow()
+        appendNewRow(cell: HeaderCell(vertical: nil, horizontal: nil))
+        return true
     }
     
 
@@ -316,7 +307,8 @@ class Puzzle {
             return moveTo(row: row + 1, col: 0)
         }
         
-        return appendNewRow()
+        appendNewRow(cell: HeaderCell(vertical: nil, horizontal: nil))
+        return true
     }
     
     

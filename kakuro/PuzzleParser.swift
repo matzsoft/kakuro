@@ -97,6 +97,7 @@ class PuzzleParser {
     
     var lex: PuzzleLex
     var state = 0
+    var needNewRow = true
     
     init ( text: String ) {
         lex = PuzzleLex( text: text )
@@ -142,7 +143,14 @@ class PuzzleParser {
     
     
     func addDash( _ puzzle: Puzzle ) {
-        puzzle.append( UnusedCell() )
+        let cell = UnusedCell()
+        
+        if needNewRow {
+            puzzle.appendNewRow( cell: cell )
+            needNewRow = false
+        } else {
+            puzzle.append( cell )
+        }
     }
     
     
@@ -160,13 +168,20 @@ class PuzzleParser {
     
     
     func newLine( _ puzzle: Puzzle ) {
-        puzzle.endRow()
+        needNewRow = true
     }
     
     
     
     func noVertical( _ puzzle: Puzzle ) {
-        puzzle.append( HeaderCell( vertical: nil, horizontal: nil ) )
+        let cell = HeaderCell( vertical: nil, horizontal: nil )
+        
+        if needNewRow {
+            puzzle.appendNewRow( cell: cell )
+            needNewRow = false
+        } else {
+            puzzle.append( cell )
+        }
     }
     
     
