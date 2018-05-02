@@ -9,13 +9,13 @@
 import Foundation
 
 protocol Cell {
-    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage?
+    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage
     var string: String { get }
 }
 
 
 class UnusedCell: Cell {
-    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage? {
+    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
         return selected ? generator.getSelectUnused() : generator.getNormalUnused()
     }
     
@@ -28,7 +28,7 @@ class UnusedCell: Cell {
 class EmptyCell: Cell {
     var eligible = Set<Int>( 1 ... 9 )
     
-    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage? {
+    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
         return selected ? generator.getSelectEmpty() : generator.getNormalEmpty()
     }
     
@@ -62,12 +62,12 @@ class HeaderCell: Cell {
         return vertical == nil && horizontal == nil
     }
     
-    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage? {
+    func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
         return selected ? draw( generator: generator, selectType: .both ) : draw( generator: generator, selectType: .none )
     }
     
-    func draw( generator: cellImageGenerator, selectType type: SelectType ) -> CGImage? {
-        var image: CGImage?
+    func draw( generator: cellImageGenerator, selectType type: SelectType ) -> CGImage {
+        var image: CGImage
         
         switch type {
         case .none:

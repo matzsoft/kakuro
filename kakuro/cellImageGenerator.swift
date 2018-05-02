@@ -204,6 +204,161 @@ class cellImageGenerator {
     }
     
     
+    func makeImage() -> CGImage {
+        guard let image = context.makeImage() else {
+            fatalError("Unable to create image")
+        }
+        
+        return image
+    }
+    
+    
+    lazy var NormalUnused: CGImage = {
+        fullFill( unusedNrmLight )
+        makeOutdent()
+        
+        return makeImage()
+    }()
+    
+    func getNormalUnused() -> CGImage {
+        fullFill( unusedNrmLight )
+        makeOutdent()
+        
+        return makeImage()
+    }
+    
+    
+    func getSelectUnused() -> CGImage {
+        fullFill( unusedSelDark )
+        makeOutdent()
+        
+        return makeImage()
+    }
+    
+    
+    func getNormalEmpty() -> CGImage {
+        fullFill( emptyNrmLight )
+        makeIndent()
+        
+        return makeImage()
+    }
+    
+    
+    func getSelectEmpty() -> CGImage {
+        fullFill( emptySelDark )
+        makeIndent()
+        
+        return makeImage()
+    }
+    
+    
+    func getNormalHeader() -> CGImage {
+        fullFill( unusedNrmLight )
+        makeOutdent()
+        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
+        
+        return makeImage()
+    }
+    
+    
+    func getSelectVertical() -> CGImage {
+        fullFill( unusedNrmLight )
+        halfFill( unusedSelDark, midPoint: cellImageGenerator.p[0][0] )
+        makeOutdent()
+        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
+        
+        return makeImage()
+    }
+    
+    
+    func getSelectHorizontal() -> CGImage {
+        fullFill( unusedNrmLight )
+        halfFill( unusedSelDark, midPoint: cellImageGenerator.p[3][3] )
+        makeOutdent()
+        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
+        
+        return makeImage()
+    }
+    
+    
+    func getSelectBoth() -> CGImage {
+        fullFill(unusedSelDark)
+        makeOutdent()
+        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
+        
+        return makeImage()
+    }
+    
+    
+    func getBorderCell() -> CGImage {
+        context.setFillColor(borderBG )
+        context.fill(CGRect( x: 0, y: 0, width: cellImageGenerator.userWidth, height: cellImageGenerator.userWidth ) )
+        
+        context.beginPath()
+        
+        context.move(to: CGPoint(x: cellImageGenerator.x[0], y: cellImageGenerator.y[0]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[13], y: cellImageGenerator.y[0]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[13], y: cellImageGenerator.y[13]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[0], y: cellImageGenerator.y[13]));
+        context.closePath();
+        //
+        context.move(to: CGPoint(x: cellImageGenerator.x[1], y: cellImageGenerator.y[1]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[1], y: cellImageGenerator.y[6]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[5], y: cellImageGenerator.y[6]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[5], y: cellImageGenerator.y[3]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[3], y: cellImageGenerator.y[3]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[3], y: cellImageGenerator.y[4]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[4], y: cellImageGenerator.y[4]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[4], y: cellImageGenerator.y[5]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[2], y: cellImageGenerator.y[5]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[2], y: cellImageGenerator.y[2]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[6], y: cellImageGenerator.y[2]));
+        //
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[6], y: cellImageGenerator.y[11]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[2], y: cellImageGenerator.y[11]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[2], y: cellImageGenerator.y[8]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[4], y: cellImageGenerator.y[8]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[4], y: cellImageGenerator.y[9]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[3], y: cellImageGenerator.y[9]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[3], y: cellImageGenerator.y[10]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[5], y: cellImageGenerator.y[10]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[5], y: cellImageGenerator.y[7]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[1], y: cellImageGenerator.y[7]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[1], y: cellImageGenerator.y[12]));
+        //
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[12], y: cellImageGenerator.y[12]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[12], y: cellImageGenerator.y[7]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[8], y: cellImageGenerator.y[7]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[8], y: cellImageGenerator.y[10]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[10], y: cellImageGenerator.y[10]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[10], y: cellImageGenerator.y[9]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[9], y: cellImageGenerator.y[9]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[9], y: cellImageGenerator.y[8]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[11], y: cellImageGenerator.y[8]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[11], y: cellImageGenerator.y[11]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[7], y: cellImageGenerator.y[11]));
+        //
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[7], y: cellImageGenerator.y[2]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[11], y: cellImageGenerator.y[2]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[11], y: cellImageGenerator.y[5]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[9], y: cellImageGenerator.y[5]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[9], y: cellImageGenerator.y[4]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[10], y: cellImageGenerator.y[4]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[10], y: cellImageGenerator.y[3]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[8], y: cellImageGenerator.y[3]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[8], y: cellImageGenerator.y[6]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[12], y: cellImageGenerator.y[6]));
+        context.addLine(to: CGPoint(x: cellImageGenerator.x[12], y: cellImageGenerator.y[1]));
+        //
+        context.closePath();
+        
+        context.setFillColor(borderFG )
+        context.fillPath()
+        
+        return makeImage()
+    }
+    
+    
     fileprivate func fullFill( _ bgColor: CGColor ) {
         context.setFillColor(bgColor )
         context.fill(CGRect( x: 0, y: 0, width: cellImageGenerator.userWidth, height: cellImageGenerator.userWidth ) )
@@ -298,146 +453,7 @@ class cellImageGenerator {
     }
     
     
-    func getNormalUnused() -> CGImage? {
-        fullFill( unusedNrmLight )
-        makeOutdent()
-        
-        return context.makeImage()
-    }
-    
-    
-    func getSelectUnused() -> CGImage? {
-        fullFill( unusedSelDark )
-        makeOutdent()
-        
-        return context.makeImage()
-    }
-    
-    
-    func getNormalEmpty() -> CGImage? {
-        fullFill( emptyNrmLight )
-        makeIndent()
-        
-        return context.makeImage()
-    }
-    
-    
-    func getSelectEmpty() -> CGImage? {
-        fullFill( emptySelDark )
-        makeIndent()
-
-        return context.makeImage()
-    }
-    
-    
-    func getNormalHeader() -> CGImage? {
-        fullFill( unusedNrmLight )
-        makeOutdent()
-        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
-
-        return context.makeImage()
-    }
-    
-    
-    func getSelectVertical() -> CGImage? {
-        fullFill( unusedNrmLight )
-        halfFill( unusedSelDark, midPoint: cellImageGenerator.p[0][0] )
-        makeOutdent()
-        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
-        
-        return context.makeImage()
-    }
-    
-    
-    func getSelectHorizontal() -> CGImage? {
-        fullFill( unusedNrmLight )
-        halfFill( unusedSelDark, midPoint: cellImageGenerator.p[3][3] )
-        makeOutdent()
-        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
-        
-        return context.makeImage()
-    }
-    
-    
-    func getSelectBoth() -> CGImage? {
-        fullFill(unusedSelDark)
-        makeOutdent()
-        context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
-        
-        return context.makeImage()
-    }
-    
-    
-    func getBorderCell() -> CGImage? {
-        context.setFillColor(borderBG )
-        context.fill(CGRect( x: 0, y: 0, width: cellImageGenerator.userWidth, height: cellImageGenerator.userWidth ) )
-        
-        context.beginPath()
-        
-        context.move(to: CGPoint(x: cellImageGenerator.x[0], y: cellImageGenerator.y[0]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[13], y: cellImageGenerator.y[0]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[13], y: cellImageGenerator.y[13]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[0], y: cellImageGenerator.y[13]));
-        context.closePath();
-        //
-        context.move(to: CGPoint(x: cellImageGenerator.x[1], y: cellImageGenerator.y[1]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[1], y: cellImageGenerator.y[6]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[5], y: cellImageGenerator.y[6]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[5], y: cellImageGenerator.y[3]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[3], y: cellImageGenerator.y[3]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[3], y: cellImageGenerator.y[4]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[4], y: cellImageGenerator.y[4]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[4], y: cellImageGenerator.y[5]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[2], y: cellImageGenerator.y[5]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[2], y: cellImageGenerator.y[2]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[6], y: cellImageGenerator.y[2]));
-        //
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[6], y: cellImageGenerator.y[11]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[2], y: cellImageGenerator.y[11]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[2], y: cellImageGenerator.y[8]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[4], y: cellImageGenerator.y[8]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[4], y: cellImageGenerator.y[9]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[3], y: cellImageGenerator.y[9]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[3], y: cellImageGenerator.y[10]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[5], y: cellImageGenerator.y[10]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[5], y: cellImageGenerator.y[7]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[1], y: cellImageGenerator.y[7]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[1], y: cellImageGenerator.y[12]));
-        //
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[12], y: cellImageGenerator.y[12]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[12], y: cellImageGenerator.y[7]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[8], y: cellImageGenerator.y[7]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[8], y: cellImageGenerator.y[10]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[10], y: cellImageGenerator.y[10]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[10], y: cellImageGenerator.y[9]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[9], y: cellImageGenerator.y[9]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[9], y: cellImageGenerator.y[8]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[11], y: cellImageGenerator.y[8]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[11], y: cellImageGenerator.y[11]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[7], y: cellImageGenerator.y[11]));
-        //
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[7], y: cellImageGenerator.y[2]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[11], y: cellImageGenerator.y[2]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[11], y: cellImageGenerator.y[5]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[9], y: cellImageGenerator.y[5]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[9], y: cellImageGenerator.y[4]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[10], y: cellImageGenerator.y[4]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[10], y: cellImageGenerator.y[3]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[8], y: cellImageGenerator.y[3]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[8], y: cellImageGenerator.y[6]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[12], y: cellImageGenerator.y[6]));
-        context.addLine(to: CGPoint(x: cellImageGenerator.x[12], y: cellImageGenerator.y[1]));
-        //
-        context.closePath();
-        
-        context.setFillColor(borderFG )
-        context.fillPath()
-        
-        return context.makeImage()
-    }
-    
-    
-    fileprivate func drawLabel( text: String, rect: CGRect ) -> CGImage? {
+    fileprivate func drawLabel( text: String, rect: CGRect ) -> CGImage {
         let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, attributes as CFDictionary )
         let line       = CTLineCreateWithAttributedString( attrString! )
         let textSize   = CTLineGetImageBounds( line, context )
@@ -449,18 +465,18 @@ class cellImageGenerator {
         CTLineDraw( line, context )
         context.restoreGState()
         
-        return context.makeImage()
+        return makeImage()
     }
     
     
-    func labelVertical(text: String) -> CGImage? {
+    func labelVertical(text: String) -> CGImage {
         let baseRect = cellImageGenerator.getVerticalRect( textRange: textRange )
 
         return drawLabel( text: String( text ), rect: baseRect )
     }
     
     
-    func labelHorizontal(text: String) -> CGImage? {
+    func labelHorizontal(text: String) -> CGImage {
         let baseRect = cellImageGenerator.getHorizontalRect( textRange: textRange )
         
         return drawLabel( text: String( text ), rect: baseRect )
