@@ -20,7 +20,7 @@ class Document: NSDocument {
     }
 
     override class var autosavesInPlace: Bool {
-        return true
+        return false
     }
 
     override func makeWindowControllers() {
@@ -34,6 +34,21 @@ class Document: NSDocument {
         controller.representedObject = puzzle
         viewController = controller
     }
+    
+    override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+        if ( item.action == #selector(NSDocument.save(_:)) ) {
+            let validator = PuzzleValidator(with: puzzle)
+            
+            if !validator.isValid {
+                let errors = validator.errors.joined(separator: "\n")
+                
+                viewController?.errorDialog(major: "Puzzle has errors", minor: errors)
+                return false
+            }
+        }
+
+        return true
+    }
 
     override func data(ofType typeName: String) throws -> Data {
         // Insert code here to write your document to data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning nil.
@@ -44,15 +59,7 @@ class Document: NSDocument {
 //        else {
 //            return Data()
 //        }
-        let validator = PuzzleValidator(with: puzzle)
-        
-        if !validator.isValid {
-            let errors = validator.errors.joined(separator: "\n")
-            
-            viewController?.errorDialog(major: "Puzzle has errors", minor: errors)
-            throw NSError(domain: NSCocoaErrorDomain, code: NSFormattingError, userInfo: nil)
-        }
-        
+
         if let theData = puzzle.string.data(using: .utf8) {
             return theData
         }
