@@ -16,7 +16,7 @@ protocol Cell {
 
 class UnusedCell: Cell {
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
-        return selected ? generator.getSelectUnused() : generator.getNormalUnused()
+        return selected ? generator.SelectUnused : generator.NormalUnused
     }
     
     var string: String {
@@ -29,7 +29,7 @@ class EmptyCell: Cell {
     var eligible = Set<Int>( 1 ... 9 )
     
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
-        return selected ? generator.getSelectEmpty() : generator.getNormalEmpty()
+        return selected ? generator.SelectEmpty : generator.NormalEmpty
     }
     
     var string: String {
@@ -71,21 +71,21 @@ class HeaderCell: Cell {
         
         switch type {
         case .none:
-            image = generator.getNormalHeader()
+            image = generator.NormalHeader
         case .vertical:
-            image = generator.getSelectVertical()
+            image = generator.SelectVertical
         case .horizontal:
-            image = generator.getSelectHorizontal()
+            image = generator.SelectHorizontal
         case .both:
-            image = generator.getSelectBoth()
+            image = generator.SelectBoth
         }
         
         if let vert = vertical {
-            image = generator.labelVertical(text: String(vert))
+            image = generator.labelVertical(image: image, text: String(vert))
         }
         
         if let horz = horizontal {
-            image = generator.labelHorizontal(text: String(horz))
+            image = generator.labelHorizontal(image: image, text: String(horz))
         }
         
         return image

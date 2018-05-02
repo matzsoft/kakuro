@@ -220,77 +220,70 @@ class cellImageGenerator {
         return makeImage()
     }()
     
-    func getNormalUnused() -> CGImage {
-        fullFill( unusedNrmLight )
-        makeOutdent()
-        
-        return makeImage()
-    }
-    
-    
-    func getSelectUnused() -> CGImage {
+
+    lazy var SelectUnused: CGImage = {
         fullFill( unusedSelDark )
         makeOutdent()
         
         return makeImage()
-    }
+    }()
     
     
-    func getNormalEmpty() -> CGImage {
+    lazy var NormalEmpty: CGImage = {
         fullFill( emptyNrmLight )
         makeIndent()
         
         return makeImage()
-    }
+    }()
     
     
-    func getSelectEmpty() -> CGImage {
+    lazy var SelectEmpty: CGImage = {
         fullFill( emptySelDark )
         makeIndent()
         
         return makeImage()
-    }
+    }()
     
     
-    func getNormalHeader() -> CGImage {
+    lazy var NormalHeader: CGImage = {
         fullFill( unusedNrmLight )
         makeOutdent()
         context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
         
         return makeImage()
-    }
+    }()
     
     
-    func getSelectVertical() -> CGImage {
+    lazy var SelectVertical: CGImage = {
         fullFill( unusedNrmLight )
         halfFill( unusedSelDark, midPoint: cellImageGenerator.p[0][0] )
         makeOutdent()
         context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
         
         return makeImage()
-    }
+    }()
     
     
-    func getSelectHorizontal() -> CGImage {
+    lazy var SelectHorizontal: CGImage = {
         fullFill( unusedNrmLight )
         halfFill( unusedSelDark, midPoint: cellImageGenerator.p[3][3] )
         makeOutdent()
         context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
         
         return makeImage()
-    }
+    }()
     
     
-    func getSelectBoth() -> CGImage {
+    lazy var SelectBoth: CGImage = {
         fullFill(unusedSelDark)
         makeOutdent()
         context.strokeLineSegments(between: [ cellImageGenerator.p[0][3], cellImageGenerator.p[3][0] ])
         
         return makeImage()
-    }
+    }()
     
     
-    func getBorderCell() -> CGImage {
+    lazy var BorderCell: CGImage = {
         context.setFillColor(borderBG )
         context.fill(CGRect( x: 0, y: 0, width: cellImageGenerator.userWidth, height: cellImageGenerator.userWidth ) )
         
@@ -356,7 +349,7 @@ class cellImageGenerator {
         context.fillPath()
         
         return makeImage()
-    }
+    }()
     
     
     fileprivate func fullFill( _ bgColor: CGColor ) {
@@ -453,6 +446,14 @@ class cellImageGenerator {
     }
     
     
+    func wallpaperImage(_ image: CGImage) {
+        let imageRect = CGRect(x: 0, y: 0, width: image.width, height: image.height)
+        let wallRect = context.convertToUserSpace(imageRect)
+        
+        context.draw(image, in: wallRect)
+    }
+    
+    
     fileprivate func drawLabel( text: String, rect: CGRect ) -> CGImage {
         let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, attributes as CFDictionary )
         let line       = CTLineCreateWithAttributedString( attrString! )
@@ -469,16 +470,18 @@ class cellImageGenerator {
     }
     
     
-    func labelVertical(text: String) -> CGImage {
+    func labelVertical(image: CGImage, text: String) -> CGImage {
         let baseRect = cellImageGenerator.getVerticalRect( textRange: textRange )
 
+        wallpaperImage(image)
         return drawLabel( text: String( text ), rect: baseRect )
     }
     
     
-    func labelHorizontal(text: String) -> CGImage {
+    func labelHorizontal(image: CGImage, text: String) -> CGImage {
         let baseRect = cellImageGenerator.getHorizontalRect( textRange: textRange )
         
+        wallpaperImage(image)
         return drawLabel( text: String( text ), rect: baseRect )
     }
 }
