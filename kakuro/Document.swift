@@ -36,18 +36,17 @@ class Document: NSDocument {
     }
     
     override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
-        if ( item.action == #selector(NSDocument.save(_:)) ) {
+        switch item.action {
+        case #selector(NSDocument.save(_:)):
+            fallthrough
+        case #selector(NSDocument.saveAs(_:)):
             let validator = PuzzleValidator(with: puzzle)
             
-            if !validator.isValid {
-                let errors = validator.errors.joined(separator: "\n")
-                
-                viewController?.errorDialog(major: "Puzzle has errors", minor: errors)
-                return false
-            }
-        }
+            return validator.isValid
 
-        return true
+        default:
+            return true
+        }
     }
 
     override func data(ofType typeName: String) throws -> Data {
