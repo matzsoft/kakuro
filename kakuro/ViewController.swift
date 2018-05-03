@@ -70,7 +70,7 @@ class ViewController: NSViewController, NSWindowDelegate {
         alert.alertStyle = .warning
         alert.addButton(withTitle: "OK")
         
-        _ = alert.runModal()
+        alert.beginSheetModal(for: view.window!, completionHandler: nil)
     }
     
 
