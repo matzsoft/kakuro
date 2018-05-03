@@ -22,6 +22,7 @@
 		DDA73D7D208A8062002D00A2 /* Todo.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DDA73D7C208A8062002D00A2 /* Todo.rtf */; };
 		DDB1DDF1208ED57B0060EFEF /* TotalFieldEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */; };
 		DDB1DE1420940D3E0060EFEF /* PuzzleValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */; };
+		DDF18AE0209AB9B10003E65D /* PuzzleAudioVerify.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		DDA73D7C208A8062002D00A2 /* Todo.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Todo.rtf; sourceTree = "<group>"; };
 		DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalFieldEditor.swift; sourceTree = "<group>"; };
 		DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleValidator.swift; sourceTree = "<group>"; };
+		DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleAudioVerify.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 				DD609B6B2075CD70007AF1D5 /* Info.plist */,
 				DD609B6C2075CD70007AF1D5 /* kakuro.entitlements */,
 				DDA73D7C208A8062002D00A2 /* Todo.rtf */,
+				DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */,
 			);
 			path = kakuro;
 			sourceTree = "<group>";
@@ -175,6 +178,7 @@
 				DD609B732075CEE9007AF1D5 /* DocumentWindowController.swift in Sources */,
 				DD609B792076BDF1007AF1D5 /* PuzzleLex.swift in Sources */,
 				DD609B632075CD6F007AF1D5 /* ViewController.swift in Sources */,
+				DDF18AE0209AB9B10003E65D /* PuzzleAudioVerify.swift in Sources */,
 				DD609B7B2076D5F6007AF1D5 /* cellImageGenerator.swift in Sources */,
 				DD609B812083C95C007AF1D5 /* Cell.swift in Sources */,
 				DD609B612075CD6F007AF1D5 /* AppDelegate.swift in Sources */,

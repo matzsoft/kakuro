@@ -11,6 +11,7 @@ import Foundation
 protocol Cell {
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage
     var string: String { get }
+    var speechString: String { get }
 }
 
 
@@ -21,6 +22,10 @@ class UnusedCell: Cell {
     
     var string: String {
         return "  -  "
+    }
+    
+    var speechString: String {
+        return "Unused"
     }
 }
 
@@ -34,6 +39,10 @@ class EmptyCell: Cell {
     
     var string: String {
         return "  .  "
+    }
+    
+    var speechString: String {
+        return "Empty"
     }
 }
 
@@ -63,7 +72,11 @@ class HeaderCell: Cell {
     }
     
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
-        return selected ? draw( generator: generator, selectType: .both ) : draw( generator: generator, selectType: .none )
+        if selected {
+            return draw( generator: generator, selectType: .both )
+        } else {
+            return draw( generator: generator, selectType: .none )
+        }
     }
     
     func draw( generator: cellImageGenerator, selectType type: SelectType ) -> CGImage {
@@ -104,5 +117,20 @@ class HeaderCell: Cell {
         }
 
         return "\(front)\\\(back)"
+    }
+    
+    var speechString: String {
+        var front = ""
+        var back  = ""
+        
+        if let vert = vertical {
+            front = ", down \(vert)"
+        }
+        
+        if let horz = horizontal {
+            back = ", right \(horz)"
+        }
+        
+        return "Header\(front)\(back)"
     }
 }

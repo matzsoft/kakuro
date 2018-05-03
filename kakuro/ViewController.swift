@@ -447,6 +447,12 @@ class ViewController: NSViewController, NSWindowDelegate {
     }
     
     override func cancelOperation(_ sender: Any?) {
+        if let document = view.window?.windowController?.document as? Document {
+            if document.stopSpeaking() {
+                return
+            }
+        }
+        
         if !editingPuzzle {
             editingPuzzle = true
             view.needsDisplay = true

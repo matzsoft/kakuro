@@ -8,10 +8,28 @@
 
 import Cocoa
 
-class Document: NSDocument {
+class Document: NSDocument, NSSpeechSynthesizerDelegate {
     var puzzle = Puzzle()
     var viewController: ViewController? = nil
+    var isSpeaking = false
+    var speechQueue: [ SpeechCommand ] = []
+    
 
+    lazy var synthesizer: NSSpeechSynthesizer = {
+        let synthesizer = NSSpeechSynthesizer()
+        let voices = NSSpeechSynthesizer.availableVoices
+        let desiredVoiceName = "com.apple.speech.synthesis.voice.Alex"
+        let desiredVoice = NSSpeechSynthesizer.VoiceName(rawValue: desiredVoiceName)
+        
+        if let voice = voices.first(where: { $0 == desiredVoice } ) {
+            synthesizer.setVoice(voice)
+        }
+        
+        synthesizer.usesFeedbackWindow = true
+        synthesizer.delegate = self
+        return synthesizer
+    }()
+    
     override init() {
         super.init()
         // Add your subclass-specific initialization here.
@@ -43,6 +61,9 @@ class Document: NSDocument {
             let validator = PuzzleValidator(with: puzzle)
             
             return validator.isValid
+            
+        case #selector(Document.audioVerify(_:)):
+            return !isSpeaking
 
         default:
             return true
@@ -75,6 +96,27 @@ class Document: NSDocument {
         }
     }
     
+    func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+        guard !speechQueue.isEmpty else {
+            isSpeaking = false
+            return
+        }
+        
+        let command = speechQueue.removeFirst()
+        
+        if puzzle.moveTo(row: command.row, col: command.col) {
+            viewController?.view.needsDisplay = true
+        }
+        
+        sender.startSpeaking(command.string)
+        isSpeaking = true
+    }
+    
+    func stopSpeaking() -> Bool {
+        speechQueue = []
+        return isSpeaking
+    }
+    
     @IBAction func checkForErrors(_ sender: Any?) {
         let validator = PuzzleValidator(with: puzzle)
         
@@ -88,21 +130,8 @@ class Document: NSDocument {
     }
     
     @IBAction func audioVerify(_ sender: Any?) {
-        let synthesizer = NSSpeechSynthesizer()
-        let voices = NSSpeechSynthesizer.availableVoices
-        let desiredVoiceName = "com.apple.speech.synthesis.voice.Alex"
-        let desiredVoice = NSSpeechSynthesizer.VoiceName(rawValue: desiredVoiceName)
-        
-        if let voice = voices.first(where: { $0 == desiredVoice } ) {
-            synthesizer.setVoice(voice)
-        }
-        
-        synthesizer.usesFeedbackWindow = true
-        if puzzle.nrows == 0 {
-            synthesizer.startSpeaking("The puzzle is empty.")
-        } else {
-            synthesizer.startSpeaking("The puzzle has some cells")
-        }
+        speechQueue = puzzle.audioVerify()
+        speechSynthesizer(synthesizer, didFinishSpeaking: true)
     }
 }
 
