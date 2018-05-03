@@ -84,13 +84,9 @@ class Puzzle {
     // MARK: - Movement methods (i.e. change which cell is selected)
     
     func moveTo(row: Int, col: Int) -> Bool {
-        if row < 0 || row >= nrows {
-            return false
-        }
-        
-        if col < 0 || col >= cells[row].count {
-            return false
-        }
+        guard row >= 0 && row < nrows            else { return false }
+        guard col >= 0 && col < cells[row].count else { return false }
+        guard row != self.row || col != self.col else { return false }
         
         self.row = row
         self.col = col
@@ -136,9 +132,9 @@ class Puzzle {
     
     
     func moveToEndOfDocument() -> Bool {
-        let lastRow = nrows - 1
+        guard nrows > 0 else { return false }
         
-        guard lastRow >= 0 else { return false }
+        let lastRow = nrows - 1
         
         return moveTo(row: lastRow, col: cells[lastRow].count - 1)
     }
