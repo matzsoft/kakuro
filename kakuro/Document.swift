@@ -86,5 +86,23 @@ class Document: NSDocument {
             viewController?.errorDialog(major: "Puzzle has errors", minor: errors)
         }
     }
+    
+    @IBAction func audioVerify(_ sender: Any?) {
+        let synthesizer = NSSpeechSynthesizer()
+        let voices = NSSpeechSynthesizer.availableVoices
+        let desiredVoiceName = "com.apple.speech.synthesis.voice.Alex"
+        let desiredVoice = NSSpeechSynthesizer.VoiceName(rawValue: desiredVoiceName)
+        
+        if let voice = voices.first(where: { $0 == desiredVoice } ) {
+            synthesizer.setVoice(voice)
+        }
+        
+        synthesizer.usesFeedbackWindow = true
+        if puzzle.nrows == 0 {
+            synthesizer.startSpeaking("The puzzle is empty.")
+        } else {
+            synthesizer.startSpeaking("The puzzle has some cells")
+        }
+    }
 }
 

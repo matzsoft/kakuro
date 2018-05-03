@@ -110,6 +110,13 @@
                                                 <action selector="checkForErrors:" target="Ady-hI-5gd" id="dOI-m8-ALw"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Audio Verify" id="lL9-D9-lSP">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="audioVerify:" target="Ady-hI-5gd" id="IC1-gK-gz3"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="8Os-Zo-1VE"/>
                                         <menuItem title="Page Setup…" keyEquivalent="P" id="qIS-W8-SiK">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
