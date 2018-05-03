@@ -47,19 +47,6 @@ class ViewController: NSViewController, NSWindowDelegate {
         return editingPuzzle ? nil : fieldEditor
     }
     
-    @IBAction func checkForErrors(_ sender: Any?) {
-        let puzzle = representedObject as! Puzzle
-        let validator = PuzzleValidator(with: puzzle)
-        
-        if validator.isValid {
-            errorDialog(major: "Puzzle has no errors", minor: "")
-        } else {
-            let errors = validator.errors.joined(separator: "\n")
-            
-            errorDialog(major: "Puzzle has errors", minor: errors)
-        }
-    }
-    
     
     // MARK: - Methods for display
     

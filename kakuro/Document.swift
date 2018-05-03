@@ -74,5 +74,17 @@ class Document: NSDocument {
             puzzle = Puzzle(text: text)!
         }
     }
+    
+    @IBAction func checkForErrors(_ sender: Any?) {
+        let validator = PuzzleValidator(with: puzzle)
+        
+        if validator.isValid {
+            viewController?.errorDialog(major: "Puzzle has no errors", minor: "")
+        } else {
+            let errors = validator.errors.joined(separator: "\n")
+            
+            viewController?.errorDialog(major: "Puzzle has errors", minor: errors)
+        }
+    }
 }
 
