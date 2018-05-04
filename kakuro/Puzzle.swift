@@ -22,8 +22,8 @@ class Puzzle {
 
     // Computed variables for puzzle drawing
     var lineGap:        CGFloat { return cellWidth + 3 }
-    var interiorWidth:  CGFloat { return CGFloat( ncols + 2 ) * lineGap - 1 }
-    var interiorHeight: CGFloat { return CGFloat( nrows + 2 ) * lineGap - 1 }
+    var interiorWidth:  CGFloat { return CGFloat( ncols + 2 - 1 ) * lineGap + cellWidth }
+    var interiorHeight: CGFloat { return CGFloat( nrows + 2 - 1 ) * lineGap + cellWidth }
     var exteriorWidth:  CGFloat { return interiorWidth + 2 * borderWidth }
     var exteriorHeight: CGFloat { return interiorHeight + 2 * borderWidth }
     
@@ -347,17 +347,17 @@ class Puzzle {
     // MARK: - Puzzle drawing methods and utilities
     
     // NOTE: row and col here include the border cells around the puzzle
-    func rectFromRow( _ row: Int, andCol col: Int ) -> CGRect {
+    func rectFrom( row: Int, col: Int ) -> CGRect {
         let interiorRect = CGRect( x: borderWidth, y: borderWidth, width: interiorWidth, height: interiorHeight )
-        let x = interiorRect.minX + 1 + CGFloat( col ) * lineGap
-        let y = interiorRect.maxY - cellWidth - CGFloat( row ) * lineGap - 1
+        let x = interiorRect.minX + CGFloat( col ) * lineGap
+        let y = interiorRect.maxY - CGFloat( row ) * lineGap - cellWidth
         
         return CGRect( x: x, y: y, width: cellWidth, height: cellWidth )
     }
     
     
     func selectedRect() -> CGRect {
-        return rectFromRow(row + 1, andCol: col + 1)
+        return rectFrom(row: row + 1, col: col + 1)
     }
     
 
@@ -370,12 +370,12 @@ class Puzzle {
             let cell = generator.BorderCell
             
             for col in 0 ..< ncols + 2 {
-                context?.draw(cell, in: rectFromRow( row, andCol: col ))
+                context?.draw(cell, in: rectFrom( row: row, col: col ))
             }
         }
         
         func drawBorderCol( _ col: Int, andRow row: Int ) {
-            context?.draw(generator.BorderCell, in: rectFromRow( row, andCol: col ))
+            context?.draw(generator.BorderCell, in: rectFrom( row: row, col: col ))
         }
         
         context?.setFillColor(generator.borderSolid )
@@ -386,7 +386,7 @@ class Puzzle {
             drawBorderCol( 0, andRow: row + 1 )
             for col in 0 ..< cells[row].count {
                 let cell     = cells[row][col]
-                let cellRect = rectFromRow( row + 1, andCol: col + 1 )
+                let cellRect = rectFrom( row: row + 1, col: col + 1 )
                 let selected = row == self.row && col == self.col
                 var image: CGImage?
                 
