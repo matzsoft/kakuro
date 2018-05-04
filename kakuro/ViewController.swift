@@ -149,6 +149,17 @@ class ViewController: NSViewController, NSWindowDelegate {
         
         NSSound.beep()
     }
+    
+    
+    // MARK: - Methods to handle mouse input
+    
+    override func mouseDown(with event: NSEvent) {
+        if let puzzle = representedObject as! Puzzle? {
+            if puzzle.selectFrom(point: event.locationInWindow) {
+                view.needsDisplay = true 
+            }
+        }
+    }
 
     
     // MARK: - Methods to handle text input from the keyboard

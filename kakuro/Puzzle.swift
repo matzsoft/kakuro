@@ -346,6 +346,24 @@ class Puzzle {
     
     // MARK: - Puzzle drawing methods and utilities
     
+    func selectFrom(point: NSPoint) -> Bool {
+        let min = borderWidth + lineGap
+        let width = interiorWidth - lineGap - cellWidth
+        let height = interiorHeight - lineGap - cellWidth
+        let puzzleRect = CGRect( x: min, y: min, width: width, height: height )
+        
+        guard puzzleRect.contains(point) else { return false }
+        
+        let row = Int( ( puzzleRect.maxY - point.y /*- cellWidth*/ ) / lineGap )
+        let col = Int( ( point.x - puzzleRect.minX ) / lineGap )
+        let cellRect = rectFrom(row: row + 1, col: col + 1)
+        
+        guard cellRect.contains(point) else { return false }
+
+        return moveTo(row: row, col: col)
+    }
+
+    
     // NOTE: row and col here include the border cells around the puzzle
     func rectFrom( row: Int, col: Int ) -> CGRect {
         let interiorRect = CGRect( x: borderWidth, y: borderWidth, width: interiorWidth, height: interiorHeight )
