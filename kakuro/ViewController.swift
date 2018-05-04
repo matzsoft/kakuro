@@ -154,9 +154,16 @@ class ViewController: NSViewController, NSWindowDelegate {
     // MARK: - Methods to handle mouse input
     
     override func mouseDown(with event: NSEvent) {
+        if !editingPuzzle {
+            finishTotalEdit()
+            if !editingPuzzle {
+                return
+            }
+        }
+        
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.selectFrom(point: event.locationInWindow) {
-                view.needsDisplay = true 
+                view.needsDisplay = true
             }
         }
     }
