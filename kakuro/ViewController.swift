@@ -116,7 +116,9 @@ class ViewController: NSViewController, NSWindowDelegate {
         return false
     }
     
-    func finishTotalEdit() {
+    func finishTotalEdit() -> Bool {
+        guard !editingPuzzle else { return true }
+        
         if let puzzle = representedObject as! Puzzle? {
             if let header = puzzle.selectedCell as? HeaderCell {
                 let editedValue = textField.stringValue
@@ -125,10 +127,10 @@ class ViewController: NSViewController, NSWindowDelegate {
                 if let numeric = value {
                     if numeric < 3 {
                         errorDialog(major: "Invalid total \(numeric)", minor: "Minimum total is 3")
-                        return
+                        return false
                     } else if numeric > 45 {
                         errorDialog(major: "Invalid total \(numeric)", minor: "Maximum total is 45")
-                        return
+                        return false
                     }
                 }
                 
@@ -143,23 +145,19 @@ class ViewController: NSViewController, NSWindowDelegate {
                 view.becomeFirstResponder()
                 view.window?.selectNextKeyView(view)
                 view.needsDisplay = true
-                return
+                return true
             }
         }
         
         NSSound.beep()
+        return false
     }
     
     
     // MARK: - Methods to handle mouse input
     
     override func mouseDown(with event: NSEvent) {
-        if !editingPuzzle {
-            finishTotalEdit()
-            if !editingPuzzle {
-                return
-            }
-        }
+        guard finishTotalEdit() else { return }
         
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.selectFrom(point: event.locationInWindow) {
@@ -227,8 +225,7 @@ class ViewController: NSViewController, NSWindowDelegate {
             }
         } else {
             if editingHorizontal != horizontal {
-                finishTotalEdit()
-                if !editingPuzzle {
+                if !finishTotalEdit() {
                     return
                 }
                 if setupTotalEdit(horizontal: horizontal) {
@@ -392,13 +389,8 @@ class ViewController: NSViewController, NSWindowDelegate {
     }
     
     override func insertBacktab(_ sender: Any?) {
-        if !editingPuzzle {
-            finishTotalEdit()
-            if !editingPuzzle {
-                return
-            }
-        }
-        
+        guard finishTotalEdit() else { return }
+
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.insertBefore() {
                 view.needsDisplay = true
@@ -410,13 +402,8 @@ class ViewController: NSViewController, NSWindowDelegate {
     }
     
     override func insertTab(_ sender: Any?) {
-        if !editingPuzzle {
-            finishTotalEdit()
-            if !editingPuzzle {
-                return
-            }
-        }
-        
+        guard finishTotalEdit() else { return }
+
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.advanceOrAppend() {
                 view.needsDisplay = true
@@ -428,13 +415,8 @@ class ViewController: NSViewController, NSWindowDelegate {
     }
     
     override func insertNewline(_ sender: Any?) {
-        if !editingPuzzle {
-            finishTotalEdit()
-            if !editingPuzzle {
-                return
-            }
-        }
-        
+        guard finishTotalEdit() else { return }
+
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.newLine() {
                 view.needsDisplay = true
@@ -446,13 +428,8 @@ class ViewController: NSViewController, NSWindowDelegate {
     }
     
     override func insertLineBreak(_ sender: Any?) {
-        if !editingPuzzle {
-            finishTotalEdit()
-            if !editingPuzzle {
-                return
-            }
-        }
-        
+        guard finishTotalEdit() else { return }
+
         if let puzzle = representedObject as! Puzzle? {
             if puzzle.lineBreak() {
                 view.needsDisplay = true

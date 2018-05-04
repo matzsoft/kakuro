@@ -42,12 +42,20 @@ class TotalFieldEditor: NSTextView {
         super.doCommand(by: selector)
     }
     
+    override func insertBacktab(_ sender: Any?) {
+        viewController?.insertBacktab(sender)
+    }
+    
     override func insertTab(_ sender: Any?) {
         viewController?.insertTab(sender)
     }
     
     override func insertNewline(_ sender: Any?) {
         viewController?.insertNewline(sender)
+    }
+    
+    override func insertLineBreak(_ sender: Any?) {
+        viewController?.insertLineBreak(sender)
     }
     
     override func cancelOperation(_ sender: Any?) {

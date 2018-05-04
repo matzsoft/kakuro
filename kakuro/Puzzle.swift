@@ -289,10 +289,7 @@ class Puzzle {
             return true
         }
         
-        if !moveToEndOfLine() {
-            return false
-        }
-        
+        _ = moveToEndOfLine()
         while cells[row].count < ncols {
             if !appendCell() {
                 return false
