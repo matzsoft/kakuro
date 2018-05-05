@@ -36,6 +36,8 @@ There are basically two modes of editing: puzzle level editing and total editing
 ## Editing at the puzzle level
 This mode is used for moving the selection, changing a cell type, adding cells, and deleting cells.
 You can also transition into total editing mode to set the totals in header cells.
+### Getting started
+There is a sample.kkr file included with this repo to use as a starting point.
 ### Moving the selection
 1. Left Arrow - move the selection one cell to the left.
 2. Right Arrow - move the selection one cell to the right.
