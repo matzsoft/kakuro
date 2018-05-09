@@ -32,6 +32,8 @@ class UnusedCell: Cell {
 
 class EmptyCell: Cell {
     var eligible = Set<Int>( 1 ... 9 )
+    weak var vertical: HeaderCell? = nil
+    weak var horizontal: HeaderCell? = nil
     
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
         return selected ? generator.SelectEmpty : generator.NormalEmpty
@@ -47,6 +49,21 @@ class EmptyCell: Cell {
 }
 
 
+struct HeaderSum {
+    var total: Int
+    var cells: [ EmptyCell ]
+    var eligible: Set<Int>
+    var possibles: [ Set<Int> ]
+    
+    init(total: Int) {
+        self.total = total
+        cells = []
+        eligible = Set<Int>( 1 ... 9 )
+        possibles = []
+    }
+}
+
+
 class HeaderCell: Cell {
     enum SelectType {
         case none
@@ -55,16 +72,37 @@ class HeaderCell: Cell {
         case both
     }
     
-    var vertical: Int?
-    var horizontal: Int?
+    var vertical: HeaderSum?
+    var horizontal: HeaderSum?
     
     init( vertical: Int?, horizontal: Int? ) {
-        self.vertical = vertical
-        self.horizontal = horizontal
+        if let total = vertical {
+            self.vertical = HeaderSum(total: total)
+        } else {
+            self.vertical = nil
+        }
+        
+        if let total = horizontal {
+            self.horizontal = HeaderSum(total: total)
+        } else {
+            self.horizontal = nil
+        }
     }
     
-    func setHorizontal( _ horizontal: Int ) {
-        self.horizontal = horizontal
+    func setVertical( _ vertical: Int? ) {
+        if let total = vertical {
+            self.vertical = HeaderSum(total: total)
+        } else {
+            self.vertical = nil
+        }
+    }
+    
+    func setHorizontal( _ horizontal: Int? ) {
+        if let total = horizontal {
+            self.horizontal = HeaderSum(total: total)
+        } else {
+            self.horizontal = nil
+        }
     }
     
     func hasNoTotal() -> Bool {
@@ -94,11 +132,11 @@ class HeaderCell: Cell {
         }
         
         if let vert = vertical {
-            image = generator.labelVertical(image: image, text: String(vert))
+            image = generator.labelVertical(image: image, text: String(vert.total))
         }
         
         if let horz = horizontal {
-            image = generator.labelHorizontal(image: image, text: String(horz))
+            image = generator.labelHorizontal(image: image, text: String(horz.total))
         }
         
         return image
@@ -109,11 +147,11 @@ class HeaderCell: Cell {
         var back  = "  "
         
         if let vert = vertical {
-            front = String(format: "%2d", arguments: [vert])
+            front = String(format: "%2d", arguments: [vert.total])
         }
         
         if let horz = horizontal {
-            back = String(format: "%-2d", arguments: [horz])
+            back = String(format: "%-2d", arguments: [horz.total])
         }
 
         return "\(front)\\\(back)"
@@ -124,11 +162,11 @@ class HeaderCell: Cell {
         var back  = ""
         
         if let vert = vertical {
-            front = ", down \(vert)"
+            front = ", down \(vert.total)"
         }
         
         if let horz = horizontal {
-            back = ", right \(horz)"
+            back = ", right \(horz.total)"
         }
         
         return "Header\(front)\(back)"

@@ -120,8 +120,8 @@ class PuzzleValidator: Puzzle {
                     cellError(row: row, col: col, error: "should not have vertical total")
                 }
             default:
-                if let horz = header.vertical {
-                    validateVerticalTotal(horz, row: row, col: col)
+                if let sum = header.vertical {
+                    validateVerticalTotal(sum, row: row, col: col)
                 }
             }
             switch col {
@@ -134,14 +134,14 @@ class PuzzleValidator: Puzzle {
                     cellError(row: row, col: col, error: "should not have horizontal total")
                 }
             default:
-                if let horz = header.horizontal {
-                    validateHorizontalTotal(horz, row: row, col: col)
+                if let sum = header.horizontal {
+                    validateHorizontalTotal(sum, row: row, col: col)
                 }
             }
         }
     }
     
-    private func validateHorizontalTotal(_ total: Int, row: Int, col: Int) {
+    private func validateHorizontalTotal(_ sum: HeaderSum, row: Int, col: Int) {
         var count = 0
         
         for newCol in col + 1 ..< cells[row].count {
@@ -151,14 +151,14 @@ class PuzzleValidator: Puzzle {
             count += 1
         }
         
-        if count < totalRanges[total].min {
+        if count < totalRanges[sum.total].min {
             cellError(row: row, col: col, error: "doesn't have enough empty cells on the right")
-        } else if count > totalRanges[total].max {
+        } else if count > totalRanges[sum.total].max {
             cellError(row: row, col: col, error: "has too many empty cells on the right")
         }
     }
     
-    private func validateVerticalTotal(_ total: Int, row: Int, col: Int) {
+    private func validateVerticalTotal(_ sum: HeaderSum, row: Int, col: Int) {
         var count = 0
         
         for newRow in row + 1 ..< nrows {
@@ -168,9 +168,9 @@ class PuzzleValidator: Puzzle {
             count += 1
         }
         
-        if count < totalRanges[total].min {
+        if count < totalRanges[sum.total].min {
             cellError(row: row, col: col, error: "doesn't have enough empty below")
-        } else if count > totalRanges[total].max {
+        } else if count > totalRanges[sum.total].max {
             cellError(row: row, col: col, error: "has too many empty cells below")
         }
     }

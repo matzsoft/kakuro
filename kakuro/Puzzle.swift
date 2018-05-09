@@ -77,7 +77,7 @@ class Puzzle {
         let lastCol = cells[lastRow].count - 1
         let header  = cells[lastRow][lastCol] as! HeaderCell
         
-        header.setHorizontal( horizontal )
+        header.horizontal = HeaderSum(total: horizontal)
     }
     
     

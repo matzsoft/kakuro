@@ -93,13 +93,13 @@ class ViewController: NSViewController, NSWindowDelegate {
                     textRect = puzzle.generator.getHorizontalRect()
                     
                     if let horz = header.horizontal {
-                        editedValue = "\(horz)"
+                        editedValue = "\(horz.total)"
                     }
                 } else {
                     textRect = puzzle.generator.getVerticalRect()
                     
                     if let vert = header.vertical {
-                        editedValue = "\(vert)"
+                        editedValue = "\(vert.total)"
                     }
                 }
                 
@@ -135,9 +135,9 @@ class ViewController: NSViewController, NSWindowDelegate {
                 }
                 
                 if editingHorizontal {
-                    header.horizontal = value
+                    header.setHorizontal(value)
                 } else {
-                    header.vertical = value
+                    header.setVertical(value)
                 }
                 
                 editingPuzzle = true
