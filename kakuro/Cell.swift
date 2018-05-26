@@ -61,6 +61,15 @@ struct HeaderSum {
         eligible = Set<Int>( 1 ... 9 )
         possibles = []
     }
+    
+    mutating func setCells(cells: [EmptyCell]) {
+        self.cells = cells
+        eligible = Set<Int>( 1 ... 9 )
+        possibles = possibilities(total: total, number: cells.count, available: eligible)
+        eligible = possibles.reduce(eligible, { ( s1: Set<Int>, s2: Set<Int> ) -> Set<Int> in
+            s1.intersection(s2)
+        } )
+    }
 }
 
 
@@ -171,4 +180,33 @@ class HeaderCell: Cell {
         
         return "Header\(front)\(back)"
     }
+}
+
+
+func possibilities(total: Int, number: Int, available: Set<Int>) -> Array<Set<Int>> {
+    var results = Array<Set<Int>>()
+    
+    if number == 1 {
+        if available.contains(total) {
+            results.append([total])
+        }
+        
+    } else {
+        let limit = total / ( number - 1 )
+        var eligible = available
+        
+        while !eligible.isEmpty {
+            let trial = eligible.min()!
+            
+            if trial >= limit { break }
+            
+            eligible.remove(trial)
+            
+            let possibles = possibilities(total: total - trial, number: number - 1, available: eligible)
+            
+            results.append( contentsOf: possibles.map { $0.union( [trial] ) } )
+        }
+    }
+    
+    return results
 }

@@ -112,67 +112,71 @@ class PuzzleValidator: Puzzle {
         } else {
             switch row {
             case nrows - 1:
-                if let _ = header.vertical {
+                if header.vertical != nil {
                     cellError(row: row, col: col, error: "unallowed vertical total")
                 }
             case 0:
-                if let _ = header.horizontal {
+                if header.horizontal != nil {
                     cellError(row: row, col: col, error: "unallowed horizontal total")
                 }
                 fallthrough
             default:
-                if let sum = header.vertical {
-                    validateVerticalTotal(sum, row: row, col: col)
-                }
+                validateVerticalTotal(header, row: row, col: col)
             }
             switch col {
             case cells[row].count - 1:
-                if let _ = header.horizontal {
+                if header.horizontal != nil {
                     cellError(row: row, col: col, error: "unallowed horizontal total")
                 }
             case 0:
-                if let _ = header.vertical {
+                if header.vertical != nil {
                     cellError(row: row, col: col, error: "unallowed vertical total")
                 }
                 fallthrough
             default:
-                if let sum = header.horizontal {
-                    validateHorizontalTotal(sum, row: row, col: col)
-                }
+                validateHorizontalTotal(header, row: row, col: col)
             }
         }
     }
     
-    private func validateHorizontalTotal(_ sum: HeaderSum, row: Int, col: Int) {
-        var count = 0
+    private func validateHorizontalTotal(_ header: HeaderCell, row: Int, col: Int) {
+        guard var sum = header.horizontal else { return }
+        var cells: [EmptyCell] = []
         
-        for newCol in col + 1 ..< cells[row].count {
-            if !( cells[row][newCol] is EmptyCell ) {
-                break
-            }
-            count += 1
+        for newCol in col + 1 ..< self.cells[row].count {
+            guard let cell = self.cells[row][newCol] as? EmptyCell else { break }
+            
+            cell.horizontal = header
+            cells.append(cell)
         }
         
-        if count < totalRanges[sum.total].min {
+        sum.setCells(cells: cells)
+        header.horizontal = sum
+        
+        if cells.count < totalRanges[sum.total].min {
             cellError(row: row, col: col, error: "not enough empty cells on the right")
-        } else if count > totalRanges[sum.total].max {
+        } else if cells.count > totalRanges[sum.total].max {
             cellError(row: row, col: col, error: "too many empty cells on the right")
         }
     }
     
-    private func validateVerticalTotal(_ sum: HeaderSum, row: Int, col: Int) {
-        var count = 0
-        
+    private func validateVerticalTotal(_ header: HeaderCell, row: Int, col: Int) {
+        guard var sum = header.vertical else { return }
+        var cells: [EmptyCell] = []
+
         for newRow in row + 1 ..< nrows {
-            if !( cells[newRow][col] is EmptyCell ) {
-                break
-            }
-            count += 1
+            guard let cell = self.cells[newRow][col] as? EmptyCell else { break }
+            
+            cell.vertical = header
+            cells.append(cell)
         }
         
-        if count < totalRanges[sum.total].min {
+        sum.setCells(cells: cells)
+        header.vertical = sum
+        
+        if cells.count < totalRanges[sum.total].min {
             cellError(row: row, col: col, error: "not enough empty cells below")
-        } else if count > totalRanges[sum.total].max {
+        } else if cells.count > totalRanges[sum.total].max {
             cellError(row: row, col: col, error: "too many empty cells below")
         }
     }
