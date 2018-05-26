@@ -75,7 +75,7 @@ class PuzzleValidator: Puzzle {
     }
     
     private func cellError( row: Int, col: Int, error: String) {
-        errors.append("Cell at \(row+1),\(col+1) \(error)")
+        errors.append("Cell \(row+1),\(col+1): \(error)")
     }
     
     private func validateEmptyCell(row: Int, col: Int) {
@@ -111,28 +111,30 @@ class PuzzleValidator: Puzzle {
             cellError(row: row, col: col, error: "has no total")
         } else {
             switch row {
-            case 0:
-                if let _ = header.horizontal {
-                    cellError(row: row, col: col, error: "should not have horizontal total")
-                }
             case nrows - 1:
                 if let _ = header.vertical {
-                    cellError(row: row, col: col, error: "should not have vertical total")
+                    cellError(row: row, col: col, error: "unallowed vertical total")
                 }
+            case 0:
+                if let _ = header.horizontal {
+                    cellError(row: row, col: col, error: "unallowed horizontal total")
+                }
+                fallthrough
             default:
                 if let sum = header.vertical {
                     validateVerticalTotal(sum, row: row, col: col)
                 }
             }
             switch col {
-            case 0:
-                if let _ = header.vertical {
-                    cellError(row: row, col: col, error: "should not have vertical total")
-                }
             case cells[row].count - 1:
                 if let _ = header.horizontal {
-                    cellError(row: row, col: col, error: "should not have horizontal total")
+                    cellError(row: row, col: col, error: "unallowed horizontal total")
                 }
+            case 0:
+                if let _ = header.vertical {
+                    cellError(row: row, col: col, error: "unallowed vertical total")
+                }
+                fallthrough
             default:
                 if let sum = header.horizontal {
                     validateHorizontalTotal(sum, row: row, col: col)
@@ -152,9 +154,9 @@ class PuzzleValidator: Puzzle {
         }
         
         if count < totalRanges[sum.total].min {
-            cellError(row: row, col: col, error: "doesn't have enough empty cells on the right")
+            cellError(row: row, col: col, error: "not enough empty cells on the right")
         } else if count > totalRanges[sum.total].max {
-            cellError(row: row, col: col, error: "has too many empty cells on the right")
+            cellError(row: row, col: col, error: "too many empty cells on the right")
         }
     }
     
@@ -169,9 +171,9 @@ class PuzzleValidator: Puzzle {
         }
         
         if count < totalRanges[sum.total].min {
-            cellError(row: row, col: col, error: "doesn't have enough empty below")
+            cellError(row: row, col: col, error: "not enough empty cells below")
         } else if count > totalRanges[sum.total].max {
-            cellError(row: row, col: col, error: "has too many empty cells below")
+            cellError(row: row, col: col, error: "too many empty cells below")
         }
     }
 }
