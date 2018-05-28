@@ -1,7 +1,7 @@
 # kakuro
 Data entry and solver for kakuro puzzles. A MacOS app.
 # What is a kakuro puzzle?
-A kakuro puzzle is similar to a crossword puzzle except for numbers instead of for words.
+A kakuro puzzle is similar to a crossword puzzle except using numbers instead of words.
 Where a crossword uses word definitions as clues for each across and down, a kakuro uses totals as clues for each across and down.
 Where in a crossword the numbers in the puzzle are a reference to the clues, in a kakuro the numbers are the clues.
 In a crossword the solver must fill in the empty cells with letters that form a word that matches the clue.
@@ -10,7 +10,7 @@ Furthermore in kakuro, no digit may be repeated when summing to a total.
 
 The totals that form the clues may be any number from 3 through 45.
 That is because of the rule that there must be at least two cells to form a total.
-Also the no duplicates limits the number of empty of cells in a total to 9.
+Also the no duplicates rule limits the number of empty of cells in a total to 9.
 So 3 is the smallest total since it equals 1 plus 2.
 The largest total is 45 because that is the sum of all 9 digits.
 
@@ -29,7 +29,7 @@ One of the puzzle cells is highlighted as the selected cell.  You can move the s
 You can add and delete cells.  You can also make changes to the selected cell.  Once satisfied you can save the puzzle to disk.
 There are also tools to help you catch mistakes.
 # How do I use the kakuro app?
-The kakuro app is a traditional MacOS document base app.  As such, you can have multiple windows open each with its own kakuro puzzle.
+The kakuro app is a traditional MacOS document based app.  As such, you can have multiple windows open each with its own kakuro puzzle.
 The file menu is pretty much as you would expect with a couple of exceptions detailed below.
 Editing is almost completely done with the keyboard but you can use the mouse to select a cell or part of a total that you are editing.
 There are basically two modes of editing: puzzle level editing and total editing.
@@ -58,15 +58,19 @@ There is a sample.kkr file included with this repo to use as a starting point.
 2. Enter (or return) - move the selection to the leftmost cell of the next row, creating a new row if needed.
 If the row (before the move) is shorter than the other rows, then pad the row with new cells.
 ### Add cells
-Back Tab (shift tab) - Add a cell to the left of the current cell.
-Control Enter (or return) - Add a row below the current one.
+1. Back Tab (shift tab) - Add a cell to the left of the current cell.
+2. Control Enter (or return) - Add a row below the current one.
+3. Digit (2 thru 9) - perform digit minus 1 Tab commands.
+This seemingly odd command is very useful when entering a puzzle.
+For example the sequence H 1 0 Tab 4, creates a header cell with horizontal total 10 and 4 empty cells to the right.
 ### Delete cells
 1. Right Delete - delete the current cell and move trailing cells left.  If it was last cell in the row, the row is also deleted.
 2. Left Delete - delete the cell to the left of the current cell and move trailing cells left.
 If it was last cell in the row, the row is also deleted.
 ## Total editing mode
 When you enter total editing mode, a text field is displayed to allow you to edit the relevant (horizontal or vertical) total.
-It is pretty much a normal rext field, except that you can only input numbers and when you attempt to exit the field the value is checked.
+It is pretty much a normal rext field,
+except that you can only input numbers and when you attempt to exit the field the value is checked.
 If the value is not a number between 3 and 45, you get an error and remain in total editing mode.
 
 There are a number of ways to exit the text field and return to puzzle editing mode.
@@ -81,12 +85,12 @@ and perform the normal Control Enter action.
 7. Mouse click - if the total value is valid, accept it and select the clicked on cell.
 ### Reject the new value (revert to the old value)
 The ESC key will exit total editing mode and return the total to the value it had before editing began.
-## Help with find errors
+## Help with finding errors
 The bane of data entry is checking for errors.  The kakuro app provides two tools to help.  They are both items in the File menu.
 ### Check for Errors
 This menu item will check the puzzle for obvious errors and bring up a dialog to report them.
 Note than row are column numbers are one based for normal human consumption.
-An example error is an empty cell to the right of an unused cell.
+An example error is when an empty cell is to the right of an unused cell.
 It has no across total to belong to and is reported as an orphaned cell.
 ### Audio Verify
 This menu item uses the Mac speech synthesis capability to read the contents of the puzzle aloud.
