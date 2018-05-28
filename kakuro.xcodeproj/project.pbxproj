@@ -58,6 +58,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DD27EC2820BC976D009450DB /* Puzzle */ = {
+			isa = PBXGroup;
+			children = (
+				DD609B742076BDF0007AF1D5 /* Puzzle.swift */,
+				DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */,
+				DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */,
+				DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */,
+				DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */,
+			);
+			path = Puzzle;
+			sourceTree = "<group>";
+		};
+		DD27EC2920BC97EB009450DB /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */,
+				DD609B622075CD6F007AF1D5 /* ViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		DD27EC2A20BC980B009450DB /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				DD609B802083C95C007AF1D5 /* Cell.swift */,
+				DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		DD609B542075CD6F007AF1D5 = {
 			isa = PBXGroup;
 			children = (
@@ -78,23 +108,17 @@
 			isa = PBXGroup;
 			children = (
 				DD609B602075CD6F007AF1D5 /* AppDelegate.swift */,
-				DD609B802083C95C007AF1D5 /* Cell.swift */,
-				DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */,
+				DD27EC2A20BC980B009450DB /* Cells */,
 				DD609B642075CD6F007AF1D5 /* Document.swift */,
 				DD609B722075CEE9007AF1D5 /* DocumentWindowController.swift */,
-				DD609B742076BDF0007AF1D5 /* Puzzle.swift */,
-				DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */,
-				DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */,
-				DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */,
+				DD27EC2820BC976D009450DB /* Puzzle */,
 				DD609B7E207C121C007AF1D5 /* PuzzleView.swift */,
-				DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */,
-				DD609B622075CD6F007AF1D5 /* ViewController.swift */,
+				DD27EC2920BC97EB009450DB /* ViewControllers */,
 				DD609B662075CD70007AF1D5 /* Assets.xcassets */,
 				DD609B682075CD70007AF1D5 /* Main.storyboard */,
 				DD609B6B2075CD70007AF1D5 /* Info.plist */,
 				DD609B6C2075CD70007AF1D5 /* kakuro.entitlements */,
 				DDA73D7C208A8062002D00A2 /* Todo.rtf */,
-				DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */,
 			);
 			path = kakuro;
 			sourceTree = "<group>";
