@@ -55,9 +55,7 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
     
     override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         switch item.action {
-        case #selector(NSDocument.save(_:)):
-            fallthrough
-        case #selector(NSDocument.saveAs(_:)):
+        case #selector(NSDocument.save(_:)), #selector(NSDocument.saveAs(_:)), #selector(Document.solvePuzzle(_:)):
             let validator = PuzzleValidator(with: puzzle)
             
             return validator.isValid
@@ -132,6 +130,10 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
     @IBAction func audioVerify(_ sender: Any?) {
         speechQueue = puzzle.audioVerify()
         speechSynthesizer(synthesizer, didFinishSpeaking: true)
+    }
+    
+    @IBAction func solvePuzzle( _ sender: Any? ) {
+        viewController?.errorDialog(major: "Not Implemented", minor: "")
     }
 }
 
