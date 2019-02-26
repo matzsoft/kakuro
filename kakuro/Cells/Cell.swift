@@ -40,7 +40,7 @@ class EmptyCell: Cell {
         var image = selected ? generator.SelectEmpty : generator.NormalEmpty
         
         if let solved = solution {
-            image = generator.labelVertical(image: image, text: String(solved))
+            image = generator.labelSolved( image: image, text: String(solved) )
         }
         
         return image

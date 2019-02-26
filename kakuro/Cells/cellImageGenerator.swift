@@ -25,7 +25,8 @@ import Foundation
 class cellImageGenerator {
     fileprivate static let userWidth    = CGFloat( 930 )
     fileprivate static let diagWidth    = CGFloat( 30 )
-    fileprivate static let textMargin   = CGFloat( 30 )
+    fileprivate static let headerMargin = CGFloat( 30 )
+    fileprivate static let emptyMargin  = CGFloat( 60 )
     fileprivate static let c: [CGFloat] = [ 0, 150, 790, 929 ]
     fileprivate static let x: [CGFloat] = [ 51, 119, 176, 247, 312, 369, 448, 499, 561, 618, 686, 754, 811, 879 ]
     fileprivate static let y: [CGFloat] = [ 51, 119, 176, 252, 306, 380, 425, 505, 561, 629, 686, 754, 822, 879 ]
@@ -36,11 +37,13 @@ class cellImageGenerator {
         [ CGPoint(x: c[3],y: c[0]), CGPoint(x: c[3],y: c[1]), CGPoint(x: c[3],y: c[2]), CGPoint(x: c[3],y: c[3]) ]
     ]
 
-    fileprivate let context:       CGContext
-    fileprivate let lightGradient: CGGradient
-    fileprivate let darkGradient:  CGGradient
-    fileprivate let textRange:     CGRect
-    fileprivate let attributes:    [String:AnyObject]
+    fileprivate let context:          CGContext
+    fileprivate let lightGradient:    CGGradient
+    fileprivate let darkGradient:     CGGradient
+    fileprivate let headerRange:      CGRect
+    fileprivate let headerAttributes: [String:AnyObject]
+    fileprivate let emptyRange:       CGRect
+    fileprivate let emptyAttributes:  [String:AnyObject]
     
     var imageWidth:  Int
     var colorSpace:  CGColorSpace
@@ -89,10 +92,14 @@ class cellImageGenerator {
         let attributes = cellImageGenerator.setupFontAttributes(context, borderColor: borderSolid, scaleFactor: 1)
         let textRange = cellImageGenerator.setupTextRange(context: context, attributes: attributes)
         let vertRect = cellImageGenerator.getVerticalRect( textRange: textRange )
-        let scaleFactor = vertRect.height / textRange.height
+        let vertScale = vertRect.height / textRange.height
+        let emptyRect = cellImageGenerator.getEmptyRect( textRange: textRange )
+        let emptyScale = emptyRect.height / textRange.height
         
-        self.attributes = cellImageGenerator.setupFontAttributes(context, borderColor: borderSolid, scaleFactor: scaleFactor)
-        self.textRange = cellImageGenerator.setupTextRange(context: context, attributes: self.attributes)
+        headerAttributes = cellImageGenerator.setupFontAttributes( context, borderColor: borderSolid, scaleFactor: vertScale )
+        headerRange = cellImageGenerator.setupTextRange( context: context, attributes: headerAttributes )
+        emptyAttributes = cellImageGenerator.setupFontAttributes( context, borderColor: borderSolid, scaleFactor: emptyScale )
+        emptyRange = cellImageGenerator.setupTextRange( context: context, attributes: emptyAttributes )
     }
     
     
@@ -172,9 +179,9 @@ class cellImageGenerator {
     fileprivate static func getVerticalRect( textRange: CGRect ) -> CGRect {
         let m1 = textRange.height / textRange.width
         let m2 = CGFloat( -1 )
-        let x1 = c[1] + textMargin
-        let y1 = c[1] + textMargin
-        let x2 = ( c[3] - ( textMargin + diagWidth ) / 2 - y1 + m1 * x1 ) / ( m1 - m2 )
+        let x1 = c[1] + headerMargin
+        let y1 = c[1] + headerMargin
+        let x2 = ( c[3] - ( headerMargin + diagWidth ) / 2 - y1 + m1 * x1 ) / ( m1 - m2 )
         let y2 = m1 * x2 + y1 - m1 * x1
         
         return CGRect(x: x1, y: y1, width: x2 - x1 + 1, height: y2 - y1 + 1 )
@@ -182,7 +189,7 @@ class cellImageGenerator {
     
     
     func getVerticalRect() -> CGRect {
-        let userRect = cellImageGenerator.getVerticalRect(textRange: textRange)
+        let userRect = cellImageGenerator.getVerticalRect(textRange: headerRange)
         
         return convertToPuzzleSpace(rect: userRect)
     }
@@ -190,17 +197,27 @@ class cellImageGenerator {
     
     fileprivate static func getHorizontalRect( textRange: CGRect ) -> CGRect {
         let rect = getVerticalRect( textRange: textRange )
-        let xoffset = c[2] - textMargin - rect.width - rect.minX
-        let yoffset = c[2] - textMargin - rect.height - rect.minY
+        let xoffset = c[2] - headerMargin - rect.width - rect.minX
+        let yoffset = c[2] - headerMargin - rect.height - rect.minY
         
         return rect.offsetBy(dx: xoffset, dy: yoffset )
     }
     
     
     func getHorizontalRect() -> CGRect {
-        let userRect = cellImageGenerator.getHorizontalRect(textRange: textRange)
+        let userRect = cellImageGenerator.getHorizontalRect(textRange: headerRange)
         
         return convertToPuzzleSpace(rect: userRect)
+    }
+    
+    
+    fileprivate static func getEmptyRect( textRange: CGRect ) -> CGRect {
+        let x1 = c[1] + emptyMargin
+        let y1 = c[1] + emptyMargin
+        let x2 = c[2] - emptyMargin
+        let y2 = c[2] - emptyMargin
+        
+        return CGRect(x: x1, y: y1, width: x2 - x1 + 1, height: y2 - y1 + 1 )
     }
     
     
@@ -436,10 +453,10 @@ class cellImageGenerator {
     
     func getAvailableRect() -> CGRect {
         let rect = CGRect(
-            x: cellImageGenerator.c[1] + cellImageGenerator.textMargin,
-            y: cellImageGenerator.c[1] + cellImageGenerator.textMargin,
-            width: cellImageGenerator.c[2] - cellImageGenerator.c[1] + 1 - 2 * cellImageGenerator.textMargin,
-            height: cellImageGenerator.c[2] - cellImageGenerator.c[1] + 1 - 2 * cellImageGenerator.textMargin
+            x: cellImageGenerator.c[1] + cellImageGenerator.headerMargin,
+            y: cellImageGenerator.c[1] + cellImageGenerator.headerMargin,
+            width: cellImageGenerator.c[2] - cellImageGenerator.c[1] + 1 - 2 * cellImageGenerator.headerMargin,
+            height: cellImageGenerator.c[2] - cellImageGenerator.c[1] + 1 - 2 * cellImageGenerator.headerMargin
         )
         
         return context.convertToDeviceSpace(rect )
@@ -455,11 +472,11 @@ class cellImageGenerator {
     
     
     fileprivate func drawLabel( text: String, rect: CGRect ) -> CGImage {
-        let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, attributes as CFDictionary )
+        let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, headerAttributes as CFDictionary )
         let line       = CTLineCreateWithAttributedString( attrString! )
         let textSize   = CTLineGetImageBounds( line, context )
-        let x          = rect.minX - textRange.minX + ( rect.width - textSize.width ) / 2
-        let y          = rect.minY - textRange.minY + ( rect.height - textSize.height ) / 2
+        let x          = rect.minX - headerRange.minX + ( rect.width - textSize.width ) / 2
+        let y          = rect.minY - headerRange.minY + ( rect.height - textSize.height ) / 2
         
         context.textPosition = CGPoint( x: x, y: y)
         context.saveGState()
@@ -471,7 +488,7 @@ class cellImageGenerator {
     
     
     func labelVertical(image: CGImage, text: String) -> CGImage {
-        let baseRect = cellImageGenerator.getVerticalRect( textRange: textRange )
+        let baseRect = cellImageGenerator.getVerticalRect( textRange: headerRange )
 
         wallpaperImage(image)
         return drawLabel( text: String( text ), rect: baseRect )
@@ -479,9 +496,28 @@ class cellImageGenerator {
     
     
     func labelHorizontal(image: CGImage, text: String) -> CGImage {
-        let baseRect = cellImageGenerator.getHorizontalRect( textRange: textRange )
+        let baseRect = cellImageGenerator.getHorizontalRect( textRange: headerRange )
         
         wallpaperImage(image)
         return drawLabel( text: String( text ), rect: baseRect )
+    }
+    
+    
+    func labelSolved( image: CGImage, text: String ) -> CGImage {
+        let rect = cellImageGenerator.getEmptyRect( textRange: emptyRange )
+        let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, emptyAttributes as CFDictionary )
+        let line       = CTLineCreateWithAttributedString( attrString! )
+        let textSize   = CTLineGetImageBounds( line, context )
+        let x          = rect.minX - emptyRange.minX + ( rect.width - textSize.width ) / 2
+        let y          = rect.minY - emptyRange.minY + ( rect.height - textSize.height ) / 2
+
+        wallpaperImage(image)
+
+        context.textPosition = CGPoint( x: x, y: y)
+        context.saveGState()
+        CTLineDraw( line, context )
+        context.restoreGState()
+        
+        return makeImage()
     }
 }
