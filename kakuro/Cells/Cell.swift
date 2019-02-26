@@ -74,6 +74,11 @@ struct HeaderSum {
         possibles = possibilities( total: total, number: cells.count, available: Set<Int>( 1 ... 9 ) )
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
     }
+    
+    mutating func remove( value: Int ) -> Void {
+        possibles = possibles.filter { $0.contains( value ) }.map { $0.filter { $0 != value } }
+        eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
+    }
 }
 
 

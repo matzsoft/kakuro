@@ -142,6 +142,8 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
             viewController?.errorDialog(major: "Solver is stuck", minor: "")
         case .finished:
             viewController?.errorDialog(major: "Solver is finished", minor: "")
+        case .bogus:
+            viewController?.errorDialog(major: "Solver says bogus", minor: "")
         }
     }
 }

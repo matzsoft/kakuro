@@ -39,7 +39,7 @@ class PuzzleSolver: Puzzle {
     }
     
     enum Status {
-        case found, stuck, finished
+        case found, stuck, finished, bogus
     }
     
     func step() -> Status {
@@ -47,21 +47,27 @@ class PuzzleSolver: Puzzle {
         
         ( nrow, ncol ) = ( srow, scol )
         while let cell = next() {
-            switch cell {
-            case let empty as EmptyCell where empty.solution == nil:
+            if let empty = cell as? EmptyCell, empty.solution == nil {
                 status = .stuck
-                if let horzEligible = empty.horizontal?.horizontal?.eligible {
-                    if let vertEligible = empty.vertical?.vertical?.eligible {
-                        empty.eligible = horzEligible.intersection( vertEligible )
+                if var horzSum = empty.horizontal?.horizontal {
+                    if var vertSum = empty.vertical?.vertical {
+                        empty.eligible = horzSum.eligible.intersection( vertSum.eligible )
+                        
+                        if empty.eligible.isEmpty {
+                            return .bogus
+                        }
+                        if empty.eligible.count == 1 {
+                            if let value = empty.eligible.first {
+                                empty.solution = value
+                                horzSum.remove( value: value )
+                                vertSum.remove( value: value )
+                            }
+                            
+                            ( srow, scol ) = ( nrow, ncol )
+                            return .found
+                        }
                     }
                 }
-                if empty.eligible.count == 1 {
-                    empty.solution = empty.eligible.first
-                    ( srow, scol ) = ( nrow, ncol )
-                    return .found
-                }
-            default:
-                break
             }
         }
         
