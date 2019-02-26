@@ -32,11 +32,18 @@ class UnusedCell: Cell {
 
 class EmptyCell: Cell {
     var eligible = Set<Int>( 1 ... 9 )
+    var solution: Int? = nil
     weak var vertical: HeaderCell? = nil
     weak var horizontal: HeaderCell? = nil
     
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
-        return selected ? generator.SelectEmpty : generator.NormalEmpty
+        var image = selected ? generator.SelectEmpty : generator.NormalEmpty
+        
+        if let solved = solution {
+            image = generator.labelVertical(image: image, text: String(solved))
+        }
+        
+        return image
     }
     
     var string: String {
@@ -64,11 +71,8 @@ struct HeaderSum {
     
     mutating func setCells(cells: [EmptyCell]) {
         self.cells = cells
-        eligible = Set<Int>( 1 ... 9 )
-        possibles = possibilities(total: total, number: cells.count, available: eligible)
-        eligible = possibles.reduce(eligible, { ( s1: Set<Int>, s2: Set<Int> ) -> Set<Int> in
-            s1.intersection(s2)
-        } )
+        possibles = possibilities( total: total, number: cells.count, available: Set<Int>( 1 ... 9 ) )
+        eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
     }
 }
 

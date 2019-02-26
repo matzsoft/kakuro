@@ -133,7 +133,16 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
     }
     
     @IBAction func solvePuzzle( _ sender: Any? ) {
-        viewController?.errorDialog(major: "Not Implemented", minor: "")
+        let solver = PuzzleSolver( with: puzzle )
+        
+        switch solver.step() {
+        case .found:
+            viewController?.view.needsDisplay = true
+        case .stuck:
+            viewController?.errorDialog(major: "Solver is stuck", minor: "")
+        case .finished:
+            viewController?.errorDialog(major: "Solver is finished", minor: "")
+        }
     }
 }
 
