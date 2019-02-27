@@ -138,16 +138,32 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
             solver = PuzzleSolver( with: puzzle )
         }
         
-        switch solver!.step() {
+        DispatchQueue.global( qos: .userInitiated ).async {
+            self.solverLoop( solver: self.solver! )
+        }
+    }
+    
+    func solverLoop( solver: PuzzleSolver ) -> Void {
+        switch solver.step() {
         case .found:
-            viewController?.view.needsDisplay = true
+            DispatchQueue.main.async {
+                self.viewController?.view.needsDisplay = true
+            }
+            DispatchQueue.global( qos: .userInitiated ).async {
+                self.solverLoop( solver: solver )
+            }
         case .stuck:
-            viewController?.errorDialog(major: "Solver is stuck", minor: "")
+            DispatchQueue.main.async {
+                self.viewController?.errorDialog(major: "Solver is stuck", minor: "")
+            }
         case .finished:
-            viewController?.errorDialog(major: "Solver is finished", minor: "")
+            DispatchQueue.main.async {
+                self.viewController?.errorDialog(major: "Solver is finished", minor: "")
+            }
         case .bogus:
-            viewController?.errorDialog(major: "Solver says bogus", minor: "")
+            DispatchQueue.main.async {
+                self.viewController?.errorDialog(major: "Solver says bogus", minor: "")
+            }
         }
     }
 }
-
