@@ -79,6 +79,11 @@ class HeaderSum {
         possibles = possibles.filter { $0.contains( value ) }.map { $0.filter { $0 != value } }
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
     }
+    
+    func requireSome( of set: Set<Int> ) -> Void {
+        possibles = possibles.filter { !$0.isDisjoint( with: set ) }
+        eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
+    }
 }
 
 

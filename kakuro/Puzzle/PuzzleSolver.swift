@@ -100,6 +100,7 @@ class PuzzleSolver: Puzzle {
                         if empty.eligible.isEmpty {
                             return .bogus
                         }
+                        
                         if empty.eligible.count == 1 {
                             if let value = empty.eligible.first {
                                 empty.solution = value
@@ -110,6 +111,9 @@ class PuzzleSolver: Puzzle {
                             ( srow, scol ) = ( nrow, ncol )
                             return .found
                         }
+                        
+                        horzSum.requireSome( of: empty.eligible )
+                        vertSum.requireSome( of: empty.eligible )
                     }
                 }
             }
