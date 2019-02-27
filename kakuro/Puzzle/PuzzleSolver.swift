@@ -9,19 +9,23 @@
 import Foundation
 
 class PuzzleSolver: Puzzle {
-    var srow = 0
-    var scol = 0
-    var nrow = 0
-    var ncol = 0
-    
+    var srow = 0        // Start row
+    var scol = 0        // Start column
+    var crow = 0        // Current row
+    var ccol = 0        // Current column
+    var nrow = 0        // Next row
+    var ncol = 0        // Next column
+
     convenience init(with puzzle: Puzzle) {
         self.init()
         cells = puzzle.cells
+        prepareHeaders()
     }
     
     func next() -> Cell? {
         let cell = cells[nrow][ncol]
         
+        ( crow, ccol ) = ( nrow, ncol )
         ncol += 1
         if ncol >= cells[nrow].count {
             ncol = 0
@@ -38,6 +42,46 @@ class PuzzleSolver: Puzzle {
         return cell
     }
     
+    private func prepareHeaders() -> Void {
+        ( nrow, ncol ) = ( srow, scol )
+        while let cell = next() {
+            if let header = cell as? HeaderCell {
+                prepareVertical( header )
+                prepareHorizontal( header )
+            }
+        }
+    }
+    
+    
+    private func prepareHorizontal( _ header: HeaderCell ) {
+        guard let sum = header.horizontal else { return }
+        var cells: [EmptyCell] = []
+        
+        for newCol in ccol + 1 ..< self.cells[crow].count {
+            guard let cell = self.cells[crow][newCol] as? EmptyCell else { break }
+            
+            cell.horizontal = header
+            cells.append(cell)
+        }
+        
+        sum.setCells( cells: cells )
+    }
+    
+    private func prepareVertical( _ header: HeaderCell ) {
+        guard let sum = header.vertical else { return }
+        var cells: [EmptyCell] = []
+        
+        for newRow in crow + 1 ..< nrows {
+            guard let cell = self.cells[newRow][ccol] as? EmptyCell else { break }
+            
+            cell.vertical = header
+            cells.append(cell)
+        }
+        
+        sum.setCells( cells: cells )
+    }
+
+
     enum Status {
         case found, stuck, finished, bogus
     }
@@ -49,8 +93,8 @@ class PuzzleSolver: Puzzle {
         while let cell = next() {
             if let empty = cell as? EmptyCell, empty.solution == nil {
                 status = .stuck
-                if var horzSum = empty.horizontal?.horizontal {
-                    if var vertSum = empty.vertical?.vertical {
+                if let horzSum = empty.horizontal?.horizontal {
+                    if let vertSum = empty.vertical?.vertical {
                         empty.eligible = horzSum.eligible.intersection( vertSum.eligible )
                         
                         if empty.eligible.isEmpty {

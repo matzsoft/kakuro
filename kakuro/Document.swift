@@ -13,6 +13,7 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
     var viewController: ViewController? = nil
     var isSpeaking = false
     var speechQueue: [ SpeechCommand ] = []
+    var solver: PuzzleSolver?
     
 
     lazy var synthesizer: NSSpeechSynthesizer = {
@@ -133,9 +134,11 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
     }
     
     @IBAction func solvePuzzle( _ sender: Any? ) {
-        let solver = PuzzleSolver( with: puzzle )
+        if solver == nil {
+            solver = PuzzleSolver( with: puzzle )
+        }
         
-        switch solver.step() {
+        switch solver!.step() {
         case .found:
             viewController?.view.needsDisplay = true
         case .stuck:

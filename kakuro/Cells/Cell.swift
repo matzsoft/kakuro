@@ -56,7 +56,7 @@ class EmptyCell: Cell {
 }
 
 
-struct HeaderSum {
+class HeaderSum {
     var total: Int
     var cells: [ EmptyCell ]
     var eligible: Set<Int>
@@ -69,13 +69,13 @@ struct HeaderSum {
         possibles = []
     }
     
-    mutating func setCells(cells: [EmptyCell]) {
+    func setCells(cells: [EmptyCell]) {
         self.cells = cells
         possibles = possibilities( total: total, number: cells.count, available: Set<Int>( 1 ... 9 ) )
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
     }
     
-    mutating func remove( value: Int ) -> Void {
+    func remove( value: Int ) -> Void {
         possibles = possibles.filter { $0.contains( value ) }.map { $0.filter { $0 != value } }
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
     }
