@@ -19,7 +19,7 @@ class PuzzleSolver: Puzzle {
     convenience init(with puzzle: Puzzle) {
         self.init()
         cells = puzzle.cells
-        prepareHeaders()
+        setupPuzzle()
     }
     
     func next() -> Cell? {
@@ -42,18 +42,25 @@ class PuzzleSolver: Puzzle {
         return cell
     }
     
-    private func prepareHeaders() -> Void {
+    private func setupPuzzle() -> Void {
         ( nrow, ncol ) = ( srow, scol )
         while let cell = next() {
-            if let header = cell as? HeaderCell {
-                prepareVertical( header )
-                prepareHorizontal( header )
+            switch cell {
+            case is UnusedCell:
+                break
+            case let empty as EmptyCell:
+                empty.solution = nil
+            case let header as HeaderCell:
+                setupVertical( header )
+                setupHorizontal( header )
+            default:
+                break
             }
         }
     }
     
     
-    private func prepareHorizontal( _ header: HeaderCell ) {
+    private func setupHorizontal( _ header: HeaderCell ) {
         guard let sum = header.horizontal else { return }
         var cells: [EmptyCell] = []
         
@@ -67,7 +74,7 @@ class PuzzleSolver: Puzzle {
         sum.setCells( cells: cells )
     }
     
-    private func prepareVertical( _ header: HeaderCell ) {
+    private func setupVertical( _ header: HeaderCell ) {
         guard let sum = header.vertical else { return }
         var cells: [EmptyCell] = []
         
@@ -85,8 +92,54 @@ class PuzzleSolver: Puzzle {
     enum Status {
         case found, stuck, finished, bogus
     }
+
     
+    // This function is responsible for finding the solution for one cell of the puzzle.
+    // Its return values are:
+    //      .found    - a single cell of the puzzle was solved
+    //      .stuck    - all attempts where unable to find any solution
+    //      .finished - all cells have already been solved
+    //      .bogus    - the puzzle was found to be unsolvable, i.e inconsistent in some way
     func step() -> Status {
+        let status = basic()
+        
+        return status
+    }
+    
+    
+    // This function implements the most simple strategy for puzzle solving.
+    // Its return values have the same meaning as the step function.  It has a
+    // very important side effect.  All empty cells will have their eligible
+    // member set to represent the current knowledge of the puzzle solution.
+    // This side effect is used by all subsequent solution strategies.
+    //
+    // The strategy involves looping through all empty cells that have not yet
+    // been solved.  When one is found then its eligible property is set to the
+    // intersection of the eligible properties of its vertical and horizontal
+    // header cells.
+    //
+    // If that intersection is emtpy then the puzzle is unsolvable and .bogus
+    // is returned.
+    //
+    // If that intersection has only a single element then that becomes the
+    // solution for that cell.  The horizontal and vertical headers are updated
+    // appropriately and .found is returned.  Note that in subsequent calls to
+    // this function the loop resumes where it left off rather than at the
+    // beginning of the puzzle.
+    //
+    // If the intersection has multiple elements, then the vertical and
+    // horizontal headers are updated with that information.  In this case the
+    // function does not retrun but continues to look for a solution.
+    //
+    // Finally, if the loop returns to its starting position the function
+    // returns either .finished or .stuck depending on whether and cells remain
+    // unsolved.
+    //
+    //TODO: Check if .stuck can be returned inappropriately.  That is can a
+    // loop that finds no solutions still add enough info to the puzzle that
+    // another loop would find a solution?
+    //
+    func basic() -> Status {
         var status = Status.finished
         
         ( nrow, ncol ) = ( srow, scol )
