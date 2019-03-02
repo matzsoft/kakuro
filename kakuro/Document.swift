@@ -152,13 +152,17 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
             DispatchQueue.global( qos: .userInitiated ).async {
                 self.solverLoop( solver: solver )
             }
-        case .stuck:
-            DispatchQueue.main.async {
-                self.viewController?.errorDialog(major: "Solver is stuck", minor: "")
+        case .informative:
+            DispatchQueue.global( qos: .userInitiated ).async {
+                self.solverLoop( solver: solver )
             }
         case .finished:
             DispatchQueue.main.async {
                 self.viewController?.errorDialog(major: "Solver is finished", minor: "")
+            }
+        case .stuck:
+            DispatchQueue.main.async {
+                self.viewController?.errorDialog(major: "Solver is stuck", minor: "")
             }
         case .bogus:
             DispatchQueue.main.async {

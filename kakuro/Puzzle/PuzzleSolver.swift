@@ -90,16 +90,17 @@ class PuzzleSolver: Puzzle {
 
 
     enum Status {
-        case found, stuck, finished, bogus
+        case informative, found, finished, stuck, bogus
     }
 
     
     // This function is responsible for finding the solution for one cell of the puzzle.
     // Its return values are:
-    //      .found    - a single cell of the puzzle was solved
-    //      .stuck    - all attempts where unable to find any solution
-    //      .finished - all cells have already been solved
-    //      .bogus    - the puzzle was found to be unsolvable, i.e inconsistent in some way
+    //      .found       - a single cell of the puzzle was solved
+    //      .informative - no solution, but information was obtained that makes it worth proceeding
+    //      .finished    - all cells have already been solved
+    //      .stuck       - the solver is unable to advance
+    //      .bogus       - the puzzle was found to be unsolvable, i.e inconsistent in some way
     func step() -> Status {
         let status = basic()
         
@@ -129,51 +130,45 @@ class PuzzleSolver: Puzzle {
     //
     // If the intersection has multiple elements, then the vertical and
     // horizontal headers are updated with that information.  In this case the
-    // function does not retrun but continues to look for a solution.
+    // function does not return but continues to look for a solution.
     //
-    // Finally, the loop may return to its starting position without finding
-    // the solution for any cell.  In this case the function  will loop again
-    // if any information was gleaned from the last loop.  Otherwise the
-    // function returns either .finished or .stuck depending on whether any
-    // cells remain unsolved.
+    // The loop may return to its starting position without finding
+    // the solution for any cell.  In this case the function will return 1 of 3
+    // values:
+    //      1. .finished if no unsolved empty cells were found
+    //      2. .informative if some information was gleaned for any cell
+    //      3. .stuck otherwise
     //
     func basic() -> Status {
         var status = Status.finished
-        var informative = false
 
         ( nrow, ncol ) = ( srow, scol )
-        repeat {
-            informative = false
-            
-            while let cell = next() {
-                if let empty = cell as? EmptyCell, empty.solution == nil {
-                    status = .stuck
-                    if let horzSum = empty.horizontal?.horizontal {
-                        if let vertSum = empty.vertical?.vertical {
-                            empty.eligible = horzSum.eligible.intersection( vertSum.eligible )
-                            
-                            if empty.eligible.isEmpty {
-                                return .bogus
-                            }
-                            
-                            if empty.eligible.count == 1 {
-                                if let value = empty.eligible.first {
-                                    empty.solution = value
-                                    horzSum.remove( value: value )
-                                    vertSum.remove( value: value )
-                                }
-                                
-                                ( srow, scol ) = ( nrow, ncol )
-                                return .found
-                            }
-                            
-                            informative = informative || horzSum.requireSome( of: empty.eligible )
-                            informative = informative || vertSum.requireSome( of: empty.eligible )
-                        }
+        while let cell = next() {
+            if let empty = cell as? EmptyCell, empty.solution == nil {
+                if status == .finished { status = .stuck }
+                if let horzSum = empty.horizontal?.horizontal, let vertSum = empty.vertical?.vertical {
+                    empty.eligible = horzSum.eligible.intersection( vertSum.eligible )
+                    
+                    if empty.eligible.isEmpty {
+                        return .bogus
                     }
+                    
+                    if empty.eligible.count == 1 {
+                        if let value = empty.eligible.first {
+                            empty.solution = value
+                            horzSum.remove( value: value )
+                            vertSum.remove( value: value )
+                        }
+                        
+                        ( srow, scol ) = ( nrow, ncol )
+                        return .found
+                    }
+                    
+                    if horzSum.requireSome( of: empty.eligible ) { status = .informative }
+                    if vertSum.requireSome( of: empty.eligible ) { status = .informative }
                 }
             }
-        } while informative
+        }
 
         return status
     }
