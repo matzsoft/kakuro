@@ -131,47 +131,50 @@ class PuzzleSolver: Puzzle {
     // horizontal headers are updated with that information.  In this case the
     // function does not retrun but continues to look for a solution.
     //
-    // Finally, if the loop returns to its starting position the function
-    // returns either .finished or .stuck depending on whether and cells remain
-    // unsolved.
-    //
-    //TODO: Check if .stuck can be returned inappropriately.  That is can a
-    // loop that finds no solutions still add enough info to the puzzle that
-    // another loop would find a solution?
+    // Finally, the loop may return to its starting position without finding
+    // the solution for any cell.  In this case the function  will loop again
+    // if any information was gleaned from the last loop.  Otherwise the
+    // function returns either .finished or .stuck depending on whether any
+    // cells remain unsolved.
     //
     func basic() -> Status {
         var status = Status.finished
-        
+        var informative = false
+
         ( nrow, ncol ) = ( srow, scol )
-        while let cell = next() {
-            if let empty = cell as? EmptyCell, empty.solution == nil {
-                status = .stuck
-                if let horzSum = empty.horizontal?.horizontal {
-                    if let vertSum = empty.vertical?.vertical {
-                        empty.eligible = horzSum.eligible.intersection( vertSum.eligible )
-                        
-                        if empty.eligible.isEmpty {
-                            return .bogus
-                        }
-                        
-                        if empty.eligible.count == 1 {
-                            if let value = empty.eligible.first {
-                                empty.solution = value
-                                horzSum.remove( value: value )
-                                vertSum.remove( value: value )
+        repeat {
+            informative = false
+            
+            while let cell = next() {
+                if let empty = cell as? EmptyCell, empty.solution == nil {
+                    status = .stuck
+                    if let horzSum = empty.horizontal?.horizontal {
+                        if let vertSum = empty.vertical?.vertical {
+                            empty.eligible = horzSum.eligible.intersection( vertSum.eligible )
+                            
+                            if empty.eligible.isEmpty {
+                                return .bogus
                             }
                             
-                            ( srow, scol ) = ( nrow, ncol )
-                            return .found
+                            if empty.eligible.count == 1 {
+                                if let value = empty.eligible.first {
+                                    empty.solution = value
+                                    horzSum.remove( value: value )
+                                    vertSum.remove( value: value )
+                                }
+                                
+                                ( srow, scol ) = ( nrow, ncol )
+                                return .found
+                            }
+                            
+                            informative = informative || horzSum.requireSome( of: empty.eligible )
+                            informative = informative || vertSum.requireSome( of: empty.eligible )
                         }
-                        
-                        horzSum.requireSome( of: empty.eligible )
-                        vertSum.requireSome( of: empty.eligible )
                     }
                 }
             }
-        }
-        
+        } while informative
+
         return status
     }
 }

@@ -80,9 +80,13 @@ class HeaderSum {
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
     }
     
-    func requireSome( of set: Set<Int> ) -> Void {
+    func requireSome( of set: Set<Int> ) -> Bool {
+        let count = possibles.count
+        
         possibles = possibles.filter { !$0.isDisjoint( with: set ) }
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
+        
+        return possibles.count < count
     }
 }
 
