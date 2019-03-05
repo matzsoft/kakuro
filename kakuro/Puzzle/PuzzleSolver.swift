@@ -102,8 +102,13 @@ class PuzzleSolver: Puzzle {
     //      .stuck       - the solver is unable to advance
     //      .bogus       - the puzzle was found to be unsolvable, i.e inconsistent in some way
     func step() -> Status {
-        let status = basic()
+        var status = basic()
         
+        if status != .stuck {
+            return status
+        }
+        
+        status = reduceRequired()
         return status
     }
     
@@ -154,12 +159,7 @@ class PuzzleSolver: Puzzle {
                     }
                     
                     if empty.eligible.count == 1 {
-                        if let value = empty.eligible.first {
-                            empty.solution = value
-                            horzSum.remove( value: value )
-                            vertSum.remove( value: value )
-                        }
-                        
+                        empty.found( solution: empty.eligible.first! )
                         ( srow, scol ) = ( nrow, ncol )
                         return .found
                     }
@@ -170,6 +170,67 @@ class PuzzleSolver: Puzzle {
             }
         }
 
+        return status
+    }
+    
+    func reduceRequired() -> Status {
+        var status = Status.stuck
+        
+        while let cell = next() {
+            if let header = cell as? HeaderCell {
+                if let horizontal = header.horizontal {
+                    let newStatus = reduceRequired( sum: horizontal )
+                    
+                    switch newStatus {
+                    case .found, .finished, .bogus:
+                        return newStatus
+                    case .informative:
+                        status = newStatus
+                    case .stuck:
+                        break
+                    }
+                }
+                if let vertical = header.vertical {
+                    let newStatus = reduceRequired( sum: vertical )
+                    
+                    switch newStatus {
+                    case .found, .finished, .bogus:
+                        return newStatus
+                    case .informative:
+                        status = newStatus
+                    case .stuck:
+                        break
+                    }
+                }
+            }
+        }
+        
+        return status
+    }
+    
+    func reduceRequired( sum: HeaderSum ) -> Status {
+        var status = Status.stuck
+        let required = sum.possibles.reduce( Set<Int>( 1...9 ), { $0.intersection( $1 ) } )
+        
+        if required.count > 0 {
+            let cells = sum.cells.filter { !$0.eligible.isDisjoint( with: required ) }
+            
+            if required.count == cells.count {
+                for empty in cells {
+                    let newStatus = empty.restrict( to: required )
+                    
+                    switch newStatus {
+                    case .found, .finished, .bogus:
+                        return newStatus
+                    case .informative:
+                        status = newStatus
+                    case .stuck:
+                        break
+                    }
+                }
+            }
+        }
+        
         return status
     }
 }

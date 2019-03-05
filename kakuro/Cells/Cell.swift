@@ -36,6 +36,28 @@ class EmptyCell: Cell {
     weak var vertical: HeaderCell? = nil
     weak var horizontal: HeaderCell? = nil
     
+    func found( solution: Int ) -> Void {
+        self.solution = solution
+        horizontal?.horizontal!.remove( value: solution )
+        vertical?.vertical!.remove( value: solution )
+    }
+    
+    func restrict( to only: Set<Int> ) -> PuzzleSolver.Status {
+        let new = eligible.intersection( only )
+        var status = PuzzleSolver.Status.stuck
+        
+        if new.count == 1 {
+            found( solution: new.first! )
+            return .found
+        }
+        
+        eligible = new
+        
+        if ( horizontal?.horizontal?.requireSome( of: only ) )! { status = .informative }
+        if ( vertical?.vertical?.requireSome( of: only ) )!     { status = .informative }
+        return status
+    }
+    
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
         var image = selected ? generator.SelectEmpty : generator.NormalEmpty
         
