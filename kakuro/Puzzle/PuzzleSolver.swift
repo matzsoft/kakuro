@@ -9,6 +9,7 @@
 import Foundation
 
 class PuzzleSolver: Puzzle {
+    var headerSums: [HeaderSum] = []
     var srow = 0        // Start row
     var scol = 0        // Start column
     var crow = 0        // Current row
@@ -72,6 +73,7 @@ class PuzzleSolver: Puzzle {
         }
         
         sum.setCells( cells: cells )
+        headerSums.append( sum )
     }
     
     private func setupVertical( _ header: HeaderCell ) {
@@ -86,6 +88,7 @@ class PuzzleSolver: Puzzle {
         }
         
         sum.setCells( cells: cells )
+        headerSums.append( sum )
     }
 
 
@@ -176,56 +179,24 @@ class PuzzleSolver: Puzzle {
     func reduceRequired() -> Status {
         var status = Status.stuck
         
-        while let cell = next() {
-            if let header = cell as? HeaderCell {
-                if let horizontal = header.horizontal {
-                    let newStatus = reduceRequired( sum: horizontal )
-                    
-                    switch newStatus {
-                    case .found, .finished, .bogus:
-                        return newStatus
-                    case .informative:
-                        status = newStatus
-                    case .stuck:
-                        break
-                    }
-                }
-                if let vertical = header.vertical {
-                    let newStatus = reduceRequired( sum: vertical )
-                    
-                    switch newStatus {
-                    case .found, .finished, .bogus:
-                        return newStatus
-                    case .informative:
-                        status = newStatus
-                    case .stuck:
-                        break
-                    }
-                }
-            }
-        }
-        
-        return status
-    }
-    
-    func reduceRequired( sum: HeaderSum ) -> Status {
-        var status = Status.stuck
-        let required = sum.possibles.reduce( Set<Int>( 1...9 ), { $0.intersection( $1 ) } )
-        
-        if required.count > 0 {
-            let cells = sum.cells.filter { !$0.eligible.isDisjoint( with: required ) }
+        for sum in headerSums {
+            let required = sum.possibles.reduce( Set<Int>( 1...9 ), { $0.intersection( $1 ) } )
             
-            if required.count == cells.count {
-                for empty in cells {
-                    let newStatus = empty.restrict( to: required )
-                    
-                    switch newStatus {
-                    case .found, .finished, .bogus:
-                        return newStatus
-                    case .informative:
-                        status = newStatus
-                    case .stuck:
-                        break
+            if required.count > 0 {
+                let cells = sum.cells.filter { !$0.eligible.isDisjoint( with: required ) }
+                
+                if required.count == cells.count {
+                    for empty in cells {
+                        let newStatus = empty.restrict( to: required )
+                        
+                        switch newStatus {
+                        case .found, .finished, .bogus:
+                            return newStatus
+                        case .informative:
+                            status = newStatus
+                        case .stuck:
+                            break
+                        }
                     }
                 }
             }
