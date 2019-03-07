@@ -112,6 +112,11 @@ class PuzzleSolver: Puzzle {
         }
         
         status = reduceRequired()
+        if status != .stuck {
+            return status
+        }
+        
+        status = elimination()
         return status
     }
     
@@ -155,20 +160,18 @@ class PuzzleSolver: Puzzle {
             if let empty = cell as? EmptyCell, empty.solution == nil {
                 if status == .finished { status = .stuck }
                 if let horzSum = empty.horizontal?.horizontal, let vertSum = empty.vertical?.vertical {
-                    empty.eligible = horzSum.eligible.intersection( vertSum.eligible )
+                    let eligible = horzSum.eligible.intersection( vertSum.eligible )
+                    let newStatus = empty.restrict( to: eligible )
                     
-                    if empty.eligible.isEmpty {
-                        return .bogus
-                    }
-                    
-                    if empty.eligible.count == 1 {
-                        empty.found( solution: empty.eligible.first! )
+                    switch newStatus {
+                    case .found:
                         ( srow, scol ) = ( nrow, ncol )
-                        return .found
+                        return newStatus
+                    case .finished, .bogus:
+                        return newStatus
+                    case .informative, .stuck:
+                        break
                     }
-                    
-                    if horzSum.requireSome( of: empty.eligible ) { status = .informative }
-                    if vertSum.requireSome( of: empty.eligible ) { status = .informative }
                 }
             }
         }
@@ -198,6 +201,55 @@ class PuzzleSolver: Puzzle {
                             break
                         }
                     }
+                }
+            }
+        }
+        
+        return status
+    }
+    
+    func elimination() -> Status {
+        var status = Status.stuck
+        
+        for sum in headerSums {
+            let cells = sum.cells.filter { $0.solution == nil }
+            
+            if cells.count == 1 {
+                if cells[0].eligible.count != 1 {
+                    return .bogus
+                }
+                
+                cells[0].found( solution: cells[0].eligible.first! )
+                return .found
+            }
+            
+            if cells.count > 1 {
+                let base = cells.min { $0.eligible.count < $1.eligible.count }!
+                var eligible = Set<Int>()
+                var possibles = Set<Set<Int>>()
+                
+                for value in base.eligible {
+                    let valid = sum.possibles.filter { $0.contains( value ) }.map { $0.subtracting( [value] ) }
+                    
+                    for possible in valid {
+                        for empty in cells where empty !== base {
+                            if !possible.isDisjoint( with: empty.eligible ) {
+                                eligible.insert( value )
+                                possibles.insert( possible.union( [value] ) )
+                            }
+                        }
+                    }
+                }
+                
+                if eligible.count == 1 {
+                    base.found( solution: eligible.first! )
+                    return .found
+                }
+                
+                if possibles.count < sum.possibles.count {
+                    sum.possibles = Array( possibles )
+                    sum.eligible = sum.possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
+                    status = .informative
                 }
             }
         }

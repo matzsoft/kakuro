@@ -44,18 +44,24 @@ class EmptyCell: Cell {
     
     func restrict( to only: Set<Int> ) -> PuzzleSolver.Status {
         let new = eligible.intersection( only )
-        var status = PuzzleSolver.Status.stuck
+        
+        if new.count == 0 {
+            return .bogus
+        }
         
         if new.count == 1 {
             found( solution: new.first! )
             return .found
         }
         
-        eligible = new
+        if new != eligible {
+            eligible = new
+            _ = horizontal?.horizontal?.requireSome( of: eligible )
+            _ = vertical?.vertical?.requireSome( of: eligible )
+            return .informative
+        }
         
-        if ( horizontal?.horizontal?.requireSome( of: only ) )! { status = .informative }
-        if ( vertical?.vertical?.requireSome( of: only ) )!     { status = .informative }
-        return status
+        return .stuck
     }
     
     func draw( generator: cellImageGenerator, selected: Bool ) -> CGImage {
