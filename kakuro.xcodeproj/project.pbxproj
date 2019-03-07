@@ -158,6 +158,7 @@
 				TargetAttributes = {
 					DD609B5C2075CD6F007AF1D5 = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -355,7 +356,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.matzsoft.kakuro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -373,7 +374,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.matzsoft.kakuro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
