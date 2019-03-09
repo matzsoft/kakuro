@@ -251,6 +251,29 @@ class PuzzleSolver: Puzzle {
                     sum.eligible = sum.possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
                     status = .informative
                 }
+                
+                for empty in cells where empty !== base {
+                    var eligible = Set<Int>()
+
+                    for value in base.eligible {
+                        let valid = sum.possibles.filter { $0.contains( value ) }.map { $0.subtracting( [value] ) }
+                        
+                        for possible in valid {
+                            eligible.formUnion( possible )
+                        }
+                    }
+                    
+                    let newStatus = empty.restrict( to: eligible )
+                    
+                    switch newStatus {
+                    case .found, .finished, .bogus:
+                        return newStatus
+                    case .informative:
+                        status = .informative
+                    case .stuck:
+                        break
+                    }
+                }
             }
         }
         
