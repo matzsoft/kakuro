@@ -189,13 +189,14 @@ class PuzzleSolver: Puzzle {
         
         for sum in headerSums {
             let required = sum.possibles.reduce( Set<Int>( 1...9 ), { $0.intersection( $1 ) } )
+            let subsets = required.subsets().sorted { $0.count < $1.count }
             
-            if required.count > 0 {
-                let cells = sum.cells.filter { !$0.eligible.isDisjoint( with: required ) }
+            for subset in subsets where subset.count > 0 {
+                let cells = sum.cells.filter { !$0.eligible.isDisjoint( with: subset ) }
                 
-                if required.count == cells.count {
+                if subset.count == cells.count {
                     for empty in cells {
-                        let newStatus = empty.restrict( to: required )
+                        let newStatus = empty.restrict( to: subset )
                         
                         switch newStatus {
                         case .found, .finished, .bogus:
