@@ -117,6 +117,11 @@ class PuzzleSolver: Puzzle {
         }
         
         status = elimination()
+        if status != .stuck {
+            return status
+        }
+        
+        status = minmax()
         return status
     }
     
@@ -278,5 +283,29 @@ class PuzzleSolver: Puzzle {
         }
         
         return status
+    }
+    
+    func minmax() -> Status {
+        for sum in headerSums {
+            let cells = sum.cells.filter { $0.solution == nil }
+            
+            if cells.count > 0 {
+                let mins = Set<Int>( cells.map { $0.eligible.min()! } )
+                
+                if sum.possibles.contains( mins ) {
+                    cells[0].found( solution: cells[0].eligible.min()! )
+                    return .found
+                }
+                
+                let maxs = Set<Int>( cells.map { $0.eligible.max()! } )
+                
+                if sum.possibles.contains( maxs ) {
+                    cells[0].found( solution: cells[0].eligible.max()! )
+                    return .found
+                }
+            }
+        }
+
+        return .stuck
     }
 }
