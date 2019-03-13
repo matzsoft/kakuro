@@ -69,6 +69,8 @@ class EmptyCell: Cell {
         
         if let solved = solution {
             image = generator.labelSolved( image: image, text: String(solved) )
+        } else if eligible.count < 9 {
+            image = generator.labelEligible( image: image, eligible: eligible )
         }
         
         return image

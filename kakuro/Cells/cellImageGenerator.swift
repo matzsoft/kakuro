@@ -37,16 +37,18 @@ class cellImageGenerator {
         [ CGPoint(x: c[3],y: c[0]), CGPoint(x: c[3],y: c[1]), CGPoint(x: c[3],y: c[2]), CGPoint(x: c[3],y: c[3]) ]
     ]
 
-    fileprivate let context:          CGContext
-    fileprivate let lightGradient:    CGGradient
-    fileprivate let darkGradient:     CGGradient
-    fileprivate let headerRange:      CGRect
-    fileprivate let headerAttributes: [String:AnyObject]
-    fileprivate let emptyRange:       CGRect
-    fileprivate let emptyAttributes:  [String:AnyObject]
+    fileprivate let context:            CGContext
+    fileprivate let lightGradient:      CGGradient
+    fileprivate let darkGradient:       CGGradient
+    fileprivate let headerRange:        CGRect
+    fileprivate let headerAttributes:   [String:AnyObject]
+    fileprivate let emptyRange:         CGRect
+    fileprivate let emptyAttributes:    [String:AnyObject]
+    fileprivate let eligibleRange:      CGRect
+    fileprivate let eligibleAttributes: [String:AnyObject]
     
-    var imageWidth:  Int
-    var colorSpace:  CGColorSpace
+    var imageWidth: Int
+    var colorSpace: CGColorSpace
 
     var unusedNrmDark:  CGColor
     var unusedNrmLight: CGColor
@@ -93,13 +95,17 @@ class cellImageGenerator {
         let textRange = cellImageGenerator.setupTextRange(context: context, attributes: attributes)
         let vertRect = cellImageGenerator.getVerticalRect( textRange: textRange )
         let vertScale = vertRect.height / textRange.height
-        let emptyRect = cellImageGenerator.getEmptyRect( textRange: textRange )
+        let emptyRect = cellImageGenerator.getEmptyRect()
         let emptyScale = emptyRect.height / textRange.height
+        let eligibleRect = cellImageGenerator.getEligibleRect()
+        let eligibleScale = eligibleRect.height / textRange.height
         
         headerAttributes = cellImageGenerator.setupFontAttributes( context, borderColor: borderSolid, scaleFactor: vertScale )
         headerRange = cellImageGenerator.setupTextRange( context: context, attributes: headerAttributes )
         emptyAttributes = cellImageGenerator.setupFontAttributes( context, borderColor: borderSolid, scaleFactor: emptyScale )
         emptyRange = cellImageGenerator.setupTextRange( context: context, attributes: emptyAttributes )
+        eligibleAttributes = cellImageGenerator.setupFontAttributes( context, borderColor: borderSolid, scaleFactor: eligibleScale )
+        eligibleRange = cellImageGenerator.setupTextRange( context: context, attributes: eligibleAttributes )
     }
     
     
@@ -211,13 +217,24 @@ class cellImageGenerator {
     }
     
     
-    fileprivate static func getEmptyRect( textRange: CGRect ) -> CGRect {
+    fileprivate static func getEmptyRect() -> CGRect {
         let x1 = c[1] + emptyMargin
         let y1 = c[1] + emptyMargin
         let x2 = c[2] - emptyMargin
         let y2 = c[2] - emptyMargin
         
         return CGRect(x: x1, y: y1, width: x2 - x1 + 1, height: y2 - y1 + 1 )
+    }
+    
+    
+    fileprivate static func getEligibleRect() -> CGRect {
+        let emptyRect = getEmptyRect()
+        let width = emptyRect.width / 3
+        let height = ( emptyRect.height - 2 * emptyMargin ) / 3
+        let x = emptyRect.minX
+        let y = emptyRect.maxY - height
+        
+        return CGRect(x: x, y: y, width: width, height: height )
     }
     
     
@@ -504,7 +521,7 @@ class cellImageGenerator {
     
     
     func labelSolved( image: CGImage, text: String ) -> CGImage {
-        let rect = cellImageGenerator.getEmptyRect( textRange: emptyRange )
+        let rect = cellImageGenerator.getEmptyRect()
         let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, emptyAttributes as CFDictionary )
         let line       = CTLineCreateWithAttributedString( attrString! )
         let textSize   = CTLineGetImageBounds( line, context )
@@ -517,6 +534,32 @@ class cellImageGenerator {
         context.saveGState()
         CTLineDraw( line, context )
         context.restoreGState()
+        
+        return makeImage()
+    }
+    
+    
+    func labelEligible( image: CGImage, eligible: Set<Int> ) -> CGImage {
+        let rect = cellImageGenerator.getEligibleRect()
+        let yGap = rect.height + cellImageGenerator.emptyMargin
+        
+        wallpaperImage(image)
+        
+        for ( index, number ) in eligible.sorted().enumerated() {
+            let text = String( number )
+            let attrString = CFAttributedStringCreate( kCFAllocatorDefault, text as CFString, eligibleAttributes as CFDictionary )
+            let line       = CTLineCreateWithAttributedString( attrString! )
+            let textSize   = CTLineGetImageBounds( line, context )
+            let minX       = rect.minX + rect.width * CGFloat( index % 3 )
+            let minY       = rect.minY - yGap * CGFloat( index / 3 )
+            let x          = minX - eligibleRange.minX + ( rect.width - textSize.width ) / 2
+            let y          = minY - eligibleRange.minY + ( rect.height - textSize.height ) / 2
+            
+            context.textPosition = CGPoint( x: x, y: y)
+            context.saveGState()
+            CTLineDraw( line, context )
+            context.restoreGState()
+        }
         
         return makeImage()
     }
