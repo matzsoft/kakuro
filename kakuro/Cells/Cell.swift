@@ -38,8 +38,8 @@ class EmptyCell: Cell {
     
     func found( solution: Int ) -> Void {
         self.solution = solution
-        horizontal?.remove( value: solution )
-        vertical?.remove( value: solution )
+        horizontal?.remove( cell: self )
+        vertical?.remove( cell: self )
     }
     
     func restrict( to only: Set<Int> ) -> PuzzleSolver.Status {
@@ -105,9 +105,13 @@ class HeaderSum {
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
     }
     
-    func remove( value: Int ) -> Void {
+    func remove( cell: EmptyCell ) -> Void {
+        guard let value = cell.solution else { return }
+        
+        total -= value
         possibles = possibles.filter { $0.contains( value ) }.map { $0.filter { $0 != value } }
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
+        cells.removeAll( where: { $0 === cell } )
     }
     
     func requireSome( of set: Set<Int> ) -> Bool {

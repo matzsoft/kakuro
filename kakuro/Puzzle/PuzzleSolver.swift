@@ -195,19 +195,17 @@ class PuzzleSolver: Puzzle {
         var status = Status.stuck
         
         for sum in headerSums {
-            let cells = sum.cells.filter { $0.solution == nil }
-            
-            if cells.count == 1 {
-                if cells[0].eligible.count != 1 {
+            if sum.cells.count == 1 {
+                if sum.cells[0].eligible.count != 1 {
                     return .bogus
                 }
                 
-                cells[0].found( solution: cells[0].eligible.first! )
+                sum.cells[0].found( solution: sum.cells[0].eligible.first! )
                 return .found
             }
             
-            if cells.count > 1 {
-                let base = cells.min { $0.eligible.count < $1.eligible.count }!
+            if sum.cells.count > 1 {
+                let base = sum.cells.min { $0.eligible.count < $1.eligible.count }!
                 var eligible = Set<Int>()
                 var possibles = Set<Set<Int>>()
                 
@@ -215,7 +213,7 @@ class PuzzleSolver: Puzzle {
                     let valid = sum.possibles.filter { $0.contains( value ) }.map { $0.subtracting( [value] ) }
                     
                     for possible in valid {
-                        for empty in cells where empty !== base {
+                        for empty in sum.cells where empty !== base {
                             if !possible.isDisjoint( with: empty.eligible ) {
                                 eligible.insert( value )
                                 possibles.insert( possible.union( [value] ) )
@@ -235,7 +233,7 @@ class PuzzleSolver: Puzzle {
                     status = .informative
                 }
                 
-                for empty in cells where empty !== base {
+                for empty in sum.cells where empty !== base {
                     var eligible = Set<Int>()
 
                     for value in base.eligible {
@@ -265,20 +263,18 @@ class PuzzleSolver: Puzzle {
     
     func minmax() -> Status {
         for sum in headerSums {
-            let cells = sum.cells.filter { $0.solution == nil }
-            
-            if cells.count > 0 {
-                let mins = Set<Int>( cells.map { $0.eligible.min()! } )
+            if sum.cells.count > 0 {
+                let mins = Set<Int>( sum.cells.map { $0.eligible.min()! } )
                 
                 if sum.possibles.contains( mins ) {
-                    cells[0].found( solution: cells[0].eligible.min()! )
+                    sum.cells[0].found( solution: sum.cells[0].eligible.min()! )
                     return .found
                 }
                 
-                let maxs = Set<Int>( cells.map { $0.eligible.max()! } )
+                let maxs = Set<Int>( sum.cells.map { $0.eligible.max()! } )
                 
                 if sum.possibles.contains( maxs ) {
-                    cells[0].found( solution: cells[0].eligible.max()! )
+                    sum.cells[0].found( solution: sum.cells[0].eligible.max()! )
                     return .found
                 }
             }
