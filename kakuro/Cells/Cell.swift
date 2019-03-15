@@ -33,13 +33,13 @@ class UnusedCell: Cell {
 class EmptyCell: Cell {
     var eligible = Set<Int>( 1 ... 9 )
     var solution: Int? = nil
-    weak var vertical: HeaderCell? = nil
-    weak var horizontal: HeaderCell? = nil
+    weak var vertical: HeaderSum? = nil
+    weak var horizontal: HeaderSum? = nil
     
     func found( solution: Int ) -> Void {
         self.solution = solution
-        horizontal?.horizontal!.remove( value: solution )
-        vertical?.vertical!.remove( value: solution )
+        horizontal?.remove( value: solution )
+        vertical?.remove( value: solution )
     }
     
     func restrict( to only: Set<Int> ) -> PuzzleSolver.Status {
@@ -56,8 +56,8 @@ class EmptyCell: Cell {
         
         if new != eligible {
             eligible = new
-            _ = horizontal?.horizontal?.requireSome( of: eligible )
-            _ = vertical?.vertical?.requireSome( of: eligible )
+            _ = horizontal?.requireSome( of: eligible )
+            _ = vertical?.requireSome( of: eligible )
             return .informative
         }
         
@@ -129,37 +129,12 @@ class HeaderCell: Cell {
         case both
     }
     
-    var vertical: HeaderSum?
-    var horizontal: HeaderSum?
+    var vertical: Int?
+    var horizontal: Int?
     
     init( vertical: Int?, horizontal: Int? ) {
-        if let total = vertical {
-            self.vertical = HeaderSum(total: total)
-        } else {
-            self.vertical = nil
-        }
-        
-        if let total = horizontal {
-            self.horizontal = HeaderSum(total: total)
-        } else {
-            self.horizontal = nil
-        }
-    }
-    
-    func setVertical( _ vertical: Int? ) {
-        if let total = vertical {
-            self.vertical = HeaderSum(total: total)
-        } else {
-            self.vertical = nil
-        }
-    }
-    
-    func setHorizontal( _ horizontal: Int? ) {
-        if let total = horizontal {
-            self.horizontal = HeaderSum(total: total)
-        } else {
-            self.horizontal = nil
-        }
+        self.vertical = vertical
+        self.horizontal = horizontal
     }
     
     func hasNoTotal() -> Bool {
@@ -189,11 +164,11 @@ class HeaderCell: Cell {
         }
         
         if let vert = vertical {
-            image = generator.labelVertical(image: image, text: String(vert.total))
+            image = generator.labelVertical( image: image, text: String( vert ) )
         }
         
         if let horz = horizontal {
-            image = generator.labelHorizontal(image: image, text: String(horz.total))
+            image = generator.labelHorizontal( image: image, text: String( horz ) )
         }
         
         return image
@@ -204,11 +179,11 @@ class HeaderCell: Cell {
         var back  = "  "
         
         if let vert = vertical {
-            front = String(format: "%2d", arguments: [vert.total])
+            front = String( format: "%2d", arguments: [vert] )
         }
         
         if let horz = horizontal {
-            back = String(format: "%-2d", arguments: [horz.total])
+            back = String( format: "%-2d", arguments: [horz] )
         }
 
         return "\(front)\\\(back)"
@@ -218,12 +193,12 @@ class HeaderCell: Cell {
         var front = ""
         var back  = ""
         
-        if let vert = vertical {
-            front = ", down \(vert.total)"
+        if let horz = horizontal {
+            back = ", right \(horz)"
         }
         
-        if let horz = horizontal {
-            back = ", right \(horz.total)"
+        if let vert = vertical {
+            front = ", down \(vert)"
         }
         
         return "Header\(front)\(back)"

@@ -38,13 +38,14 @@ class PuzzleSolver: Puzzle {
     
     
     private func setupHorizontal( _ header: HeaderCell ) {
-        guard let sum = header.horizontal else { return }
+        guard let total = header.horizontal else { return }
+        let sum = HeaderSum( total: total )
         var cells: [EmptyCell] = []
         
         for newCol in cellIterator.ccol + 1 ..< self.cells[cellIterator.crow].count {
             guard let cell = self.cells[cellIterator.crow][newCol] as? EmptyCell else { break }
             
-            cell.horizontal = header
+            cell.horizontal = sum
             cells.append(cell)
         }
         
@@ -53,13 +54,14 @@ class PuzzleSolver: Puzzle {
     }
     
     private func setupVertical( _ header: HeaderCell ) {
-        guard let sum = header.vertical else { return }
+        guard let total = header.vertical else { return }
+        let sum = HeaderSum( total: total )
         var cells: [EmptyCell] = []
         
         for newRow in cellIterator.crow + 1 ..< nrows {
             guard let cell = self.cells[newRow][cellIterator.ccol] as? EmptyCell else { break }
             
-            cell.vertical = header
+            cell.vertical = sum
             cells.append(cell)
         }
         
@@ -140,7 +142,7 @@ class PuzzleSolver: Puzzle {
         while let cell = cellIterator.next() {
             if let empty = cell as? EmptyCell, empty.solution == nil {
                 if status == .finished { status = .stuck }
-                if let horzSum = empty.horizontal?.horizontal, let vertSum = empty.vertical?.vertical {
+                if let horzSum = empty.horizontal, let vertSum = empty.vertical {
                     let eligible = horzSum.eligible.intersection( vertSum.eligible )
                     let newStatus = empty.restrict( to: eligible )
                     

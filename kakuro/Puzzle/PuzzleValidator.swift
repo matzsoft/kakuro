@@ -140,7 +140,7 @@ class PuzzleValidator: Puzzle {
     }
     
     private func validateHorizontalTotal(_ header: HeaderCell, row: Int, col: Int) {
-        guard let sum = header.horizontal else { return }
+        guard let total = header.horizontal else { return }
         var count = 0
         
         for newCol in col + 1 ..< self.cells[row].count {
@@ -149,15 +149,15 @@ class PuzzleValidator: Puzzle {
             count += 1
         }
         
-        if count < totalRanges[sum.total].min {
+        if count < totalRanges[total].min {
             cellError(row: row, col: col, error: "not enough empty cells on the right")
-        } else if count > totalRanges[sum.total].max {
+        } else if count > totalRanges[total].max {
             cellError(row: row, col: col, error: "too many empty cells on the right")
         }
     }
     
     private func validateVerticalTotal(_ header: HeaderCell, row: Int, col: Int) {
-        guard let sum = header.vertical else { return }
+        guard let total = header.vertical else { return }
         var count = 0
 
         for newRow in row + 1 ..< nrows {
@@ -166,9 +166,9 @@ class PuzzleValidator: Puzzle {
             count += 1
         }
         
-        if count < totalRanges[sum.total].min {
+        if count < totalRanges[total].min {
             cellError(row: row, col: col, error: "not enough empty cells below")
-        } else if count > totalRanges[sum.total].max {
+        } else if count > totalRanges[total].max {
             cellError(row: row, col: col, error: "too many empty cells below")
         }
     }
