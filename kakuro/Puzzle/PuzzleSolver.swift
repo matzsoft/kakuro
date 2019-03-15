@@ -10,42 +10,18 @@ import Foundation
 
 class PuzzleSolver: Puzzle {
     var headerSums: [HeaderSum] = []
-    var srow = 0        // Start row
-    var scol = 0        // Start column
-    var crow = 0        // Current row
-    var ccol = 0        // Current column
-    var nrow = 0        // Next row
-    var ncol = 0        // Next column
+    let cellIterator: CircularIterator2D<Cell>
 
-    convenience init(with puzzle: Puzzle) {
-        self.init()
+    init( with puzzle: Puzzle ) {
+        cellIterator = CircularIterator2D( array: &puzzle.cells )
+        super.init()
         cells = puzzle.cells
         setupPuzzle()
     }
     
-    func next() -> Cell? {
-        let cell = cells[nrow][ncol]
-        
-        ( crow, ccol ) = ( nrow, ncol )
-        ncol += 1
-        if ncol >= cells[nrow].count {
-            ncol = 0
-            nrow += 1
-            if nrow >= nrows {
-                nrow = 0
-            }
-        }
-        
-        if nrow == srow && ncol == scol {
-            return nil
-        }
-        
-        return cell
-    }
-    
     private func setupPuzzle() -> Void {
-        ( nrow, ncol ) = ( srow, scol )
-        while let cell = next() {
+        cellIterator.reset()
+        while let cell = cellIterator.next() {
             switch cell {
             case is UnusedCell:
                 break
@@ -65,8 +41,8 @@ class PuzzleSolver: Puzzle {
         guard let sum = header.horizontal else { return }
         var cells: [EmptyCell] = []
         
-        for newCol in ccol + 1 ..< self.cells[crow].count {
-            guard let cell = self.cells[crow][newCol] as? EmptyCell else { break }
+        for newCol in cellIterator.ccol + 1 ..< self.cells[cellIterator.crow].count {
+            guard let cell = self.cells[cellIterator.crow][newCol] as? EmptyCell else { break }
             
             cell.horizontal = header
             cells.append(cell)
@@ -80,8 +56,8 @@ class PuzzleSolver: Puzzle {
         guard let sum = header.vertical else { return }
         var cells: [EmptyCell] = []
         
-        for newRow in crow + 1 ..< nrows {
-            guard let cell = self.cells[newRow][ccol] as? EmptyCell else { break }
+        for newRow in cellIterator.crow + 1 ..< nrows {
+            guard let cell = self.cells[newRow][cellIterator.ccol] as? EmptyCell else { break }
             
             cell.vertical = header
             cells.append(cell)
@@ -160,8 +136,8 @@ class PuzzleSolver: Puzzle {
     func basic() -> Status {
         var status = Status.finished
 
-        ( nrow, ncol ) = ( srow, scol )
-        while let cell = next() {
+        cellIterator.markStart()
+        while let cell = cellIterator.next() {
             if let empty = cell as? EmptyCell, empty.solution == nil {
                 if status == .finished { status = .stuck }
                 if let horzSum = empty.horizontal?.horizontal, let vertSum = empty.vertical?.vertical {
@@ -169,12 +145,11 @@ class PuzzleSolver: Puzzle {
                     let newStatus = empty.restrict( to: eligible )
                     
                     switch newStatus {
-                    case .found:
-                        ( srow, scol ) = ( nrow, ncol )
+                    case .found, .finished, .bogus:
                         return newStatus
-                    case .finished, .bogus:
-                        return newStatus
-                    case .informative, .stuck:
+                    case .informative:
+                        status = newStatus
+                    case .stuck:
                         break
                     }
                 }

@@ -23,6 +23,7 @@
 		DDB1DDF1208ED57B0060EFEF /* TotalFieldEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */; };
 		DDB1DE1420940D3E0060EFEF /* PuzzleValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */; };
 		DDB321C2223705730080116C /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB321C1223705730080116C /* Utilities.swift */; };
+		DDB321C4223B33F20080116C /* CircularIterator2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB321C3223B33F20080116C /* CircularIterator2D.swift */; };
 		DDEAA1FE2224902100A0A6CF /* PuzzleSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEAA1FD2224902100A0A6CF /* PuzzleSolver.swift */; };
 		DDF18AE0209AB9B10003E65D /* PuzzleAudioVerify.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */; };
 /* End PBXBuildFile section */
@@ -47,6 +48,7 @@
 		DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalFieldEditor.swift; sourceTree = "<group>"; };
 		DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleValidator.swift; sourceTree = "<group>"; };
 		DDB321C1223705730080116C /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		DDB321C3223B33F20080116C /* CircularIterator2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularIterator2D.swift; sourceTree = "<group>"; };
 		DDEAA1FD2224902100A0A6CF /* PuzzleSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleSolver.swift; sourceTree = "<group>"; };
 		DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleAudioVerify.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,6 +116,7 @@
 			children = (
 				DD609B602075CD6F007AF1D5 /* AppDelegate.swift */,
 				DD27EC2A20BC980B009450DB /* Cells */,
+				DDB321C3223B33F20080116C /* CircularIterator2D.swift */,
 				DD609B642075CD6F007AF1D5 /* Document.swift */,
 				DD609B722075CEE9007AF1D5 /* DocumentWindowController.swift */,
 				DD27EC2820BC976D009450DB /* Puzzle */,
@@ -209,6 +212,7 @@
 				DD609B7F207C121C007AF1D5 /* PuzzleView.swift in Sources */,
 				DD609B732075CEE9007AF1D5 /* DocumentWindowController.swift in Sources */,
 				DD609B792076BDF1007AF1D5 /* PuzzleLex.swift in Sources */,
+				DDB321C4223B33F20080116C /* CircularIterator2D.swift in Sources */,
 				DD609B632075CD6F007AF1D5 /* ViewController.swift in Sources */,
 				DDF18AE0209AB9B10003E65D /* PuzzleAudioVerify.swift in Sources */,
 				DD609B7B2076D5F6007AF1D5 /* cellImageGenerator.swift in Sources */,
