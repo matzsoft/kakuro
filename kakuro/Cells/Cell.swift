@@ -83,6 +83,18 @@ class EmptyCell: Cell {
     var speechString: String {
         return "Empty"
     }
+    
+    func copy( from other: EmptyCell ) -> Void {
+        eligible = other.eligible
+        solution = other.solution
+    }
+    
+    static func ==( lhs: EmptyCell, rhs: EmptyCell ) -> Bool {
+        guard lhs.eligible == rhs.eligible else { return false }
+        guard lhs.solution == rhs.solution else { return false }
+        
+        return true
+    }
 }
 
 
@@ -97,6 +109,61 @@ class HeaderSum {
         cells = []
         eligible = Set<Int>( 1 ... 9 )
         possibles = []
+    }
+    
+    init( from other: HeaderSum ) {
+        total = other.total
+        eligible = other.eligible
+        possibles = other.possibles
+        cells = other.cells
+    }
+    
+    func workingCopy() -> HeaderSum {
+        let copy = HeaderSum( total: total )
+        
+        copy.eligible = eligible
+        copy.possibles = possibles
+        copy.cells = cells.map {
+            let new = EmptyCell()
+            
+            new.eligible = $0.eligible
+            new.horizontal = copy
+            return new
+        }
+        
+        return copy
+    }
+    
+    func workingCopy( possible: Set<Int> ) -> HeaderSum {
+        let copy = HeaderSum( total: total )
+        
+        copy.eligible = possible
+        copy.possibles = [ possible ]
+        copy.cells = cells.map {
+            let new = EmptyCell()
+            
+            new.eligible = $0.eligible.intersection( possible )
+            new.horizontal = copy
+            return new
+        }
+        
+        return copy
+    }
+    
+    func emptyCopy() -> HeaderSum {
+        let copy = HeaderSum( total: total )
+        
+        copy.eligible = Set<Int>()
+        copy.possibles = []
+        copy.cells = cells.map { _ in 
+            let new = EmptyCell()
+            
+            new.eligible = Set<Int>()
+            new.horizontal = copy
+            return new
+        }
+        
+        return copy
     }
     
     func setCells(cells: [EmptyCell]) {
@@ -121,6 +188,26 @@ class HeaderSum {
         eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
         
         return possibles.count < count
+    }
+    
+    func copy( from other: HeaderSum ) -> Void {
+        total = other.total
+        eligible = other.eligible
+        possibles = other.possibles
+        cells.enumerated().forEach { $0.element.copy( from: other.cells[$0.offset] ) }
+    }
+    
+    static func ==( lhs: HeaderSum, rhs: HeaderSum ) -> Bool {
+        guard lhs.total == rhs.total else { return false }
+        guard lhs.eligible == rhs.eligible else { return false }
+        guard lhs.possibles == rhs.possibles else { return false }
+        guard lhs.cells.count == rhs.cells.count else { return false }
+        
+        return ( 0 ..< lhs.cells.count ).allSatisfy { lhs.cells[$0] == rhs.cells[$0] }
+    }
+    
+    static func !=( lhs: HeaderSum, rhs: HeaderSum ) -> Bool {
+        return !( lhs == rhs )
     }
 }
 

@@ -89,12 +89,19 @@ class PuzzleSolver: Puzzle {
             return status
         }
         
+        headerSums.removeAll( where: { $0.total == 0 || $0.cells.count == 0 } )
+        
         status = reduceRequired()
         if status != .stuck {
             return status
         }
         
         status = elimination()
+        if status != .stuck {
+            return status
+        }
+        
+        status = elimination2()
         if status != .stuck {
             return status
         }
@@ -191,27 +198,71 @@ class PuzzleSolver: Puzzle {
         return status
     }
     
-    func elimination() -> Status {
+    func elimination2() -> Status {
         var status = Status.stuck
         
+        for sum in headerSums {
+            let accumulator = sum.emptyCopy()
+            
+            for possible in sum.possibles {
+                let trial = sum.workingCopy( possible: possible )
+                
+                if elimination2( trial: trial ) {
+                    accumulator.eligible.formUnion( trial.eligible )
+                    accumulator.possibles.append( trial.eligible )
+                    accumulator.cells.enumerated().forEach {
+                        $0.element.eligible.formUnion( trial.cells[$0.offset].eligible )
+                    }
+                }
+            }
+            
+            if accumulator != sum {
+                sum.copy( from: accumulator )
+                status = .informative
+            }
+        }
+        
+        return status
+    }
+    
+    func elimination2( trial: HeaderSum ) -> Bool {
+        let copy = HeaderSum( from: trial )
+        var found: [EmptyCell]
+        
+        repeat {
+            found = copy.cells.filter { $0.eligible.count == 1 }
+            
+            found.forEach { solved in
+                copy.total -= solved.eligible.first!
+                copy.eligible.subtract( solved.eligible )
+                copy.cells.removeAll( where: { $0 === solved } )
+            }
+        } while found.count > 0
+        
+        return trial.cells.allSatisfy { $0.eligible.count > 0 }
+    }
+    
+    func elimination() -> Status {
+        var status = Status.stuck
+
         for sum in headerSums {
             if sum.cells.count == 1 {
                 if sum.cells[0].eligible.count != 1 {
                     return .bogus
                 }
-                
+
                 sum.cells[0].found( solution: sum.cells[0].eligible.first! )
                 return .found
             }
-            
+
             if sum.cells.count > 1 {
                 let base = sum.cells.min { $0.eligible.count < $1.eligible.count }!
                 var eligible = Set<Int>()
                 var possibles = Set<Set<Int>>()
-                
+
                 for value in base.eligible {
                     let valid = sum.possibles.filter { $0.contains( value ) }.map { $0.subtracting( [value] ) }
-                    
+
                     for possible in valid {
                         for empty in sum.cells where empty !== base {
                             if !possible.isDisjoint( with: empty.eligible ) {
@@ -221,31 +272,31 @@ class PuzzleSolver: Puzzle {
                         }
                     }
                 }
-                
+
                 if eligible.count == 1 {
                     base.found( solution: eligible.first! )
                     return .found
                 }
-                
+
                 if possibles.count < sum.possibles.count {
                     sum.possibles = Array( possibles )
                     sum.eligible = sum.possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
                     status = .informative
                 }
-                
+
                 for empty in sum.cells where empty !== base {
                     var eligible = Set<Int>()
 
                     for value in base.eligible {
                         let valid = sum.possibles.filter { $0.contains( value ) }.map { $0.subtracting( [value] ) }
-                        
+
                         for possible in valid {
                             eligible.formUnion( possible )
                         }
                     }
-                    
+
                     let newStatus = empty.restrict( to: eligible )
-                    
+
                     switch newStatus {
                     case .found, .finished, .bogus:
                         return newStatus
@@ -257,7 +308,7 @@ class PuzzleSolver: Puzzle {
                 }
             }
         }
-        
+
         return status
     }
     
