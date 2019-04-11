@@ -18,7 +18,7 @@ class CircularIterator2D<Element> {
     var nrow = 0        // Next row
     var ncol = 0        // Next column
     
-    init( array: inout [[Element]] ) {
+    init( array: [[Element]] ) {
         self.array = array
     }
     

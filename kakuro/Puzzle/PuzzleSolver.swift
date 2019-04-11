@@ -13,7 +13,7 @@ class PuzzleSolver: Puzzle {
     let cellIterator: CircularIterator2D<Cell>
 
     init( with puzzle: Puzzle ) {
-        cellIterator = CircularIterator2D( array: &puzzle.cells )
+        cellIterator = CircularIterator2D( array: puzzle.cells )
         super.init()
         cells = puzzle.cells
         setupPuzzle()
