@@ -101,12 +101,12 @@ class PuzzleSolver: Puzzle {
             return status
         }
         
-        status = elimination2()
+        status = minmax()
         if status != .stuck {
             return status
         }
         
-        status = minmax()
+        status = elimination2()
         return status
     }
     
@@ -176,7 +176,7 @@ class PuzzleSolver: Puzzle {
             let subsets = required.subsets().sorted { $0.count < $1.count }
             
             for subset in subsets where subset.count > 0 {
-                let cells = sum.cells.filter { !$0.eligible.isDisjoint( with: subset ) }
+                let cells = sum.unsolvedCells.filter { !$0.eligible.isDisjoint( with: subset ) }
                 
                 if subset.count == cells.count {
                     for empty in cells {
@@ -208,9 +208,9 @@ class PuzzleSolver: Puzzle {
                 let trial = sum.workingCopy( possible: possible )
                 
                 if elimination2( trial: trial ) {
-                    accumulator.eligible.formUnion( trial.eligible )
-                    accumulator.possibles.append( trial.eligible )
-                    accumulator.cells.enumerated().forEach {
+                    accumulator.eligible.formUnion( possible )
+                    accumulator.possibles.append( possible )
+                    accumulator.unsolvedCells.enumerated().forEach {
                         $0.element.eligible.formUnion( trial.cells[$0.offset].eligible )
                     }
                 }
@@ -226,16 +226,15 @@ class PuzzleSolver: Puzzle {
     }
     
     func elimination2( trial: HeaderSum ) -> Bool {
-        let copy = HeaderSum( from: trial )
         var found: [EmptyCell]
         
         repeat {
-            found = copy.cells.filter { $0.eligible.count == 1 }
+            found = trial.unsolvedCells.filter { $0.eligible.count == 1 }
             
-            found.forEach { solved in
-                copy.total -= solved.eligible.first!
-                copy.eligible.subtract( solved.eligible )
-                copy.cells.removeAll( where: { $0 === solved } )
+            found.forEach {
+                if $0.eligible.count > 0 {
+                    $0.found( solution: $0.eligible.first! )
+                }
             }
         } while found.count > 0
         
@@ -246,17 +245,19 @@ class PuzzleSolver: Puzzle {
         var status = Status.stuck
 
         for sum in headerSums {
-            if sum.cells.count == 1 {
-                if sum.cells[0].eligible.count != 1 {
+            let cells = sum.unsolvedCells
+            
+            if cells.count == 1 {
+                if cells[0].eligible.count != 1 {
                     return .bogus
                 }
 
-                sum.cells[0].found( solution: sum.cells[0].eligible.first! )
+                cells[0].found( solution: cells[0].eligible.first! )
                 return .found
             }
 
-            if sum.cells.count > 1 {
-                let base = sum.cells.min { $0.eligible.count < $1.eligible.count }!
+            if cells.count > 1 {
+                let base = cells.min { $0.eligible.count < $1.eligible.count }!
                 var eligible = Set<Int>()
                 var possibles = Set<Set<Int>>()
 
@@ -264,7 +265,7 @@ class PuzzleSolver: Puzzle {
                     let valid = sum.possibles.filter { $0.contains( value ) }.map { $0.subtracting( [value] ) }
 
                     for possible in valid {
-                        for empty in sum.cells where empty !== base {
+                        for empty in cells where empty !== base {
                             if !possible.isDisjoint( with: empty.eligible ) {
                                 eligible.insert( value )
                                 possibles.insert( possible.union( [value] ) )
@@ -284,7 +285,7 @@ class PuzzleSolver: Puzzle {
                     status = .informative
                 }
 
-                for empty in sum.cells where empty !== base {
+                for empty in cells where empty !== base {
                     var eligible = Set<Int>()
 
                     for value in base.eligible {
@@ -314,18 +315,20 @@ class PuzzleSolver: Puzzle {
     
     func minmax() -> Status {
         for sum in headerSums {
-            if sum.cells.count > 0 {
-                let mins = Set<Int>( sum.cells.map { $0.eligible.min()! } )
+            let cells = sum.unsolvedCells
+            
+            if cells.count > 0 {
+                let mins = Set<Int>( cells.map { $0.eligible.min()! } )
                 
                 if sum.possibles.contains( mins ) {
-                    sum.cells[0].found( solution: sum.cells[0].eligible.min()! )
+                    cells[0].found( solution: cells[0].eligible.min()! )
                     return .found
                 }
                 
-                let maxs = Set<Int>( sum.cells.map { $0.eligible.max()! } )
+                let maxs = Set<Int>( cells.map { $0.eligible.max()! } )
                 
                 if sum.possibles.contains( maxs ) {
-                    sum.cells[0].found( solution: sum.cells[0].eligible.max()! )
+                    cells[0].found( solution: cells[0].eligible.max()! )
                     return .found
                 }
             }
