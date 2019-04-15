@@ -89,7 +89,7 @@ class PuzzleSolver: Puzzle {
             return status
         }
         
-        headerSums.removeAll( where: { $0.total == 0 || $0.cells.count == 0 } )
+        headerSums.removeAll( where: { $0.total == 0 } )
         
         status = reduceRequired()
         if status != .stuck {
