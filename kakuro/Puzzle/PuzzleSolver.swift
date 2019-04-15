@@ -172,24 +172,41 @@ class PuzzleSolver: Puzzle {
         var status = Status.stuck
         
         for sum in headerSums {
-            let required = sum.possibles.reduce( Set<Int>( 1...9 ), { $0.intersection( $1 ) } )
-            let subsets = required.subsets().sorted { $0.count < $1.count }
+            let newStatus = reduceRequired( sum: sum )
             
-            for subset in subsets where subset.count > 0 {
-                let cells = sum.unsolvedCells.filter { !$0.eligible.isDisjoint( with: subset ) }
-                
-                if subset.count == cells.count {
-                    for empty in cells {
-                        let newStatus = empty.restrict( to: subset )
-                        
-                        switch newStatus {
-                        case .found, .finished, .bogus:
-                            return newStatus
-                        case .informative:
-                            status = newStatus
-                        case .stuck:
-                            break
-                        }
+            switch newStatus {
+            case .found, .finished, .bogus:
+                return newStatus
+            case .informative:
+                status = newStatus
+            case .stuck:
+                break
+            }
+        }
+        
+        return status
+    }
+    
+    func reduceRequired( sum: HeaderSum ) -> Status {
+        var status = Status.stuck
+        
+        let required = sum.possibles.reduce( Set<Int>( 1...9 ), { $0.intersection( $1 ) } )
+        let subsets = required.subsets().sorted { $0.count < $1.count }
+        
+        for subset in subsets where subset.count > 0 {
+            let cells = sum.unsolvedCells.filter { !$0.eligible.isDisjoint( with: subset ) }
+            
+            if subset.count == cells.count {
+                for empty in cells {
+                    let newStatus = empty.restrict( to: subset )
+                    
+                    switch newStatus {
+                    case .found, .finished, .bogus:
+                        return newStatus
+                    case .informative:
+                        status = newStatus
+                    case .stuck:
+                        break
                     }
                 }
             }
@@ -226,19 +243,18 @@ class PuzzleSolver: Puzzle {
     }
     
     func elimination2( trial: HeaderSum ) -> Bool {
-        var found: [EmptyCell]
-        
-        repeat {
-            found = trial.unsolvedCells.filter { $0.eligible.count == 1 }
+        while true {
+            let newStatus = reduceRequired( sum: trial )
             
-            found.forEach {
-                if $0.eligible.count > 0 {
-                    $0.found( solution: $0.eligible.first! )
-                }
+            switch newStatus {
+            case .finished, .bogus:
+                return false
+            case .informative, .found:
+                break
+            case .stuck:
+                return trial.cells.allSatisfy { $0.eligible.count > 0 }
             }
-        } while found.count > 0
-        
-        return trial.cells.allSatisfy { $0.eligible.count > 0 }
+        }
     }
     
     func elimination() -> Status {

@@ -38,6 +38,7 @@ class EmptyCell: Cell {
     
     func found( solution: Int ) -> Void {
         self.solution = solution
+        eligible = Set<Int>( [ solution ] )
         horizontal?.remove( cell: self )
         vertical?.remove( cell: self )
     }
