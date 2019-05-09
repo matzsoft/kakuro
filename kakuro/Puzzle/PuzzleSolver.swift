@@ -250,7 +250,11 @@ class PuzzleSolver: Puzzle {
             case .finished, .bogus:
                 return false
             case .informative, .found:
-                break
+                let available = trial.unsolvedCells.reduce( Set<Int>(), { $0.union( $1.eligible ) } )
+                
+                if trial.eligible.subtracting( available ).count > 0 {
+                    return false
+                }
             case .stuck:
                 return trial.cells.allSatisfy { $0.eligible.count > 0 }
             }
