@@ -19,6 +19,10 @@
 		DD609B7B2076D5F6007AF1D5 /* cellImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */; };
 		DD609B7F207C121C007AF1D5 /* PuzzleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B7E207C121C007AF1D5 /* PuzzleView.swift */; };
 		DD609B812083C95C007AF1D5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B802083C95C007AF1D5 /* Cell.swift */; };
+		DD7127902284BC210012A8EE /* UnusedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD71278F2284BC210012A8EE /* UnusedCell.swift */; };
+		DD7127922284BC780012A8EE /* EmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7127912284BC780012A8EE /* EmptyCell.swift */; };
+		DD7127942284BCD20012A8EE /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7127932284BCD20012A8EE /* HeaderCell.swift */; };
+		DD7127962284BD580012A8EE /* HeaderSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7127952284BD580012A8EE /* HeaderSum.swift */; };
 		DDA73D7D208A8062002D00A2 /* Todo.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DDA73D7C208A8062002D00A2 /* Todo.rtf */; };
 		DDB1DDF1208ED57B0060EFEF /* TotalFieldEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */; };
 		DDB1DE1420940D3E0060EFEF /* PuzzleValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */; };
@@ -44,6 +48,10 @@
 		DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = cellImageGenerator.swift; sourceTree = "<group>"; };
 		DD609B7E207C121C007AF1D5 /* PuzzleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleView.swift; sourceTree = "<group>"; };
 		DD609B802083C95C007AF1D5 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		DD71278F2284BC210012A8EE /* UnusedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnusedCell.swift; sourceTree = "<group>"; };
+		DD7127912284BC780012A8EE /* EmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCell.swift; sourceTree = "<group>"; };
+		DD7127932284BCD20012A8EE /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
+		DD7127952284BD580012A8EE /* HeaderSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderSum.swift; sourceTree = "<group>"; };
 		DDA73D7C208A8062002D00A2 /* Todo.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Todo.rtf; sourceTree = "<group>"; };
 		DDB1DDF0208ED57B0060EFEF /* TotalFieldEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalFieldEditor.swift; sourceTree = "<group>"; };
 		DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleValidator.swift; sourceTree = "<group>"; };
@@ -73,6 +81,7 @@
 				DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */,
 				DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */,
 				DDEAA1FD2224902100A0A6CF /* PuzzleSolver.swift */,
+				DD7127952284BD580012A8EE /* HeaderSum.swift */,
 			);
 			path = Puzzle;
 			sourceTree = "<group>";
@@ -91,6 +100,9 @@
 			children = (
 				DD609B802083C95C007AF1D5 /* Cell.swift */,
 				DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */,
+				DD71278F2284BC210012A8EE /* UnusedCell.swift */,
+				DD7127912284BC780012A8EE /* EmptyCell.swift */,
+				DD7127932284BCD20012A8EE /* HeaderCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -213,13 +225,17 @@
 				DD609B732075CEE9007AF1D5 /* DocumentWindowController.swift in Sources */,
 				DD609B792076BDF1007AF1D5 /* PuzzleLex.swift in Sources */,
 				DDB321C4223B33F20080116C /* CircularIterator2D.swift in Sources */,
+				DD7127942284BCD20012A8EE /* HeaderCell.swift in Sources */,
 				DD609B632075CD6F007AF1D5 /* ViewController.swift in Sources */,
 				DDF18AE0209AB9B10003E65D /* PuzzleAudioVerify.swift in Sources */,
 				DD609B7B2076D5F6007AF1D5 /* cellImageGenerator.swift in Sources */,
 				DDEAA1FE2224902100A0A6CF /* PuzzleSolver.swift in Sources */,
 				DD609B812083C95C007AF1D5 /* Cell.swift in Sources */,
 				DD609B612075CD6F007AF1D5 /* AppDelegate.swift in Sources */,
+				DD7127962284BD580012A8EE /* HeaderSum.swift in Sources */,
 				DD609B652075CD6F007AF1D5 /* Document.swift in Sources */,
+				DD7127902284BC210012A8EE /* UnusedCell.swift in Sources */,
+				DD7127922284BC780012A8EE /* EmptyCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
