@@ -196,6 +196,9 @@ class PuzzleSolver: Puzzle {
         for subset in subsets where subset.count > 0 {
             let cells = sum.unsolvedCells.filter { !$0.eligible.isDisjoint( with: subset ) }
             
+            if cells.isEmpty {
+                return .bogus
+            }
             if subset.count == cells.count {
                 for empty in cells {
                     let newStatus = empty.restrict( to: subset )
@@ -207,6 +210,23 @@ class PuzzleSolver: Puzzle {
                         status = newStatus
                     case .stuck:
                         break
+                    }
+                }
+            } else {
+                let cells = cells.filter { $0.eligible.subtracting( subset ).isEmpty }
+                
+                if subset.count == cells.count {
+                    for empty in cells {
+                        let newStatus = empty.restrict( to: subset )
+                        
+                        switch newStatus {
+                        case .found, .finished, .bogus:
+                            return newStatus
+                        case .informative:
+                            status = newStatus
+                        case .stuck:
+                            break
+                        }
                     }
                 }
             }
