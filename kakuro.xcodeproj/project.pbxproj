@@ -75,13 +75,13 @@
 		DD27EC2820BC976D009450DB /* Puzzle */ = {
 			isa = PBXGroup;
 			children = (
+				DD7127952284BD580012A8EE /* HeaderSum.swift */,
 				DD609B742076BDF0007AF1D5 /* Puzzle.swift */,
 				DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */,
 				DD609B762076BDF1007AF1D5 /* PuzzleLex.swift */,
 				DD609B752076BDF0007AF1D5 /* PuzzleParser.swift */,
 				DDB1DE1320940D3E0060EFEF /* PuzzleValidator.swift */,
 				DDEAA1FD2224902100A0A6CF /* PuzzleSolver.swift */,
-				DD7127952284BD580012A8EE /* HeaderSum.swift */,
 			);
 			path = Puzzle;
 			sourceTree = "<group>";
@@ -100,9 +100,9 @@
 			children = (
 				DD609B802083C95C007AF1D5 /* Cell.swift */,
 				DD609B7A2076D5F6007AF1D5 /* cellImageGenerator.swift */,
-				DD71278F2284BC210012A8EE /* UnusedCell.swift */,
 				DD7127912284BC780012A8EE /* EmptyCell.swift */,
 				DD7127932284BCD20012A8EE /* HeaderCell.swift */,
+				DD71278F2284BC210012A8EE /* UnusedCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
