@@ -96,17 +96,12 @@ class PuzzleSolver: Puzzle {
             return status
         }
         
-        status = elimination()
-        if status != .stuck {
-            return status
-        }
-        
         status = minmax()
         if status != .stuck {
             return status
         }
         
-        status = elimination2()
+        status = enumeration()
         return status
     }
     
@@ -235,7 +230,7 @@ class PuzzleSolver: Puzzle {
         return status
     }
     
-    func elimination2() -> Status {
+    func enumeration() -> Status {
         var status = Status.stuck
         
         for sum in headerSums {
@@ -244,7 +239,7 @@ class PuzzleSolver: Puzzle {
             for possible in sum.possibles {
                 let trial = sum.workingCopy( possible: possible )
                 
-                if elimination2( trial: trial ) {
+                if enumeration( trial: trial ) {
                     accumulator.eligible.formUnion( possible )
                     accumulator.possibles.append( possible )
                     accumulator.unsolvedCells.enumerated().forEach {
@@ -262,7 +257,7 @@ class PuzzleSolver: Puzzle {
         return status
     }
     
-    func elimination2( trial: HeaderSum ) -> Bool {
+    func enumeration( trial: HeaderSum ) -> Bool {
         while true {
             let newStatus = reduceRequired( sum: trial )
             
@@ -279,78 +274,6 @@ class PuzzleSolver: Puzzle {
                 return trial.cells.allSatisfy { $0.eligible.count > 0 }
             }
         }
-    }
-    
-    func elimination() -> Status {
-        var status = Status.stuck
-
-        for sum in headerSums {
-            let cells = sum.unsolvedCells
-            
-            if cells.count == 1 {
-                if cells[0].eligible.count != 1 {
-                    return .bogus
-                }
-
-                cells[0].found( solution: cells[0].eligible.first! )
-                return .found
-            }
-
-            if cells.count > 1 {
-                let base = cells.min { $0.eligible.count < $1.eligible.count }!
-                var eligible = Set<Int>()
-                var possibles = Set<Set<Int>>()
-
-                for value in base.eligible {
-                    let valid = sum.possibles.filter { $0.contains( value ) }.map { $0.subtracting( [value] ) }
-
-                    for possible in valid {
-                        for empty in cells where empty !== base {
-                            if !possible.isDisjoint( with: empty.eligible ) {
-                                eligible.insert( value )
-                                possibles.insert( possible.union( [value] ) )
-                            }
-                        }
-                    }
-                }
-
-                if eligible.count == 1 {
-                    base.found( solution: eligible.first! )
-                    return .found
-                }
-
-                if possibles.count < sum.possibles.count {
-                    sum.possibles = Array( possibles )
-                    sum.eligible = sum.possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
-                    status = .informative
-                }
-
-                for empty in cells where empty !== base {
-                    var eligible = Set<Int>()
-
-                    for value in base.eligible {
-                        let valid = sum.possibles.filter { $0.contains( value ) }.map { $0.subtracting( [value] ) }
-
-                        for possible in valid {
-                            eligible.formUnion( possible )
-                        }
-                    }
-
-                    let newStatus = empty.restrict( to: eligible )
-
-                    switch newStatus {
-                    case .found, .finished, .bogus:
-                        return newStatus
-                    case .informative:
-                        status = .informative
-                    case .stuck:
-                        break
-                    }
-                }
-            }
-        }
-
-        return status
     }
     
     func minmax() -> Status {

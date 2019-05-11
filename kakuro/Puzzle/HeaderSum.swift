@@ -98,7 +98,10 @@ class HeaderSum {
         
         total -= value
         possibles = possibles.filter { $0.contains( value ) }.map { $0.filter { $0 != value } }
-        eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
+        eligible = unsolvedCells.reduce( Set<Int>(), {
+            $1.eligible.remove( value )
+            return $0.union( $1.eligible )
+        } )
         unsolvedCells.forEach { $0.eligible.formIntersection( eligible ) }
     }
     
@@ -106,7 +109,11 @@ class HeaderSum {
         let count = possibles.count
         
         possibles = possibles.filter { !$0.isDisjoint( with: set ) }
-        eligible = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
+        
+        let available = possibles.reduce( Set<Int>(), { $0.union( $1 ) } )
+        
+        unsolvedCells.forEach { $0.eligible.formIntersection( available ) }
+        eligible = unsolvedCells.reduce( Set<Int>(), { $0.union( $1.eligible ) } )
         
         return possibles.count < count
     }
