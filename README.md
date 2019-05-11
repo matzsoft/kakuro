@@ -22,12 +22,12 @@ A header cell is depicted as a square divided in half by an upper left to lower 
 A number above the diagonal is the across clue for the empty cells to the right.
 A number below the diagonal is the down clue for the empty cells below.
 # What is the kakuro app?
-The kakuro app is currently a graphical editor for kakuro puzzles.  It reads and writes .kkr files.
+The kakuro app is a graphical editor and solver for kakuro puzzles.  It reads and writes .kkr files.
 A .kkr file is a plain text format for representing a single kakuro puzzle.  You can open a .kkr file or create a new one.
 The corresponding puzzle is displayed graphically.
 One of the puzzle cells is highlighted as the selected cell.  You can move the selection to a different cell.
 You can add and delete cells.  You can also make changes to the selected cell.  Once satisfied you can save the puzzle to disk.
-There are also tools to help you catch mistakes.
+There are also tools to help you catch mistakes.  Once your puzzle is correctly entered, you can display the solution.
 # How do I use the kakuro app?
 The kakuro app is a traditional MacOS document based app.  As such, you can have multiple windows open each with its own kakuro puzzle.
 The file menu is pretty much as you would expect with a couple of exceptions detailed below.
@@ -98,9 +98,12 @@ This allows you to look at your source material and easily compare it to what wa
 The kakuro app is geared towards entering the puzzle starting in the topmost row left to right, then moving down to the next row.
 Audio Verify reads the puzzle column wise in hopes that the different perspective will help prevent making the same mistake twice.
 Note that column numbers are also one based, not zero based.  Also to stop the speech, hit the ESC key.
+### Solve
+Use this menu item to display the puzzle solution.
 # What's next?
 I built the kakuro app for these reasons:
 1. I wanted to build a kakuro puzzle solver
 2. To build a solver, I need test data
 3. I wanted to learn Swift and Cocoa programming
-So now that I have a test data editor the obvious next step is the puzzle solver.  But first I think kakuro app needs in app help.
+
+I think the next step is a help function in the app.
