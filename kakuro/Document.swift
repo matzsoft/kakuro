@@ -91,7 +91,17 @@ class Document: NSDocument, NSSpeechSynthesizerDelegate {
         // You can also choose to override readFromFileWrapper:ofType:error: or readFromURL:ofType:error: instead.
         // If you override either of these, you should also override -isEntireFileLoaded to return false if the contents are lazily loaded.
         if let text = String(data: data, encoding: String.Encoding.utf8) {
-            puzzle = Puzzle(text: text)!
+            if let puzzle = Puzzle( text: text ) {
+                self.puzzle = puzzle
+            } else {
+                let alert = NSAlert()
+                
+                alert.messageText = "Puzzle file is invalid"
+                alert.informativeText = ""
+                alert.alertStyle = .critical
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            }
         }
     }
     
