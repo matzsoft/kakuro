@@ -85,23 +85,11 @@ class PuzzleSolver: Puzzle {
     func step() -> Status {
         var status = basic()
         
-        if status != .stuck {
-            return status
+        if status == .stuck {
+            headerSums.removeAll( where: { $0.total == 0 } )
+            status = enumeration()
         }
         
-        headerSums.removeAll( where: { $0.total == 0 } )
-        
-        status = reduceRequired()
-        if status != .stuck {
-            return status
-        }
-        
-        status = minmax()
-        if status != .stuck {
-            return status
-        }
-        
-        status = enumeration()
         return status
     }
     
@@ -160,25 +148,6 @@ class PuzzleSolver: Puzzle {
             }
         }
 
-        return status
-    }
-    
-    func reduceRequired() -> Status {
-        var status = Status.stuck
-        
-        for sum in headerSums {
-            let newStatus = reduceRequired( sum: sum )
-            
-            switch newStatus {
-            case .found, .finished, .bogus:
-                return newStatus
-            case .informative:
-                status = newStatus
-            case .stuck:
-                break
-            }
-        }
-        
         return status
     }
     
@@ -274,29 +243,5 @@ class PuzzleSolver: Puzzle {
                 return trial.cells.allSatisfy { $0.eligible.count > 0 }
             }
         }
-    }
-    
-    func minmax() -> Status {
-        for sum in headerSums {
-            let cells = sum.unsolvedCells
-            
-            if cells.count > 0 {
-                let mins = Set<Int>( cells.map { $0.eligible.min()! } )
-                
-                if sum.possibles.contains( mins ) {
-                    cells[0].found( solution: cells[0].eligible.min()! )
-                    return .found
-                }
-                
-                let maxs = Set<Int>( cells.map { $0.eligible.max()! } )
-                
-                if sum.possibles.contains( maxs ) {
-                    cells[0].found( solution: cells[0].eligible.max()! )
-                    return .found
-                }
-            }
-        }
-
-        return .stuck
     }
 }
