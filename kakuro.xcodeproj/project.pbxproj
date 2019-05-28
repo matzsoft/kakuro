@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD5789AA229CBD9E00EFF528 /* kakuroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5789A9229CBD9E00EFF528 /* kakuroTests.swift */; };
 		DD609B612075CD6F007AF1D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B602075CD6F007AF1D5 /* AppDelegate.swift */; };
 		DD609B632075CD6F007AF1D5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B622075CD6F007AF1D5 /* ViewController.swift */; };
 		DD609B652075CD6F007AF1D5 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD609B642075CD6F007AF1D5 /* Document.swift */; };
@@ -32,7 +33,20 @@
 		DDF18AE0209AB9B10003E65D /* PuzzleAudioVerify.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF18ADF209AB9B10003E65D /* PuzzleAudioVerify.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		DD5789AC229CBD9E00EFF528 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD609B552075CD6F007AF1D5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD609B5C2075CD6F007AF1D5;
+			remoteInfo = kakuro;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		DD5789A7229CBD9E00EFF528 /* kakuroTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = kakuroTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD5789A9229CBD9E00EFF528 /* kakuroTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kakuroTests.swift; sourceTree = "<group>"; };
+		DD5789AB229CBD9E00EFF528 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD609B5D2075CD6F007AF1D5 /* kakuro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kakuro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD609B602075CD6F007AF1D5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DD609B622075CD6F007AF1D5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +76,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		DD5789A4229CBD9E00EFF528 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DD609B5A2075CD6F007AF1D5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -107,10 +128,20 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		DD5789A8229CBD9E00EFF528 /* kakuroTests */ = {
+			isa = PBXGroup;
+			children = (
+				DD5789A9229CBD9E00EFF528 /* kakuroTests.swift */,
+				DD5789AB229CBD9E00EFF528 /* Info.plist */,
+			);
+			path = kakuroTests;
+			sourceTree = "<group>";
+		};
 		DD609B542075CD6F007AF1D5 = {
 			isa = PBXGroup;
 			children = (
 				DD609B5F2075CD6F007AF1D5 /* kakuro */,
+				DD5789A8229CBD9E00EFF528 /* kakuroTests */,
 				DD609B5E2075CD6F007AF1D5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -119,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				DD609B5D2075CD6F007AF1D5 /* kakuro.app */,
+				DD5789A7229CBD9E00EFF528 /* kakuroTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -147,6 +179,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		DD5789A6229CBD9E00EFF528 /* kakuroTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD5789B0229CBD9E00EFF528 /* Build configuration list for PBXNativeTarget "kakuroTests" */;
+			buildPhases = (
+				DD5789A3229CBD9E00EFF528 /* Sources */,
+				DD5789A4229CBD9E00EFF528 /* Frameworks */,
+				DD5789A5229CBD9E00EFF528 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DD5789AD229CBD9E00EFF528 /* PBXTargetDependency */,
+			);
+			name = kakuroTests;
+			productName = kakuroTests;
+			productReference = DD5789A7229CBD9E00EFF528 /* kakuroTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		DD609B5C2075CD6F007AF1D5 /* kakuro */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DD609B6F2075CD70007AF1D5 /* Build configuration list for PBXNativeTarget "kakuro" */;
@@ -170,10 +220,14 @@
 		DD609B552075CD6F007AF1D5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0930;
+				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = matzsoft;
 				TargetAttributes = {
+					DD5789A6229CBD9E00EFF528 = {
+						CreatedOnToolsVersion = 10.1;
+						TestTargetID = DD609B5C2075CD6F007AF1D5;
+					};
 					DD609B5C2075CD6F007AF1D5 = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 1010;
@@ -194,11 +248,19 @@
 			projectRoot = "";
 			targets = (
 				DD609B5C2075CD6F007AF1D5 /* kakuro */,
+				DD5789A6229CBD9E00EFF528 /* kakuroTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		DD5789A5229CBD9E00EFF528 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DD609B5B2075CD6F007AF1D5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -212,6 +274,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		DD5789A3229CBD9E00EFF528 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD5789AA229CBD9E00EFF528 /* kakuroTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DD609B592075CD6F007AF1D5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -241,6 +311,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		DD5789AD229CBD9E00EFF528 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD609B5C2075CD6F007AF1D5 /* kakuro */;
+			targetProxy = DD5789AC229CBD9E00EFF528 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		DD609B682075CD70007AF1D5 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -253,6 +331,51 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		DD5789AE229CBD9E00EFF528 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = G66PZJ94HJ;
+				INFOPLIST_FILE = kakuroTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.matzsoft.kakuroTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/kakuro.app/Contents/MacOS/kakuro";
+			};
+			name = Debug;
+		};
+		DD5789AF229CBD9E00EFF528 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = G66PZJ94HJ;
+				INFOPLIST_FILE = kakuroTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.matzsoft.kakuroTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/kakuro.app/Contents/MacOS/kakuro";
+			};
+			name = Release;
+		};
 		DD609B6D2075CD70007AF1D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -405,6 +528,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		DD5789B0229CBD9E00EFF528 /* Build configuration list for PBXNativeTarget "kakuroTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD5789AE229CBD9E00EFF528 /* Debug */,
+				DD5789AF229CBD9E00EFF528 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		DD609B582075CD6F007AF1D5 /* Build configuration list for PBXProject "kakuro" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
