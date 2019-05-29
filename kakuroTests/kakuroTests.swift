@@ -36,6 +36,13 @@ class kakuroTests: XCTestCase {
                     print( "\(file) failed to create puzzle" )
                     continue
                 }
+                
+                guard PuzzleValidator( with: puzzle ).isValid else {
+                    failedCount += 1
+                    print( "\(file) is not a valid puzzle" )
+                    continue
+                }
+                
                 let solver = PuzzleSolver( with: puzzle )
                 
                 solveLoop: while true {
